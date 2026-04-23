@@ -25,6 +25,12 @@ class F1,F2,F3,F4,F5,F6 core;
 class F7,F8 ext;
 class F9,F10 mgmt;
 </div><div class="caption">Figure 03-1. Canonical SPARTA FBS (FM). Core detection/forwarding chain F1→F7 in blue; platform-integration surface F8 in green (read-only on avionics side); cross-cutting integrity/configuration F9/F10 in amber. Peer exchange and neighbourhood Byzantine correlation are deliberately outside the canonical FBS — see §4.1.</div></div>
+<figure class="figure photo-figure">
+<img src="assets/fig_function_flow.webp"
+     alt="SPARTA FM — Canonical Function Flow (F1..F10). Horizontal chain left to right: F1 COLLECT → F2 NORMALIZE → F3 DETECT → F4 TRIAGE → F5 STORE → F6 TRANSMIT → F7 INTERFACE WITH TSOC (all in brand blue). Cross-cutting F9 MANAGE INTEGRITY AND CONFIGURATION sits above the chain (gold). Side-branch boxes below the chain: F8 INTEGRATE (drone — read-only, amber) and F10 CONFIGURE (local, amber). Each box has a small pictogram indicating its function type. Background is deep navy; arrows are gold."
+     loading="lazy"/>
+<div class="caption">Figure 03-1a. SPARTA canonical function flow (F1..F10) — complementary pictographic view of the FBS in Figure 03-1, highlighting the main baseline chain F1→F7 and the cross-cutting F9 (above) and side-branch F8 &amp; F10 (below) functions.</div>
+</figure>
 <table class="metadata"><thead><tr><th>Function</th><th>Description</th><th>SYS-* trace</th><th>Realizing Components</th></tr></thead><tbody>
 <tr><td>F1 COLLECT</td><td>Collect system logs, network metadata, hardware telemetry, RF/comms link data, MARS-virtualization events, and security-control audit.</td><td>SYS-FUNC-001, SYS-FUNC-002</td><td>Host collector · Network collector · RF/link collector · MARS event collector · Audit collector</td></tr>
 <tr><td>F2 NORMALIZE &amp; ENRICH</td><td>Parse heterogeneous formats, normalize to ECS/CEF-compatible schema, timestamp/synchronize, enrich with asset context.</td><td>SYS-DATA-001..004, SYS-FUNC-007 (AC)</td><td>Parser registry · Schema normalizer · Time-fusion module · Asset-context enricher</td></tr>
@@ -314,6 +320,14 @@ I["Identity Provisioning"] -->|"IF-EXT-05"| A
 </div><div class="caption">Figure 03-4. Connectivity and interface map showing external and inter-element links.</div></div><figure class="figure photo-figure"><img src="assets/photo_edge_relay_ground.webp"
 alt="Ground operator on a mountain ridge with a MALE RPAS visible in the distance, a river valley below, and connecting blue lines annotated EDGE NODE, RELAY NODE, and GROUND STATION joining the three elements."
 loading="lazy"/><div class="caption">Figure 03-4a. Photographic view of the three physical node classes in the SPARTA ecosystem — <strong>edge node</strong> (airborne tactical platform, IF-EXT-04), <strong>relay node</strong> (tactical peer/forwarder, IF-EXT-03), and <strong>ground station</strong> (operator / TSOC reach-back, IF-EXT-02 / IF-EXT-01). These correspond to the connectivity topology in Figure 03-4 above.</div></figure>
+
+<h3>8.2 External interfaces — radial map</h3>
+<figure class="figure photo-figure">
+<img src="assets/fig_external_interfaces.webp"
+     alt="SPARTA External Interfaces — 7 contract-grade interfaces. Radial diagram with SPARTA software (red) at center. Seven arrows radiating outward to labeled destinations: MARS (hypervisor events) via IF-EXT-01, Airbus TSOC (alerts and policy) via IF-EXT-02, Peer Nodes (Mode-B-peer, dashed) via IF-EXT-03, Host Platform (read-only telemetry) via IF-EXT-04, CymID® identity via IF-EXT-05, Orion Malware® verdicts via IF-EXT-06, and a cross-domain sanitizer via IF-EXT-07. Each destination is color-coded per the house style."
+     loading="lazy"/>
+<div class="caption">Figure 03-4c. SPARTA external interfaces (IF-EXT-01..07) as a radial map — complementary to the §8.1 tabular catalogue. Full schema skeletons for the envelope and per-interface payloads are in <a href="06_security_safety_assurance.html#interface-contracts">Deliv. 06 §10</a>.</div>
+</figure>
 
 <h3>8.3 Airborne ↔ Airbus TSOC integration view</h3>
 <div class="figure"><div class="mermaid">
