@@ -192,18 +192,66 @@ RE --> MARS
 HM --> TE
 HM --> RE
 HM --> CM
-</div><div class="caption">Figure 03-2. Logical architecture block diagram. Security Services and Health Monitor are cross-cutting.</div></div><h3>5.1 Component Responsibilities</h3><table class="metadata"><thead><tr><th>Component</th><th>Responsibility</th><th>Key Requirements</th></tr></thead><tbody><tr><td>Data Acquisition Layer</td><td>Collect raw host, network, MARS, and peer inputs.</td><td>SYS-FUNC-001, 002</td></tr><tr><td>Normalizer &amp; Time Aligner</td><td>Canonicalize schemas, identifiers, and timestamps.</td><td>SYS-FUNC-001..002; SYS-DATA-*</td></tr><tr><td>Detection Engine</td><td>Detect and classify anomalies across integrity, comms, mission-plausibility.</td><td>SYS-FUNC-003, 004</td></tr><tr><td>Trust Engine</td><td>Fuse evidence into TrustAssessment with confidence, impact, validity, and reason-chain.</td><td>SYS-FUNC-005; SYS-OPS-002, 003; SYS-DATA-003</td></tr><tr><td>Response Engine</td><td>Generate bounded ResponseRecommendation objects under policy.</td><td>SYS-FUNC-007; SYS-OPS-004; SYS-SAFE-002</td></tr><tr><td>Evidence Store</td><td>Durable, retention-managed, survivable evidence persistence.</td><td>SYS-FUNC-008; SYS-PERF-003, 006; SYS-RAM-003</td></tr><tr><td>Comms Manager</td><td>Schema-validated, authenticated, prioritized external messaging.</td><td>SYS-IF-003, 005; SYS-SEC-001, 002; SYS-PERF-002</td></tr><tr><td>Policy Manager</td><td>Validate, version, activate signed PolicyBundle / model bundles.</td><td>SYS-FUNC-009; SYS-SEC-004; SYS-DC-004</td></tr><tr><td>Security Services</td><td>Cryptographic identity, signing, verification, key lifecycle.</td><td>SYS-IF-004; SYS-SEC-001..004</td></tr><tr><td>Health Monitor / Watchdog</td><td>Internal health, resource, and fault management; fail-safe enforcement.</td><td>SYS-FUNC-010; SYS-SAFE-003; SYS-RAM-004</td></tr><tr><td>Peer Fusion / Graph / Aggregator</td><td>Neighborhood-level correlation, consensus scoring, Byzantine-tolerant aggregation.</td><td>SYS-FUNC-006; SYS-DATA-004</td></tr></tbody></table></section><section id="physical-architecture"><h2>6. Physical Architecture — Product Breakdown Structure</h2><div class="figure"><div class="mermaid">
+</div><div class="caption">Figure 03-2. Logical architecture block diagram. Security Services and Health Monitor are cross-cutting.</div></div><h3>5.1 Component Responsibilities</h3><table class="metadata"><thead><tr><th>Component</th><th>Responsibility</th><th>Key Requirements</th></tr></thead><tbody><tr><td>Data Acquisition Layer</td><td>Collect raw host, network, MARS, and peer inputs.</td><td>SYS-FUNC-001, 002</td></tr><tr><td>Normalizer &amp; Time Aligner</td><td>Canonicalize schemas, identifiers, and timestamps.</td><td>SYS-FUNC-001..002; SYS-DATA-*</td></tr><tr><td>Detection Engine</td><td>Detect and classify anomalies across integrity, comms, mission-plausibility.</td><td>SYS-FUNC-003, 004</td></tr><tr><td>Trust Engine</td><td>Fuse evidence into TrustAssessment with confidence, impact, validity, and reason-chain.</td><td>SYS-FUNC-005; SYS-OPS-002, 003; SYS-DATA-003</td></tr><tr><td>Response Engine</td><td>Generate bounded ResponseRecommendation objects under policy.</td><td>SYS-FUNC-007; SYS-OPS-004; SYS-SAFE-002</td></tr><tr><td>Evidence Store</td><td>Durable, retention-managed, survivable evidence persistence.</td><td>SYS-FUNC-008; SYS-PERF-003, 006; SYS-RAM-003</td></tr><tr><td>Comms Manager</td><td>Schema-validated, authenticated, prioritized external messaging.</td><td>SYS-IF-003, 005; SYS-SEC-001, 002; SYS-PERF-002</td></tr><tr><td>Policy Manager</td><td>Validate, version, activate signed PolicyBundle / model bundles.</td><td>SYS-FUNC-009; SYS-SEC-004; SYS-DC-004</td></tr><tr><td>Security Services</td><td>Cryptographic identity, signing, verification, key lifecycle.</td><td>SYS-IF-004; SYS-SEC-001..004</td></tr><tr><td>Health Monitor / Watchdog</td><td>Internal health, resource, and fault management; fail-safe enforcement.</td><td>SYS-FUNC-010; SYS-SAFE-003; SYS-RAM-004</td></tr><tr><td>Peer Fusion / Graph / Aggregator</td><td>Neighborhood-level correlation, consensus scoring, Byzantine-tolerant aggregation.</td><td>SYS-FUNC-006; SYS-DATA-004</td></tr></tbody></table></section><section id="physical-architecture"><h2>6. Physical Breakdown Structure</h2>
+
+<h3>6.1 PBS — the seven major components</h3>
+<p>The SPARTA Physical Breakdown Structure consists of seven major components — <strong>SPARTA, MARS, Edge nodes, Fog nodes, TSOC, Command C2, Security C2</strong>. Together they describe every physical element on which the SPARTA deployment relies or with which it integrates as a component (as opposed to an authority role: FCS and MGS are authorities and appear in the Authority Matrix — see Deliv. 06 §7 — but are not PBS elements).</p>
+<div class="figure"><div class="mermaid">
+flowchart LR
+  subgraph PLATFORM["On-platform (airborne or ground-mobile)"]
+    EDGE["<b>Edge nodes</b><br/>tactical platforms hosting<br/>the SPARTA Edge Agent"]
+    MARS["<b>MARS</b><br/>on-platform virtualization layer<br/>(hypervisor / container orch.)"]
+    SPARTA["<b>SPARTA</b><br/>cyber threat detection<br/>&amp; forwarding layer<br/>(product of interest)"]
+  end
+  FOG["<b>Fog nodes</b><br/>intermediate compute tier<br/>(Mode-B-peer tactical correlator,<br/>aggregation / staging)"]
+  subgraph GROUND["Ground"]
+    TSOC["<b>TSOC</b><br/>Airbus Tactical SOC<br/>(Orion Malware® · CymID®)"]
+    CC2["<b>Command C2</b><br/>mission command"]
+    SC2["<b>Security C2</b><br/>defensive-cyber command"]
+  end
+  MARS -- "IF-EXT-01 (read-only)" --> SPARTA
+  EDGE -- "IF-EXT-04 (read-only host telemetry)" --> SPARTA
+  SPARTA -- "IF-EXT-02 DDIL-aware" --> TSOC
+  SPARTA -. "Mode-B-peer (post-CDR optional)" .- FOG
+  FOG -. "fleet peers" .- SPARTA
+  TSOC -- "alerts · forensic feed" --> CC2
+  TSOC -- "alerts · response orchestration" --> SC2
+  CC2 -. "mission-scope authority" .- SPARTA
+  SC2 -. "cyber-scope authority" .- SPARTA
+  classDef plat fill:#fff7e6,stroke:#8a5a00,color:#101a2d
+  classDef sp fill:#ecfdf5,stroke:#0a5b47,color:#101a2d
+  classDef ts fill:#eaf1f8,stroke:#1f4e79,color:#101a2d
+  classDef fog fill:#f4f0ff,stroke:#513c8c,color:#101a2d,stroke-dasharray: 4 3
+  class EDGE,MARS plat
+  class SPARTA sp
+  class TSOC,CC2,SC2 ts
+  class FOG fog
+</div><div class="caption">Figure 03-3. Canonical PBS — seven major components: SPARTA · MARS · Edge nodes · Fog nodes · TSOC · Command C2 · Security C2. Solid arrows = baseline interfaces; dashed = post-CDR optional extension (Mode-B-peer) or authority relationships.</div></div>
+
+<table class="wide-table"><thead><tr><th>#</th><th>Component</th><th>Role</th><th>Location</th><th>Interface(s)</th><th>Notes</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>SPARTA</strong></td><td>Product of interest — airborne cyber threat detection &amp; forwarding layer</td><td>Hosted on Edge nodes (and optionally Fog nodes for the Mode-B-peer extension)</td><td>IF-EXT-01..07 (all)</td><td>Internally decomposed into 6 packages P1..P6 — see §6.2</td></tr>
+<tr><td>2</td><td><strong>MARS</strong></td><td>On-platform virtualization layer (hypervisor / container orchestration) on each Edge node</td><td>On-platform (each Edge node)</td><td>IF-EXT-01 (read-only subscription by SPARTA)</td><td>Publishes hypervisor/container-orchestration events to SPARTA; consumes nothing from SPARTA. Passive receiver in the Authority Matrix (Deliv. 06 §7). <strong>Not a mission authority.</strong></td></tr>
+<tr><td>3</td><td><strong>Edge nodes</strong></td><td>Airborne or ground-mobile tactical platforms hosting the SPARTA Edge Agent</td><td>On-platform</td><td>IF-EXT-04 (read-only host telemetry)</td><td>Reference class: Eurodrone-class MALE RPAS. Also applicable to rotary-wing tactical, wheeled ground mission-management nodes, remote-carrier-class UAS, and future Combat Cloud edge appliances. Node-class footprints in §6.3. FCS avionics is a separate safety-critical subsystem accessed read-only via IF-EXT-04 — see Authority Matrix.</td></tr>
+<tr><td>4</td><td><strong>Fog nodes</strong></td><td>Intermediate compute tier between Edge and Ground — tactical correlator host (Mode-B-peer extension), aggregation / staging</td><td>Forward-deployed or airborne relay-class</td><td>IF-EXT-03 (peer protocol, extension-scope)</td><td><strong>Baseline:</strong> optional — no Fog node is required for baseline F1..F10 operation. <strong>Mode-B-peer extension (post-CDR):</strong> Fog nodes host the SPARTA Tactical Correlator (PBS sub-package P2); Byzantine-tolerant consensus with k ≥ 4 peers.</td></tr>
+<tr><td>5</td><td><strong>TSOC</strong></td><td>Tactical Security Operations Centre — ground cyber operations. Reference: Airbus TSOC with Orion Malware® file analysis and CymID®-class identity / PKI services</td><td>Ground</td><td>IF-EXT-02 (primary uplink, DDIL-aware), IF-EXT-05 (accredited identity provider), IF-EXT-06 (malware-verdict service), IF-EXT-07 (cross-domain sanitizer)</td><td>Primary upstream SOC. Pushes signed PolicyBundles and hot-swap rule updates (SYS-DC-005); ingests alerts and forensic pulls; issues malware verdicts (SYS-IF-006) and identity bindings (SYS-IF-007).</td></tr>
+<tr><td>6</td><td><strong>Command C2</strong></td><td>Ground mission command — engagement / mission-change / physical-link-disconnect authority (mission scope)</td><td>Ground</td><td>Ground-side, informed via TSOC summary feed</td><td>Receives bounded SPARTA advisories only; authorizes mission-scope responses. Mission Ground Segment / planning authority (previously called MGS in Draft C.1..C.2) is consolidated here as a Command C2 function — not a distinct PBS element.</td></tr>
+<tr><td>7</td><td><strong>Security C2</strong></td><td>Ground defensive-cyber command — coordinates fleet-level cyber response</td><td>Ground</td><td>Ground-side, via TSOC</td><td>Cyber-scope physical-link-disconnect authority; co-signs fleet-wide PolicyBundle release and re-key break-glass. Distinct from Command C2.</td></tr>
+</tbody></table>
+
+<h3>6.2 SPARTA internal decomposition (P1..P6)</h3>
+<p>The "SPARTA" PBS element is itself delivered as six product packages, retained from the original PBS for continuity of configuration management.</p>
+<div class="figure"><div class="mermaid">
 flowchart TB
-SPARTA["<b>SPARTA System</b>"]
+SPARTA["<b>SPARTA (PBS #1)</b>"]
 SPARTA --> P1["P1 Edge Agent Software Package"]
-SPARTA --> P2["P2 Optional Tactical Correlator Package"]
+SPARTA --> P2["P2 Tactical Correlator Package<br/>(Mode-B-peer extension, optional)"]
 SPARTA --> P3["P3 Shared Data Model &amp; Interface Libraries"]
 SPARTA --> P4["P4 Policy / Rule / Model Content Package (signed)"]
 SPARTA --> P5["P5 Integration &amp; Support Tooling"]
 SPARTA --> P6["P6 Identity &amp; Key Material (per node)"]
 P1 --> P11["Telemetry Collectors"]
 P1 --> P12["Detection Services"]
-P1 --> P13["Trust &amp; Recommendation Services"]
+P1 --> P13["Triage Engine (F4)"]
 P1 --> P14["Local Evidence Store"]
 P1 --> P15["Comms Adapter"]
 P1 --> P16["Policy &amp; Security Services"]
@@ -217,21 +265,19 @@ P3 --> P33["Validation Libraries"]
 P5 --> P51["Replay &amp; Reason-Chain Viewer"]
 P5 --> P52["Exercise Injector"]
 P5 --> P53["Commissioning &amp; Sanity Harness"]
-</div><div class="caption">Figure 03-3. Physical architecture / PBS view.</div></div><table class="metadata"><thead><tr><th>Node Class (reference)</th><th>Deployment</th><th>Typical Footprint</th></tr></thead><tbody><tr><td>SWaP-constrained embedded</td><td>Edge Agent, Mode A; selective Mode B participation</td><td>CPU ≤ 1 core-equiv · RAM ≤ 256 MB · Storage ≤ 2 GB</td></tr><tr><td>Standard tactical node</td><td>Edge Agent, Mode A/B</td><td>CPU ≤ 10% of 2 cores · RAM ≤ 512 MB · Storage ≤ 8 GB</td></tr><tr><td>Fog / gateway node</td><td>Edge Agent + Tactical Correlator, Mode B/C</td><td>CPU ≤ 20% of 4 cores · RAM ≤ 2 GB · Storage ≤ 32 GB</td></tr></tbody></table><p class="small">Values are provisional PDR reference class footprints. Final per-program tailoring is expected.</p>
-<h3>6.2 Ecosystem component catalogue</h3>
-<p>Beyond SPARTA's own PBS above, the airborne deployment integrates with a fixed set of ecosystem components — the drone host, peer drones, the Airbus TSOC with its service products, and the ground-side authority chain (MGS / C2 / Security-C2). SPARTA is the product of interest; every other component is either a host, a consumer or an authority.</p>
-<table class="wide-table"><thead><tr><th>Component</th><th>Role relative to SPARTA</th><th>Authority</th><th>Interface</th><th>Notes</th></tr></thead><tbody>
-<tr><td><strong>SPARTA edge agent</strong></td><td>Product of interest (runs on drone host)</td><td>Advisory only</td><td>IF-EXT-01..07</td><td>Platform-agnostic; runs in MARS virtualization layer or dedicated partition</td></tr>
-<tr><td>SPARTA tactical correlator</td><td>Neighbourhood-level function of SPARTA (Mode-B-peer extension, post-CDR optional)</td><td>Advisory only</td><td>Peer protocol (IF-EXT-03)</td><td>Co-host with Edge Agent or fog node</td></tr>
-<tr><td>Drone on which SPARTA runs</td><td>Reference edge host (Eurodrone-class)</td><td>Host authority (airframe)</td><td>F8 read-only surface (IF-EXT-04)</td><td>SPARTA consumes telemetry; never writes to avionics bus</td></tr>
-<tr><td>Other drones</td><td>Peer nodes (Mode-B-peer extension only)</td><td>Their own edge SPARTA</td><td>IF-EXT-03</td><td>Byzantine-tolerant consensus with k ≥ 4 — extension-scope (post-CDR)</td></tr>
-<tr><td><strong>Airbus TSOC</strong></td><td>Reference upstream SOC</td><td>Policy &amp; cyber-response authority</td><td>IF-EXT-02, IF-EXT-05, IF-EXT-06</td><td>Host for Orion Malware® / CymID® services; see §8 and Deliv. 01 §6.4</td></tr>
-<tr><td>MGS — Mission Ground Segment / Control System</td><td>Mission planning &amp; ground mission authority</td><td>Mission planning + mission-end authority</td><td>Ground-side, via Airbus TSOC summary feed</td><td>Not a direct SPARTA consumer; sees advisories via TSOC-ingested summary</td></tr>
-<tr><td>FCS — Flight Control System</td><td>Safety-critical avionics</td><td>Flight-safety authority (sole)</td><td>IF-EXT-04 read-only telemetry</td><td><strong>Hard boundary.</strong> SPARTA has no API surface for FCS actuation. Prohibited by SYS-DC-001.</td></tr>
-<tr><td>C2 — Command &amp; Control (mission)</td><td>Mission command</td><td>Engagement / mission-change / physical-link-disconnect (mission-scope)</td><td>Ground-side (informed via Airbus TSOC / MGS chain)</td><td>Receives bounded advisories only</td></tr>
-<tr><td><strong>Security-C2</strong></td><td>Defensive cyber C2 (ground)</td><td>Cyber-scope link-disconnect; co-signs fleet-wide PolicyBundle release and re-key break-glass</td><td>Via Airbus TSOC</td><td>Distinct from mission C2</td></tr>
-<tr><td><strong>MARS (virtualization)</strong></td><td>On-platform hypervisor / container orchestration on the drone host</td><td>Self-managed; passive for SPARTA</td><td>IF-EXT-01 (read-only subscription)</td><td>Publishes hypervisor events to SPARTA; consumes nothing from SPARTA</td></tr>
-</tbody></table></section><section id="allocation-view"><h2>7. Functional-to-Physical Allocation and Decomposition Rationale</h2><p>Allocation is given for the canonical FM F1..F10 (§4.1). PBS identifiers (P1..P17) refer to §6.1.</p><table class="matrix"><thead><tr><th>FM Function</th><th>Primary Physical Allocation</th><th>Allocation Rationale</th></tr></thead><tbody>
+</div><div class="caption">Figure 03-3a. SPARTA internal decomposition (P1..P6 packages, with sub-components). P1 hosts F1..F9; P2 is the Mode-B-peer extension correlator (optional, on Fog nodes); P3..P6 are cross-cutting artefacts and key material.</div></div>
+
+<h3>6.3 Node-class reference footprints (Edge &amp; Fog)</h3>
+<table class="metadata"><thead><tr><th>Node Class (reference)</th><th>PBS location</th><th>Deployment</th><th>Typical Footprint (provisional)</th></tr></thead><tbody>
+<tr><td>SWaP-constrained embedded</td><td>Edge nodes</td><td>Edge Agent (P1) only; baseline F1..F10</td><td>CPU ≤ 1 core-equiv · RAM ≤ 256 MB · Storage ≤ 2 GB</td></tr>
+<tr><td>Standard tactical node</td><td>Edge nodes</td><td>Edge Agent (P1); baseline F1..F10</td><td>CPU ≤ 10% of 2 cores · RAM ≤ 512 MB · Storage ≤ 8 GB</td></tr>
+<tr><td>Fog / gateway node</td><td>Fog nodes</td><td>Edge Agent (P1) + Tactical Correlator (P2, Mode-B-peer extension)</td><td>CPU ≤ 20% of 4 cores · RAM ≤ 2 GB · Storage ≤ 32 GB</td></tr>
+</tbody></table>
+<p class="small">Values are provisional PDR reference-class footprints; final per-program tailoring is expected. Fog-node deployment is extension-scope and therefore not required for baseline CDR.</p>
+
+<div class="callout constraint"><strong>PBS vs Authority Matrix — scope note</strong>
+The PBS enumerates physical components. The <strong>Authority Matrix</strong> (Deliv. 06 §7) enumerates decision authorities, which include entities that are not PBS components in their own right: <em>FCS</em> (Flight Control System — safety-critical avionics subsystem accessed by SPARTA read-only via IF-EXT-04), and the mission-planning authority that in Draft C.1..C.2 was called <em>MGS</em> (now folded into Command C2 for PBS consolidation, but retaining its authority role as a function of Command C2 in the Authority Matrix).</div>
+</section><section id="allocation-view"><h2>7. Functional-to-Physical Allocation and Decomposition Rationale</h2><p>Allocation is given for the canonical FM F1..F10 (§4.1). PBS identifiers (P1..P17) refer to §6.1.</p><table class="matrix"><thead><tr><th>FM Function</th><th>Primary Physical Allocation</th><th>Allocation Rationale</th></tr></thead><tbody>
 <tr><td>F1 COLLECT</td><td>Edge Agent · Telemetry Collectors (P1/P11)</td><td>Must remain local to source and survive disconnection.</td></tr>
 <tr><td>F2 NORMALIZE &amp; ENRICH</td><td>Edge Agent (P1)</td><td>Canonicalization must precede every downstream function.</td></tr>
 <tr><td>F3 DETECT</td><td>Edge Agent · Detection Services (P1/P12)</td><td>Requires low latency and host-near visibility.</td></tr>
