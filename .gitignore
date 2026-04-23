@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Editor / tool state
+.claude/
+.vscode/
+.idea/
+
+# Build / export artefacts — regenerated from source
+*.zip
+
+# Superseded working copies (kept locally, not pushed)
+SPARTA_system_definition_datapack_improved/
+SPARTA_24_04_2026/
+
+# OS / misc
+Thumbs.db
+ehthumbs.db

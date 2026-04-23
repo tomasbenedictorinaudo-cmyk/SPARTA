@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SPARTA · 02 — System Requirements Specification</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/sparta_logo_32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/sparta_logo_64.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/sparta_logo_180.png" />
+  <script src="assets/mermaid.min.js"></script>
+  <script>
+    (function(){
+      if (typeof mermaid !== 'undefined' && mermaid && typeof mermaid.initialize === 'function') {
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose', flowchart: { curve: 'basis' } });
+      } else {
+        document.addEventListener('DOMContentLoaded', function(){
+          document.querySelectorAll('.mermaid').forEach(function(el){
+            var src = (el.textContent || '').trim();
+            el.innerHTML = '<div style="padding:12px;border:1px dashed #97a8c2;border-radius:8px;color:#52627a;font-size:.9rem;">Mermaid diagram (renderer not available — source retained below for review).</div><pre style="margin-top:6px">' + src.replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}) + '</pre>';
+          });
+        });
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="logo-mark" aria-hidden="true" title="SPARTA Cyber Defense"><img src="assets/sparta_logo.png" alt="" /></div>
+      <div class="kicker">SPARTA System Definition Datapack · PDR Baseline · Deliverable 02</div>
+      <h1>02 — System Requirements Specification</h1>
+      <div class="subtitle">Formal system requirements baseline with traceability to stakeholder needs, architecture allocation, and verification approach.</div>
+      <div class="doc-meta">
+        <div class="item"><strong>System (Product)</strong><br>SPARTA — platform-agnostic cyber trust layer for tactical edge nodes</div>
+        <div class="item"><strong>Review Level</strong><br>PDR baseline (CDR bridge)</div>
+        <div class="item"><strong>Baseline Requirements</strong><br>51 SYS-* requirements (10 FUNC · 7 PERF · 5 OPS · 5 IF · 5 DATA · 3 SAFE · 4 SEC · 4 RAM · 2 ENV · 2 HFE · 4 DC)</div>
+        <div class="item"><strong>Issue</strong><br>Draft C — 23 April 2026</div>
+      </div>
+    </div>
+
+    <div class="breadcrumbs"><a href="index.html">Datapack</a> › <strong>02 System Requirements</strong></div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="panel toc">
+          <div class="kicker">Navigation</div>
+          <h3>Contents</h3>
+          <ol>
+            <li><a href="#purpose">Purpose</a></li>
+            <li><a href="#scope">Scope</a></li>
+            <li><a href="#conventions">Source Hierarchy &amp; Conventions</a></li>
+            <li><a href="#stakeholder-needs">Needs Mapping</a></li>
+            <li><a href="#req-tables">Requirement Tables</a></li>
+            <li><a href="#classification">Category Summary</a></li>
+            <li><a href="#arch-trace">Requirements → Architecture</a></li>
+            <li><a href="#verification-trace">Requirements → Verification</a></li>
+            <li><a href="#coverage">Coverage &amp; Maturity</a></li>
+            <li><a href="#assumptions-tbd">Assumptions &amp; TBD/TBC</a></li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>Datapack</h3>
+          <ul>
+            <li><a href="index.html">Index</a></li>
+            <li><a href="01_mission_conops_context.html">01 Mission, ConOps &amp; Context</a></li>
+            <li><a href="02_system_requirements.html">02 System Requirements</a></li>
+            <li><a href="03_architecture_data_definition.html">03 Architecture &amp; Data</a></li>
+            <li><a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle</a></li>
+            <li><a href="05_strategic_analysis_airbus_fcas.html">05 Strategic Analysis (Airbus / FCAS)</a></li>
+            <li><a href="06_security_safety_assurance.html">06 Security, Safety &amp; Assurance</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content">
+
+<section id="purpose">
+  <h2>1. Purpose of Document</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Purpose of Document" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="purpose_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="purpose_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="purpose_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="purpose_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#purpose_bg)"/>
+  <rect width="1200" height="280" fill="url(#purpose_grid)"/>
+  <rect width="1200" height="140" fill="url(#purpose_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Purpose of Document</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">The intent this deliverable serves in the SPARTA baseline.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(195 110) scale(1.4) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <circle cx="195" cy="110" r="90" fill="none" stroke="#e7b955" stroke-width="1.5" opacity="0.8"/>
+        <circle cx="195" cy="110" r="60" fill="none" stroke="#e7b955" stroke-width="1" opacity="0.7"/>
+        <line x1="85" y1="110" x2="305" y2="110" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
+        <line x1="195" y1="0" x2="195" y2="220" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
+        <circle cx="195" cy="110" r="6" fill="#e7b955"/>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <p>This document establishes the system-level requirements baseline for SPARTA at PDR maturity. It converts mission drivers, stakeholder needs, and architectural constraints from <a href="01_mission_conops_context.html">Deliverable 01</a> into uniquely identified, enforceable, and verifiable system requirements that are allocated to architecture elements in <a href="03_architecture_data_definition.html">Deliverable 03</a> and verified according to the strategy in <a href="04_performance_vnv_lifecycle.html">Deliverable 04</a>.</p>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_srs_review.png"
+         alt="Systems-engineering team in a conference room reviewing the System Requirements Specification. A large display shows mission objectives and key performance parameters; printed SRS binders lie open on the table."
+         loading="lazy"/>
+    <div class="caption">Figure 02-0a. Systems-engineering team reviewing the SPARTA System Requirements Specification. The SRS binder and the on-screen specification are the baseline artefacts under configuration control — both are governed by the conventions in §3 and the status columns in §5.</div>
+  </figure>
+</section>
+
+<section id="scope">
+  <h2>2. Scope and Applicability</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scope &amp; Applicability" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="scope_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="scope_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="scope_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scope_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#scope_bg)"/>
+  <rect width="1200" height="280" fill="url(#scope_grid)"/>
+  <rect width="1200" height="140" fill="url(#scope_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Scope &amp; Applicability</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Boundaries of what this document governs in the baseline.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(140 110) scale(1.1) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <circle cx="220" cy="100" r="68" fill="#ffffff" fill-opacity="0.05" stroke="#e7b955" stroke-width="3"/>
+        <circle cx="220" cy="100" r="50" fill="none" stroke="#7bb7e6" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="265" y1="148" x2="330" y2="200" stroke="#e7b955" stroke-width="7" stroke-linecap="round"/>
+        <line x1="268" y1="145" x2="325" y2="195" stroke="#1a4272" stroke-width="3" stroke-linecap="round"/>
+        <g transform="translate(220 100) scale(0.45) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.55" stroke="#e7b955" stroke-width="1"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <p>The scope covers system-level requirements only. Allocation to lower-level items is summarized here and detailed in Deliverable 03. The baseline is suitable for PDR review and supports progressive refinement as external interface control documents and platform budgets are confirmed toward CDR.</p>
+</section>
+
+<section id="conventions">
+  <h2>3. Requirement Source Hierarchy, Conventions and Allocation Philosophy</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Source Hierarchy &amp; Conventions" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="hierarchy_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="hierarchy_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="hierarchy_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="hierarchy_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#hierarchy_bg)"/>
+  <rect width="1200" height="280" fill="url(#hierarchy_grid)"/>
+  <rect width="1200" height="140" fill="url(#hierarchy_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Source Hierarchy &amp; Conventions</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Where requirements come from; how they are written.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <rect x="110" y="30" width="170" height="28" rx="4" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="195" y="49" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Mission Drivers (D1)</text>
+        <rect x="80" y="70" width="230" height="25" rx="4" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="195" y="87" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Stakeholder Needs</text>
+        <rect x="50" y="108" width="290" height="25" rx="4" fill="#9bd8bf" fill-opacity="0.3" stroke="#9bd8bf" stroke-width="1.2"/><text x="195" y="125" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Architecture Drivers</text>
+        <rect x="20" y="146" width="350" height="25" rx="4" fill="#c4b6ff" fill-opacity="0.3" stroke="#c4b6ff" stroke-width="1.2"/><text x="195" y="163" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">System Requirements (SYS-*)</text>
+        <g stroke="#cbdcf0" stroke-width="1" opacity="0.6" fill="none">
+          <line x1="195" y1="58" x2="195" y2="70"/>
+          <line x1="195" y1="95" x2="195" y2="108"/>
+          <line x1="195" y1="133" x2="195" y2="146"/>
+        </g>
+        <g transform="translate(195 195) scale(0.4) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.1"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+
+  <h3>3.1 Source Hierarchy</h3>
+  <ol>
+    <li>Mission and operational drivers (Deliverable 01).</li>
+    <li>Stakeholder needs and authority constraints.</li>
+    <li>Architecture drivers and interface assumptions.</li>
+    <li>Lifecycle, safety, security, and performance control needs.</li>
+    <li>Regulatory, accreditation, and environmental constraints applicable to the operational domain.</li>
+  </ol>
+
+  <h3>3.2 Requirement Conventions</h3>
+  <ul>
+    <li>Each requirement has a unique identifier and title.</li>
+    <li>Each requirement uses “shall” language and is testable or otherwise verifiable.</li>
+    <li>Requirements are grouped by category: Functional (SYS-FUNC), Performance (SYS-PERF), Operational (SYS-OPS), Interface (SYS-IF), Data (SYS-DATA), Safety (SYS-SAFE), Security (SYS-SEC), RAM (SYS-RAM), Environmental (SYS-ENV), Human Factors (SYS-HFE), Design Constraint (SYS-DC).</li>
+    <li>Numerical values flagged as <em>provisional</em> shall be confirmed by representative mission / threat analysis prior to CDR.</li>
+    <li>Verification methods follow IEEE standard practice: Inspection, Analysis, Test, Demonstration (I / A / T / D).</li>
+  </ul>
+
+  <h3>3.3 Allocation Philosophy</h3>
+  <p>System-level requirements are allocated to the Edge Agent, the optional Tactical Correlator, interface adapters, the data model, or system-wide architecture depending on where realization responsibility primarily resides. Authority-sensitive functions remain system-level until interface contracts with MARS/TSOC are finalized. The allocation matrix in §7 is normative; the detailed allocation inside Deliverable 03 is derived from it.</p>
+
+  <div class="figure">
+    <div class="mermaid">
+flowchart LR
+  N["Stakeholder Need"] --> R["System Requirement"]
+  R --> A["Architecture Allocation"]
+  A --> V["Verification Method"]
+  V --> E["Verification Evidence"]
+  R -.traces up.-> Op["Operational Driver (D1)"]
+  A -.governed by.-> Arch["Architecture Drivers (D3)"]
+    </div>
+    <div class="caption">Figure 02-1. Requirement traceability logic used throughout the baseline.</div>
+  </div>
+</section>
+
+<section id="stakeholder-needs">
+  <h2>4. Stakeholder Needs to Requirement Mapping</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stakeholder Needs → Requirements" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="needs_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="needs_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="needs_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="needs_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#needs_bg)"/>
+  <rect width="1200" height="280" fill="url(#needs_grid)"/>
+  <rect width="1200" height="140" fill="url(#needs_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Stakeholder Needs → Requirements</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Translation from operational needs to enforceable statements.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <circle cx="75" cy="95.6" r="8.4" fill="#cbdcf0" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><rect x="63.0" y="105.2" width="24.0" height="26.4" rx="3.5999999999999996" fill="#cbdcf0" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/>
+        <text x="75" y="165" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Operator / Ops</text>
+        <path d="M 110 110 C 160 70 240 70 280 110" fill="none" stroke="#e7b955" stroke-width="2" stroke-dasharray="2 3"/>
+        <rect x="280" y="85" width="90" height="50" rx="6" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/>
+        <text x="325" y="108" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="13" font-weight="700" text-anchor="middle">SYS-*</text>
+        <text x="325" y="125" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="400" text-anchor="middle">Requirement</text>
+        <g transform="translate(195 175) scale(0.55) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <text x="195" y="210" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Allocated to reference edge node</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="trace-table" id="need-trace">
+    <thead><tr><th>Need ID</th><th>Stakeholder Need</th><th>Derived Requirements</th></tr></thead>
+    <tbody>
+      <tr><td>SN-01</td><td>Detect cyber and mission-behavior anomalies on each node.</td><td>SYS-FUNC-001..004; SYS-OPS-001</td></tr>
+      <tr><td>SN-02</td><td>Provide MARS with timely, bounded trust and recommendation outputs.</td><td>SYS-FUNC-005, 007; SYS-IF-001; SYS-PERF-001; SYS-OPS-002; SYS-DATA-001</td></tr>
+      <tr><td>SN-03</td><td>Identify distributed deception and peer-disagreement patterns.</td><td>SYS-FUNC-006; SYS-IF-003; SYS-SEC-001; SYS-DATA-004</td></tr>
+      <tr><td>SN-04</td><td>Preserve mission continuity with bounded local protective behavior.</td><td>SYS-OPS-001..004; SYS-SAFE-001..003; SYS-DC-001</td></tr>
+      <tr><td>SN-05</td><td>Provide TSOC with explainable, auditable evidence.</td><td>SYS-FUNC-008; SYS-IF-002; SYS-DATA-002..003; SYS-RAM-003</td></tr>
+      <tr><td>SN-06</td><td>Respect host platform constraints and phased deployment.</td><td>SYS-PERF-004..006; SYS-DC-002; SYS-RAM-002; SYS-ENV-001</td></tr>
+      <tr><td>SN-07</td><td>Secure identity and content integrity for all exchanges.</td><td>SYS-SEC-001..004; SYS-IF-004</td></tr>
+      <tr><td>SN-08</td><td>Fit into operational workflows and human cognition under stress.</td><td>SYS-HFE-001..002; SYS-DATA-003</td></tr>
+      <tr><td>SN-09</td><td>Meet applicable accreditation, classification, and regulatory constraints.</td><td>SYS-SEC-002, 004; SYS-ENV-002; SYS-DC-003</td></tr>
+      <tr><td>SN-10</td><td>Support training, exercise, and replay without production risk.</td><td>SYS-OPS-005; SYS-DATA-005</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="req-tables">
+  <h2>5. System Requirements Baseline</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="System Requirements Baseline" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="reqs_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="reqs_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="reqs_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="reqs_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#reqs_bg)"/>
+  <rect width="1200" height="280" fill="url(#reqs_grid)"/>
+  <rect width="1200" height="140" fill="url(#reqs_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">System Requirements Baseline</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Formal, verifiable statements governing the SPARTA build.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(95 110) scale(1.05) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.15" stroke="#cbdcf0" stroke-width="1.2"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <rect x="175" y="30" width="200" height="170" rx="8" fill="#ffffff" fill-opacity="0.08" stroke="#cbdcf0" stroke-width="1.3"/>
+        <g>
+          <rect x="190" y="50" width="16" height="16" rx="3" fill="#9bd8bf" fill-opacity="0.8"/>
+          <path d="M 193 58 L 198 63 L 204 54" stroke="#0a5b47" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="190" y="78" width="16" height="16" rx="3" fill="#9bd8bf" fill-opacity="0.8"/>
+          <path d="M 193 86 L 198 91 L 204 82" stroke="#0a5b47" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="190" y="106" width="16" height="16" rx="3" fill="#9bd8bf" fill-opacity="0.8"/>
+          <path d="M 193 114 L 198 119 L 204 110" stroke="#0a5b47" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <rect x="190" y="134" width="16" height="16" rx="3" fill="#e7b955" fill-opacity="0.5"/>
+          <rect x="190" y="162" width="16" height="16" rx="3" fill="none" stroke="#cbdcf0"/>
+        </g>
+        <g fill="#cbdcf0">
+          <text x="215" y="62" font-family="Inter" font-size="10" font-weight="600">SYS-FUNC-005 Trust estimation</text>
+          <text x="215" y="90" font-family="Inter" font-size="10" font-weight="600">SYS-IF-001 MARS interface</text>
+          <text x="215" y="118" font-family="Inter" font-size="10" font-weight="600">SYS-SAFE-002 Reversibility</text>
+          <text x="215" y="146" font-family="Inter" font-size="10" font-weight="600">SYS-PERF-001 Latency (prov.)</text>
+          <text x="215" y="174" font-family="Inter" font-size="10" font-weight="600">SYS-DC-002 Mode A/B/C</text>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+
+  <h3>5.1 Functional Requirements (SYS-FUNC-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-FUNC-001</td><td>Ingest platform telemetry</td><td>The system shall ingest platform and host telemetry necessary to assess node cyber health and service status, at a rate sufficient to support the SYS-PERF-001 latency budget.</td><td>Local evidence basis.</td><td>SN-01</td><td>T / A</td><td>Edge Agent · Data Acquisition</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-002</td><td>Ingest mission context</td><td>The system shall ingest mission role, task, and relevant state context from MARS sufficient to evaluate mission-behavior plausibility.</td><td>Enables mission-aware detection.</td><td>SN-01, SN-02</td><td>T / A</td><td>MARS Interface Adapter</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-003</td><td>Detect local anomalies</td><td>The system shall detect local integrity, communications, and mission-behavior anomalies on each deployed node.</td><td>Core sensing function.</td><td>SN-01</td><td>T</td><td>Detection Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-004</td><td>Classify anomalies</td><td>The system shall classify detected anomalies by type, severity, confidence, and mission relevance using the AnomalyEvent data object.</td><td>Supports downstream trust &amp; response logic.</td><td>SN-01, SN-03</td><td>T / I</td><td>Detection Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-005</td><td>Estimate trust</td><td>The system shall generate a TrustAssessment for each monitored node containing trust state, confidence, basis, mission impact, and validity window.</td><td>Primary output to MARS/TSOC.</td><td>SN-02</td><td>T / A</td><td>Trust Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-006</td><td>Support tactical fusion</td><td>The system shall support neighborhood-level cross-node correlation using compact, provenance-bearing PeerSummary objects.</td><td>Detects distributed patterns.</td><td>SN-03</td><td>T / A</td><td>Correlation Engine / Tactical Correlator</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-007</td><td>Publish recommendations</td><td>The system shall generate structured ResponseRecommendation objects and constraint advisories for consuming mission systems.</td><td>Supports action without authority ambiguity.</td><td>SN-02, SN-04</td><td>T</td><td>Response Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-008</td><td>Persist evidence</td><td>The system shall persist AnomalyEvent and assessment history locally for subsequent synchronization and audit.</td><td>Supports TSOC adjudication &amp; recovery.</td><td>SN-05</td><td>T / I</td><td>Evidence Store</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-009</td><td>Policy enforcement</td><td>The system shall enforce the active PolicyBundle in all trust-state transitions, response generation, and local protective actions.</td><td>Guarantees authority separation and bounded behavior.</td><td>SN-04, SN-09</td><td>T / I</td><td>Policy Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-FUNC-010</td><td>Self-health reporting</td><td>The system shall continuously report its own operational health and degradation flags via the HealthReport object.</td><td>Operator visibility into SPARTA readiness.</td><td>SN-02, SN-06</td><td>T</td><td>Edge Agent · Health Monitor</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Performance Requirements (SYS-PERF-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-PERF-001</td><td>Decision latency</td><td>The system shall provide an initial TrustAssessment for locally detected high-severity events within an objective of <strong>2 s</strong> and a threshold of <strong>5 s</strong> (P95) from event qualification.</td><td>Bounds tactical usefulness.</td><td>Op. driver</td><td>T / A</td><td>Edge Agent</td><td>Provisional (PDR)</td></tr>
+      <tr><td>SYS-PERF-002</td><td>Tactical message size</td><td>The system shall support PeerSummary exchange at a nominal serialized size of <strong>≤ 4 kB</strong> excluding transport overhead, with a hard limit of <strong>8 kB</strong>.</td><td>Protects tactical bandwidth.</td><td>C-03</td><td>T / A</td><td>Comms Manager</td><td>Provisional</td></tr>
+      <tr><td>SYS-PERF-003</td><td>Evidence buffering depth</td><td>The system shall buffer mission-relevant evidence for a provisional minimum of <strong>24 h</strong> of disconnected operation or until local storage threshold is reached.</td><td>Maintains continuity under link loss.</td><td>SN-05</td><td>T</td><td>Evidence Store</td><td>Provisional</td></tr>
+      <tr><td>SYS-PERF-004</td><td>Host CPU share</td><td>The system shall operate within an allocated CPU share not exceeding <strong>10%</strong> of a reference node-class core equivalent under sustained Monitor load.</td><td>Protects host mission functions.</td><td>SN-06</td><td>T / A</td><td>All deployed elements</td><td>Provisional</td></tr>
+      <tr><td>SYS-PERF-005</td><td>Host memory share</td><td>The system shall operate within an allocated memory footprint not exceeding <strong>512 MB RSS</strong> for the Edge Agent on reference node class.</td><td>Protects host resources.</td><td>SN-06</td><td>T</td><td>Edge Agent</td><td>Provisional</td></tr>
+      <tr><td>SYS-PERF-006</td><td>Persistent storage share</td><td>The system shall use no more than <strong>8 GB</strong> of persistent storage on reference node class for evidence and operational state.</td><td>Protects host storage.</td><td>SN-06</td><td>T</td><td>Evidence Store</td><td>Provisional</td></tr>
+      <tr><td>SYS-PERF-007</td><td>Publication jitter</td><td>The system shall publish TrustAssessment updates with inter-update jitter not exceeding <strong>±500 ms</strong> under nominal Monitor load.</td><td>Stable MARS consumption.</td><td>SN-02</td><td>T</td><td>Edge Agent · MARS Adapter</td><td>Provisional</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 Operational Requirements (SYS-OPS-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-OPS-001</td><td>Disconnected operation</td><td>The system shall continue local monitoring and trust estimation during loss of TSOC connectivity for at least the SYS-PERF-003 buffering depth.</td><td>Operational resilience.</td><td>SN-04</td><td>T / D</td><td>Edge Agent</td><td>Approved</td></tr>
+      <tr><td>SYS-OPS-002</td><td>Graceful degradation</td><td>The system shall indicate degraded-confidence outputs when required data sources or peer links are unavailable, and shall annotate the basis of degradation.</td><td>Preserves credibility.</td><td>SN-02</td><td>T / A</td><td>Trust Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-OPS-003</td><td>Recovery logic</td><td>The system shall support controlled recovery and reintegration of suspect or isolated nodes via bounded intermediate trust states.</td><td>Safe re-entry.</td><td>SN-04</td><td>T</td><td>Trust Engine / Policy Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-OPS-004</td><td>Policy-controlled action</td><td>The system shall apply local protective actions only when explicitly enabled by the active PolicyBundle and within time-bounded authority envelopes.</td><td>Authority separation.</td><td>SN-04</td><td>I / T</td><td>Response Engine / Policy Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-OPS-005</td><td>Exercise / replay mode</td><td>The system shall support an exercise mode that injects synthetic events with a visible exercise tag in all outputs and evidence.</td><td>Training and validation without production risk.</td><td>SN-10</td><td>T / D</td><td>Edge Agent / Policy Manager</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 Interface Requirements (SYS-IF-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-IF-001</td><td>MARS interface</td><td>The system shall provide a versioned, schema-governed interface to MARS for reception of mission context and publication of TrustAssessment and ResponseRecommendation.</td><td>Essential external integration.</td><td>SN-02</td><td>I / T</td><td>MARS Interface Adapter</td><td>Approved</td></tr>
+      <tr><td>SYS-IF-002</td><td>TSOC interface</td><td>The system shall provide a secure, versioned interface to one or more TSOCs for transmission of alerts and EvidencePackage, and for reception of PolicyBundle, adjudication, and intelligence inputs.</td><td>Essential external integration.</td><td>SN-05</td><td>I / T</td><td>TSOC Interface Adapter</td><td>Approved</td></tr>
+      <tr><td>SYS-IF-003</td><td>Peer interface</td><td>The system shall support authenticated peer-to-peer exchange of PeerSummary objects for neighborhood-level correlation.</td><td>Supports distributed fusion.</td><td>SN-03</td><td>T</td><td>Comms Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-IF-004</td><td>Identity &amp; crypto provisioning</td><td>The system shall interface with the mission identity/crypto provisioning service for acquisition and renewal of node keys and trust anchors.</td><td>Provenance foundation.</td><td>SN-07</td><td>I / T</td><td>Security Services</td><td>Approved</td></tr>
+      <tr><td>SYS-IF-005</td><td>Schema governance</td><td>All external interfaces shall carry schema version and validity metadata and shall reject malformed or unsupported-version messages in a controlled manner.</td><td>Interface evolution without regression.</td><td>SN-06, SN-09</td><td>I / T</td><td>All external adapters</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_interop_bench.png"
+         alt="Engineer at an interoperability bench with a projected INTEROPERABILITY REQUIREMENTS slide showing Link 16, VMF messaging, STANAG 4586, MIL-STD-461D references; a Predator-class drone is visible in the test chamber beyond the glass."
+         loading="lazy"/>
+    <div class="caption">Figure 02-IF. Interoperability bench. Schema, protocol, and cross-domain conformance are validated against the SYS-IF-* catalogue (MARS, TSOC, peer, identity, schema governance) and SYS-ENV-002 cross-domain structure ahead of integration campaigns.</div>
+  </figure>
+
+  <h3>5.5 Data Requirements (SYS-DATA-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-DATA-001</td><td>NodeStatus object</td><td>The system shall represent node cyber state using a versioned NodeStatus object containing identity, role, trust state, confidence, freshness, and health summary.</td><td>Stable operational semantics.</td><td>Arch baseline</td><td>I / T</td><td>Data Model</td><td>Approved</td></tr>
+      <tr><td>SYS-DATA-002</td><td>AnomalyEvent object</td><td>The system shall represent anomaly findings using a versioned AnomalyEvent object containing classification, severity, confidence, provenance, timing, and related entities.</td><td>Traceability &amp; fusion.</td><td>Arch baseline</td><td>I / T</td><td>Data Model</td><td>Approved</td></tr>
+      <tr><td>SYS-DATA-003</td><td>Assessment explainability</td><td>The system shall attach basis and reason-chain attributes to TrustAssessment and ResponseRecommendation sufficient for human review and machine traceability.</td><td>Adoption and audit.</td><td>SN-05, SN-08</td><td>I / A</td><td>Data Model · Trust/Response Engines</td><td>Approved</td></tr>
+      <tr><td>SYS-DATA-004</td><td>PeerSummary object</td><td>The system shall represent tactical peer exchanges using a compact, signed PeerSummary object with provenance, observed trust map, freshness, and anomaly references.</td><td>Bandwidth-efficient correlation.</td><td>SN-03</td><td>I / T</td><td>Data Model · Comms Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-DATA-005</td><td>Exercise tagging</td><td>All data objects generated under exercise mode shall carry a non-forgeable exercise tag propagated through all outputs and persistence.</td><td>Prevents exercise/real-world confusion.</td><td>SN-10</td><td>I / T</td><td>Data Model · Policy Manager</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.6 Safety Requirements (SYS-SAFE-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-SAFE-001</td><td>Mission-safe behavior</td><td>The system shall fail in a manner that does not autonomously create mission-unsafe actions outside authorized policy.</td><td>Safety envelope.</td><td>Safety driver</td><td>A / T</td><td>All</td><td>Approved</td></tr>
+      <tr><td>SYS-SAFE-002</td><td>Reversibility of local action</td><td>The system shall ensure policy-enabled local protective actions are reversible or time-bounded unless superseded by higher authority.</td><td>Avoids permanent damage from false positive.</td><td>Safety / ops driver</td><td>T</td><td>Response Engine</td><td>Approved</td></tr>
+      <tr><td>SYS-SAFE-003</td><td>Fail-safe state</td><td>On unrecoverable fault, the system shall enter a Safe state in which no outbound mission-affecting message is generated and a safe-state heartbeat is maintained.</td><td>Fault containment.</td><td>Safety driver</td><td>T / A</td><td>Edge Agent · Watchdog</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.7 Security Requirements (SYS-SEC-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-SEC-001</td><td>Identity and provenance</td><td>The system shall authenticate and validate provenance of all externally received PeerSummary, PolicyBundle, adjudication, and intelligence messages.</td><td>Protects against trust poisoning.</td><td>Security driver</td><td>T</td><td>Comms Manager · Policy Manager</td><td>Approved</td></tr>
+      <tr><td>SYS-SEC-002</td><td>Data protection</td><td>The system shall protect stored and transmitted SPARTA data according to mission security policy and classification constraints.</td><td>Information assurance.</td><td>Security driver</td><td>I / T</td><td>Comms · Evidence Store</td><td>Approved</td></tr>
+      <tr><td>SYS-SEC-003</td><td>Software / configuration integrity</td><td>The system shall provide mechanisms to detect material local configuration or software-integrity deviation relevant to trust assessment.</td><td>Foundation for local assurance.</td><td>Security driver</td><td>T</td><td>Platform Assurance</td><td>Approved</td></tr>
+      <tr><td>SYS-SEC-004</td><td>Policy bundle authenticity</td><td>The system shall accept only PolicyBundles that pass signature and schema validation against the configured trust anchors.</td><td>Prevents unauthorized policy injection.</td><td>Security / accred.</td><td>T / I</td><td>Policy Manager</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_security_soc.png"
+         alt="Analysts inside a CYBERSECURITY OPERATIONS CENTER at terminals, with a wall screen titled SECURITY REQUIREMENTS listing Information Assurance, Threat Protection, and Audit & Accountability controls."
+         loading="lazy"/>
+    <div class="caption">Figure 02-SEC. Cybersecurity Operations Centre — the environment in which SYS-SEC-001..004 are enforced. Identity and provenance, data protection, software/configuration integrity, and policy-bundle authenticity are operationalised by analyst workflows feeding (and consuming) SPARTA trust outputs.</div>
+  </figure>
+
+  <h3>5.8 RAM Requirements (SYS-RAM-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-RAM-001</td><td>Availability architecture</td><td>Loss or restart of one SPARTA node instance shall not preclude continued operation of other deployed instances.</td><td>Distributed resilience.</td><td>RAM driver</td><td>A / T</td><td>System architecture</td><td>Approved</td></tr>
+      <tr><td>SYS-RAM-002</td><td>Maintainability of content</td><td>The system shall support controlled update of rules, models, and policies without changes to the accredited software baseline.</td><td>Lifecycle efficiency.</td><td>Maintainability</td><td>I / T</td><td>Policy / Model Management</td><td>Approved</td></tr>
+      <tr><td>SYS-RAM-003</td><td>Audit retention</td><td>The system shall retain sufficient event and assessment history to support post-mission reconstruction within the SYS-PERF-006 storage envelope.</td><td>Incident reconstruction.</td><td>SN-05</td><td>T</td><td>Evidence Store</td><td>Approved</td></tr>
+      <tr><td>SYS-RAM-004</td><td>Startup time</td><td>The system shall reach Monitor mode within <strong>60 s</strong> of mission-active command on reference node class.</td><td>Mission readiness.</td><td>Op. driver</td><td>T</td><td>Edge Agent</td><td>Provisional</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_reliability_testing.png"
+         alt="Reliability-engineering test bench with a wall screen showing RELIABILITY REQUIREMENTS including MTBF 10,000 hrs, availability 0.99, MTTR 30 min; the reliability-growth environmental chamber is visible on the right."
+         loading="lazy"/>
+    <div class="caption">Figure 02-RAM. Reliability engineering test bench. SYS-RAM-* targets — MTBF, MTTR, availability, startup time — are demonstrated under sustained operation and environmental stress screening in accordance with the V&amp;V strategy in Deliverable 04 §5.</div>
+  </figure>
+
+  <h3>5.9 Environmental Requirements (SYS-ENV-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-ENV-001</td><td>Contested-network operation</td><td>The system shall operate over hybrid, intermittent, and degraded tactical communications within the environmental envelope of §8 of Deliverable 01.</td><td>Primary environment.</td><td>Op. driver</td><td>T</td><td>Comms · Architecture</td><td>Approved</td></tr>
+      <tr><td>SYS-ENV-002</td><td>Cross-domain compatibility</td><td>External messages shall be structured such that cross-domain filtering and classification marking are feasible without modification of payload semantics.</td><td>Coalition / multi-domain readiness.</td><td>SN-09</td><td>I / A</td><td>Data Model · Adapters</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_env_chamber.png"
+         alt="Environmental qualification chamber containing a Predator-class RPAS on a fixture, with a wall display showing ENVIRONMENTAL REQUIREMENTS — temperature, humidity, altitude, rain, vibration, shock — and a TEST IN PROGRESS sign."
+         loading="lazy"/>
+    <div class="caption">Figure 02-ENV. Environmental qualification chamber. SYS-ENV-001 (contested-network operating envelope) and the supporting environmental test programme (temperature, humidity, altitude, vibration, ingress) verify that SPARTA's deployment envelope is closed before operational release.</div>
+  </figure>
+
+  <h3>5.10 Human Factors Requirements (SYS-HFE-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-HFE-001</td><td>Human consumability</td><td>The system shall express trust outputs and recommendations in a concise, consistent, and unambiguous form suitable for operator and analyst interpretation.</td><td>Usability under stress.</td><td>SN-08</td><td>I / D</td><td>Data Model / UI consumers</td><td>Approved</td></tr>
+      <tr><td>SYS-HFE-002</td><td>Reason-chain accessibility</td><td>On request, the system shall produce the reason-chain for any published TrustAssessment in a form suitable for analyst inspection.</td><td>Explainability in operation.</td><td>SN-05, SN-08</td><td>T / D</td><td>Trust / Evidence services</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.11 Design Constraint Requirements (SYS-DC-*)</h3>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Title</th><th>Requirement Statement</th><th>Rationale</th><th>Source</th><th>V&amp;V</th><th>Allocation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>SYS-DC-001</td><td>Authority boundary</td><td>The system shall not directly assume mission command authority for tasking, targeting, or fleet-level exclusion decisions.</td><td>Design constraint.</td><td>Programmatic</td><td>I</td><td>System design</td><td>Approved</td></tr>
+      <tr><td>SYS-DC-002</td><td>Deployment flexibility</td><td>The system shall support Mode A (edge-local only), Mode B (+tactical correlation), and Mode C (+TSOC-linked adaptive) without changing core external data objects.</td><td>Phased adoption.</td><td>Architecture driver</td><td>T / I</td><td>Architecture</td><td>Approved</td></tr>
+      <tr><td>SYS-DC-003</td><td>Regulatory conformance</td><td>The system shall be designed to support applicable accreditation, classification, and operational-use regulations for its target domain.</td><td>Accreditation feasibility.</td><td>SN-09</td><td>I / A</td><td>System design</td><td>Approved</td></tr>
+      <tr><td>SYS-DC-004</td><td>Content / software separation</td><td>Operational content (policies, rules, models) shall be managed, signed, and versioned independently of the accredited software baseline.</td><td>Sustainment efficiency.</td><td>SN-06</td><td>I / T</td><td>Policy / Model Mgmt</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout assumption">
+    <strong>Provisional Values</strong>
+    Numerical performance values in SYS-PERF-001..007 and SYS-RAM-004 are PDR-level provisional commitments. They shall be confirmed during representative platform integration and mission/threat analysis prior to CDR.
+  </div>
+</section>
+
+<section id="classification">
+  <h2>6. Requirement Category Summary</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Requirement Categories" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="categories_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="categories_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="categories_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="categories_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#categories_bg)"/>
+  <rect width="1200" height="280" fill="url(#categories_grid)"/>
+  <rect width="1200" height="140" fill="url(#categories_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Requirement Categories</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Functional, performance, operational, and cross-cutting classes.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(105 110) scale(1.0) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.16" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g>
+          <rect x="175" y="35" width="80" height="22" rx="11" fill="#7bb7e6" fill-opacity="0.45" stroke="#7bb7e6" stroke-width="1.2"/><text x="215" y="50" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">FUNC</text>
+          <rect x="265" y="35" width="100" height="22" rx="11" fill="#e7b955" fill-opacity="0.4" stroke="#e7b955" stroke-width="1.2"/><text x="315" y="50" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">PERF</text>
+          <rect x="175" y="65" width="105" height="22" rx="11" fill="#9bd8bf" fill-opacity="0.4" stroke="#9bd8bf" stroke-width="1.2"/><text x="227" y="80" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">OPS</text>
+          <rect x="290" y="65" width="75" height="22" rx="11" fill="#c4b6ff" fill-opacity="0.4" stroke="#c4b6ff" stroke-width="1.2"/><text x="328" y="80" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">IF</text>
+          <rect x="175" y="95" width="70" height="22" rx="11" fill="#efbdd0" fill-opacity="0.4" stroke="#efbdd0" stroke-width="1.2"/><text x="210" y="110" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">DATA</text>
+          <rect x="255" y="95" width="60" height="22" rx="11" fill="#cbdcf0" fill-opacity="0.35" stroke="#cbdcf0" stroke-width="1.2"/><text x="285" y="110" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">SEC</text>
+          <rect x="325" y="95" width="40" height="22" rx="11" fill="#cbdcf0" fill-opacity="0.35" stroke="#cbdcf0" stroke-width="1.2"/><text x="345" y="110" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">SAFE</text>
+          <rect x="175" y="125" width="55" height="22" rx="11" fill="#7bb7e6" fill-opacity="0.35" stroke="#7bb7e6" stroke-width="1.2"/><text x="202" y="140" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">RAM</text>
+          <rect x="240" y="125" width="55" height="22" rx="11" fill="#7bb7e6" fill-opacity="0.35" stroke="#7bb7e6" stroke-width="1.2"/><text x="267" y="140" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">ENV</text>
+          <rect x="305" y="125" width="60" height="22" rx="11" fill="#7bb7e6" fill-opacity="0.35" stroke="#7bb7e6" stroke-width="1.2"/><text x="335" y="140" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">HFE</text>
+          <rect x="175" y="155" width="85" height="22" rx="11" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="217" y="170" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">DC</text>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="metadata">
+    <thead><tr><th>Category</th><th>Prefix</th><th>Count</th><th>Coverage Intent</th></tr></thead>
+    <tbody>
+      <tr><td>Functional</td><td>SYS-FUNC-*</td><td>10</td><td>Core ingestion, detection, trust, fusion, recommendation, evidence, policy, health.</td></tr>
+      <tr><td>Performance</td><td>SYS-PERF-*</td><td>7</td><td>Latency, compactness, buffering, resource boundedness, jitter.</td></tr>
+      <tr><td>Operational</td><td>SYS-OPS-*</td><td>5</td><td>Disconnected operation, graceful degradation, recovery, policy control, exercise mode.</td></tr>
+      <tr><td>Interfaces</td><td>SYS-IF-*</td><td>5</td><td>MARS, TSOC, peer, identity, schema governance.</td></tr>
+      <tr><td>Data</td><td>SYS-DATA-*</td><td>5</td><td>Stable versioned objects, explainability, exercise tagging.</td></tr>
+      <tr><td>Safety</td><td>SYS-SAFE-*</td><td>3</td><td>Mission-safe behavior, reversibility, fail-safe.</td></tr>
+      <tr><td>Security</td><td>SYS-SEC-*</td><td>4</td><td>Identity, provenance, data protection, policy authenticity.</td></tr>
+      <tr><td>RAM</td><td>SYS-RAM-*</td><td>4</td><td>Availability, maintainability, audit retention, startup time.</td></tr>
+      <tr><td>Environmental</td><td>SYS-ENV-*</td><td>2</td><td>Contested-network suitability, cross-domain structure.</td></tr>
+      <tr><td>Human Factors</td><td>SYS-HFE-*</td><td>2</td><td>Human consumability, reason-chain accessibility.</td></tr>
+      <tr><td>Design Constraint</td><td>SYS-DC-*</td><td>4</td><td>Authority bounds, phased deployment, regulatory, content separation.</td></tr>
+      <tr><td colspan="2"><strong>Total</strong></td><td><strong>51</strong></td><td>(Core 46 + 5 supporting)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="arch-trace">
+  <h2>7. Requirements → Architecture Allocation</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Requirements → Architecture Allocation" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="alloc_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="alloc_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="alloc_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="alloc_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#alloc_bg)"/>
+  <rect width="1200" height="280" fill="url(#alloc_grid)"/>
+  <rect width="1200" height="140" fill="url(#alloc_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Requirements → Architecture Allocation</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Mapping from SYS-* requirements to reference edge-host subsystems.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g stroke="#cbdcf0" stroke-width="1" opacity="0.7">
+          <rect x="30" y="30" width="340" height="170" fill="#ffffff" fill-opacity="0.06"/>
+          <line x1="100" y1="30" x2="100" y2="200"/>
+          <line x1="165" y1="30" x2="165" y2="200"/>
+          <line x1="230" y1="30" x2="230" y2="200"/>
+          <line x1="295" y1="30" x2="295" y2="200"/>
+          <line x1="30" y1="60" x2="370" y2="60"/>
+          <line x1="30" y1="90" x2="370" y2="90"/>
+          <line x1="30" y1="120" x2="370" y2="120"/>
+          <line x1="30" y1="150" x2="370" y2="150"/>
+          <line x1="30" y1="180" x2="370" y2="180"/>
+        </g>
+        <g fill="#cbdcf0" font-family="Inter" font-size="9" font-weight="700">
+          <text x="133" y="50" text-anchor="middle">Detect</text>
+          <text x="198" y="50" text-anchor="middle">Trust</text>
+          <text x="263" y="50" text-anchor="middle">Resp</text>
+          <text x="330" y="50" text-anchor="middle">Evid</text>
+          <text x="35" y="77">FUNC</text>
+          <text x="35" y="107">PERF</text>
+          <text x="35" y="137">OPS</text>
+          <text x="35" y="167">IF</text>
+          <text x="35" y="195">DATA</text>
+        </g>
+        <g fill="#e7b955">
+          <circle cx="133" cy="75" r="5"/><circle cx="198" cy="75" r="5"/>
+          <circle cx="133" cy="105" r="5"/><circle cx="263" cy="105" r="5"/>
+          <circle cx="198" cy="135" r="5"/><circle cx="263" cy="135" r="5"/>
+          <circle cx="198" cy="165" r="5"/>
+          <circle cx="330" cy="195" r="5"/><circle cx="133" cy="195" r="5"/>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="matrix">
+    <thead><tr><th>Architecture Element</th><th>Primary Requirement IDs</th></tr></thead>
+    <tbody>
+      <tr><td>Edge Agent · Data Acquisition</td><td>SYS-FUNC-001, 002, 010; SYS-PERF-004, 005</td></tr>
+      <tr><td>Detection Engine</td><td>SYS-FUNC-003, 004; SYS-SAFE-001</td></tr>
+      <tr><td>Trust Engine</td><td>SYS-FUNC-005; SYS-OPS-002, 003; SYS-DATA-003; SYS-HFE-002</td></tr>
+      <tr><td>Correlation Engine / Tactical Correlator</td><td>SYS-FUNC-006; SYS-IF-003; SYS-SEC-001; SYS-DATA-004</td></tr>
+      <tr><td>Response Engine</td><td>SYS-FUNC-007; SYS-OPS-004; SYS-SAFE-002; SYS-DC-001</td></tr>
+      <tr><td>Policy Manager</td><td>SYS-FUNC-009; SYS-OPS-004; SYS-SEC-004; SYS-DC-004</td></tr>
+      <tr><td>Evidence Store</td><td>SYS-FUNC-008; SYS-PERF-003, 006; SYS-RAM-003</td></tr>
+      <tr><td>Comms Manager</td><td>SYS-IF-003; SYS-SEC-001, 002; SYS-PERF-002; SYS-ENV-001</td></tr>
+      <tr><td>MARS Interface Adapter</td><td>SYS-IF-001; SYS-IF-005; SYS-DATA-001; SYS-HFE-001</td></tr>
+      <tr><td>TSOC Interface Adapter</td><td>SYS-IF-002; SYS-IF-005; SYS-DATA-002, 003; SYS-SEC-002</td></tr>
+      <tr><td>Security Services</td><td>SYS-IF-004; SYS-SEC-001..004</td></tr>
+      <tr><td>Watchdog / Health Monitor</td><td>SYS-FUNC-010; SYS-SAFE-003; SYS-RAM-004</td></tr>
+      <tr><td>System-wide deployment architecture</td><td>SYS-RAM-001, 002; SYS-ENV-001, 002; SYS-DC-002, 003</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="verification-trace">
+  <h2>8. Requirements → Verification Approach</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Requirements → Verification" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="verify_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="verify_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="verify_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="verify_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#verify_bg)"/>
+  <rect width="1200" height="280" fill="url(#verify_grid)"/>
+  <rect width="1200" height="140" fill="url(#verify_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Requirements → Verification</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Method, environment, and planned evidence per requirement.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(130 110) scale(1.2) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(280 110)">
+          <path d="M 0 -55 L 45 -40 L 45 10 Q 45 40 0 58 Q -45 40 -45 10 L -45 -40 Z" fill="#0a5b47" fill-opacity="0.75" stroke="#9bd8bf" stroke-width="2"/>
+          <path d="M -18 -5 L -5 12 L 22 -20" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g stroke="#e7b955" stroke-width="1.2" stroke-dasharray="3 3" fill="none" opacity="0.75">
+          <line x1="170" y1="110" x2="230" y2="110"/>
+        </g>
+        <text x="280" y="190" fill="#9bd8bf" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">V&amp;V evidence closed</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="trace-table">
+    <thead><tr><th>Verification Method</th><th>Applicable Requirements (Clusters)</th><th>Planned Evidence Artefact</th></tr></thead>
+    <tbody>
+      <tr><td>Inspection</td><td>SYS-DATA-*; SYS-IF-005; SYS-DC-001..004; SYS-SEC-004</td><td>ICDs, schema reviews, design reviews, policy contract documents.</td></tr>
+      <tr><td>Analysis</td><td>SYS-PERF-001, 004..007; SYS-SAFE-001..003; SYS-RAM-001; SYS-ENV-002</td><td>Latency and resource analyses, safety assessments, resilience analyses.</td></tr>
+      <tr><td>Test</td><td>SYS-FUNC-*; SYS-PERF-002, 003; SYS-OPS-*; SYS-IF-001..004; SYS-SEC-001..003; SYS-RAM-003, 004</td><td>Bench / integration / HIL / network-degraded test procedures and reports.</td></tr>
+      <tr><td>Demonstration</td><td>SYS-OPS-001, 005; SYS-HFE-001..002</td><td>Mission-thread rehearsals, operator / analyst workshops.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="coverage">
+  <h2>9. Requirement Coverage &amp; Maturity</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Requirement Coverage &amp; Maturity" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="coverage_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="coverage_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="coverage_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="coverage_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#coverage_bg)"/>
+  <rect width="1200" height="280" fill="url(#coverage_grid)"/>
+  <rect width="1200" height="140" fill="url(#coverage_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Requirement Coverage &amp; Maturity</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Approved, provisional, and TBC shares of the baseline.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(105 110) scale(0.95) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.15" stroke="#cbdcf0" stroke-width="1.2"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(280 110)">
+          <circle r="70" fill="#ffffff" fill-opacity="0.06" stroke="#cbdcf0" stroke-width="1.5"/>
+          <path d="M 0 -70 A 70 70 0 1 1 -62 33 L 0 0 Z" fill="#9bd8bf" fill-opacity="0.75" stroke="#0a5b47" stroke-width="1.5"/>
+          <path d="M -62 33 A 70 70 0 0 1 -70 0 L 0 0 Z" fill="#e7b955" fill-opacity="0.85" stroke="#e7b955" stroke-width="1.5"/>
+          <path d="M -70 0 A 70 70 0 0 1 0 -70 L 0 0 Z" fill="#cbdcf0" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.5"/>
+          <text y="6" fill="#ffffff" font-family="Inter" font-size="18" font-weight="700" text-anchor="middle">82%</text>
+          <text y="24" fill="#cbdcf0" font-family="Inter" font-size="9" text-anchor="middle">approved</text>
+        </g>
+        <text x="280" y="205" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">51 SYS-* requirements</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="twocol">
+    <div>
+      <table class="metadata">
+        <thead><tr><th>Maturity</th><th>Count</th><th>Share</th></tr></thead>
+        <tbody>
+          <tr><td>Approved (PDR-frozen)</td><td>42</td><td>82%</td></tr>
+          <tr><td>Provisional (value pending CDR)</td><td>8</td><td>16%</td></tr>
+          <tr><td>TBC (source pending)</td><td>1</td><td>2%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table class="metadata">
+        <thead><tr><th>Traceability Coverage</th><th>Share</th></tr></thead>
+        <tbody>
+          <tr><td>Needs → requirements</td><td>100%</td></tr>
+          <tr><td>Requirements → architecture</td><td>100%</td></tr>
+          <tr><td>Requirements → V&amp;V method</td><td>100%</td></tr>
+          <tr><td>V&amp;V → planned evidence (detailed)</td><td>95% (see Deliv. 04)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="assumptions-tbd">
+  <h2>10. Assumptions, TBD/TBC Items and Rationale Notes</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Assumptions &amp; Open Points" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="assumptions_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="assumptions_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="assumptions_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="assumptions_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#assumptions_bg)"/>
+  <rect width="1200" height="280" fill="url(#assumptions_grid)"/>
+  <rect width="1200" height="140" fill="url(#assumptions_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Assumptions &amp; Open Points</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Facts, engineering assumptions, provisional values, and TBD/TBC.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <line x1="195" y1="30" x2="195" y2="200" stroke="#cbdcf0" stroke-width="3"/>
+        <line x1="80" y1="70" x2="310" y2="70" stroke="#cbdcf0" stroke-width="3"/>
+        <line x1="80" y1="70" x2="80" y2="110" stroke="#cbdcf0" stroke-width="2"/>
+        <line x1="310" y1="70" x2="310" y2="130" stroke="#cbdcf0" stroke-width="2"/>
+        <ellipse cx="80" cy="118" rx="45" ry="8" fill="#9bd8bf" fill-opacity="0.35" stroke="#9bd8bf"/>
+        <ellipse cx="310" cy="138" rx="45" ry="8" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955"/>
+        <g transform="translate(195 50) scale(0.6) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.6" stroke="#e7b955" stroke-width="1"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <text x="80" y="155" fill="#9bd8bf" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">CONFIRMED</text>
+        <text x="310" y="175" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TBD / TBC</text>
+        <polygon points="170,200 220,200 205,215 185,215" fill="#cbdcf0"/>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="twocol">
+    <div class="callout tbd">
+      <strong>TBD / TBC Items for CDR Exit</strong>
+      <ul>
+        <li>Final threshold values for detection latency, storage depth, and CPU/memory budgets (SYS-PERF-* provisional).</li>
+        <li>Protocol selections and security profile for peer summary exchange.</li>
+        <li>Formal message schemas and ICD ownership split with MARS and TSOC suppliers.</li>
+        <li>Classification-boundary policy for coalition / cross-domain operations.</li>
+      </ul>
+    </div>
+    <div class="callout decision">
+      <strong>Requirement Rationale Theme</strong>
+      <p>The requirements intentionally bias toward outputs that are operationally meaningful and verifiably bounded, rather than broad cyber ambitions that cannot be certified or integrated into MARS/TSOC decision loops. Numerical provisional values are intentionally tight enough to be disciplined and loose enough to be achievable by the reference architecture.</p>
+    </div>
+  </div>
+</section>
+
+        <div class="footer-nav">
+          <a href="01_mission_conops_context.html">← 01 Mission, ConOps &amp; Context</a>
+          <a href="03_architecture_data_definition.html">03 Architecture &amp; Data Definition →</a>
+        </div>
+      </main>
+    </div>
+  </div>
+    <div class="page-footer-mark">
+      <img src="assets/sparta_logo_64.png" alt="" />
+      <span>SPARTA · Cyber Defense Programme · Airbus Restricted</span>
+    </div>
+</body>
+</html>

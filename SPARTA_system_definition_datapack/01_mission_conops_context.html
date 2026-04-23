@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SPARTA · 01 — Mission, ConOps &amp; System Context</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/sparta_logo_32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/sparta_logo_64.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/sparta_logo_180.png" />
+  <script src="assets/mermaid.min.js"></script>
+  <script>
+    (function(){
+      if (typeof mermaid !== 'undefined' && mermaid && typeof mermaid.initialize === 'function') {
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose', flowchart: { curve: 'basis' } });
+      } else {
+        document.addEventListener('DOMContentLoaded', function(){
+          document.querySelectorAll('.mermaid').forEach(function(el){
+            var src = (el.textContent || '').trim();
+            el.innerHTML = '<div style="padding:12px;border:1px dashed #97a8c2;border-radius:8px;color:#52627a;font-size:.9rem;">Mermaid diagram (renderer not available — source retained below for review).</div><pre style="margin-top:6px">' + src.replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}) + '</pre>';
+          });
+        });
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="logo-mark" aria-hidden="true" title="SPARTA Cyber Defense"><img src="assets/sparta_logo.png" alt="" /></div>
+      <div class="kicker">SPARTA System Definition Datapack · PDR Baseline · Deliverable 01</div>
+      <h1>01 — Mission, ConOps &amp; System Context</h1>
+      <div class="subtitle">Mission rationale, stakeholder needs, system boundary, operational concept, scenarios, states/modes, and architecture-driving operational implications.</div>
+      <div class="doc-meta">
+        <div class="item"><strong>System (Product)</strong><br>SPARTA — platform-agnostic mission-aware cyber trust layer for tactical edge nodes</div>
+        <div class="item"><strong>Reference Integration Case</strong><br>Eurodrone-class RPAS (illustrative only)</div>
+        <div class="item"><strong>Review Level</strong><br>PDR baseline (CDR bridge)</div>
+        <div class="item"><strong>Mission Context</strong><br>MARS / TSOC-enabled distributed tactical system</div>
+        <div class="item"><strong>Issue</strong><br>Draft C — 23 April 2026</div>
+      </div>
+    </div>
+
+    <div class="breadcrumbs"><a href="index.html">Datapack</a> › <strong>01 Mission, ConOps &amp; Context</strong></div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="panel toc">
+          <div class="kicker">Navigation</div>
+          <h3>Contents</h3>
+          <ol>
+            <li><a href="#purpose">Purpose</a></li>
+            <li><a href="#scope">Scope</a></li>
+            <li><a href="#baseline-context">Referenced Baseline</a></li>
+            <li><a href="#executive-overview">Executive Overview</a></li>
+            <li><a href="#mission-objectives">Mission Objectives &amp; MOE</a></li>
+            <li><a href="#stakeholders">Stakeholders</a></li>
+            <li><a href="#soi-boundary">System Boundary</a></li>
+            <li><a href="#environment">Environment, Constraints, Assumptions</a></li>
+            <li><a href="#interaction-view">Interaction View</a></li>
+            <li><a href="#use-cases">Use Cases &amp; Mission Threads</a>
+              <ul>
+                <li><a href="#use-cases">10.1 Operator 7-phase thread</a></li>
+                <li><a href="#use-cases">10.2 Phase-to-mode reconciliation</a></li>
+                <li><a href="#use-cases">10.3 Mode-B multi-node companion</a></li>
+              </ul>
+            </li>
+            <li><a href="#off-nominal">Off-Nominal Scenarios</a></li>
+            <li><a href="#states-modes">States &amp; Modes</a></li>
+            <li><a href="#responsibilities">Human vs Automation</a></li>
+            <li><a href="#timelines">Timelines</a></li>
+            <li><a href="#ops-risks">Operational Risks &amp; Implications</a></li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>Datapack</h3>
+          <ul>
+            <li><a href="index.html">Index</a></li>
+            <li><a href="01_mission_conops_context.html">01 Mission, ConOps &amp; Context</a></li>
+            <li><a href="02_system_requirements.html">02 System Requirements</a></li>
+            <li><a href="03_architecture_data_definition.html">03 Architecture &amp; Data</a></li>
+            <li><a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle</a></li>
+            <li><a href="05_strategic_analysis_airbus_fcas.html">05 Strategic Analysis (Airbus / FCAS)</a></li>
+            <li><a href="06_security_safety_assurance.html">06 Security, Safety &amp; Assurance</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content">
+
+<section id="purpose">
+  <h2>1. Purpose of Document</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Purpose of Document" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="purpose_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="purpose_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="purpose_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="purpose_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#purpose_bg)"/>
+  <rect width="1200" height="280" fill="url(#purpose_grid)"/>
+  <rect width="1200" height="140" fill="url(#purpose_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Purpose of Document</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">The intent this deliverable serves in the SPARTA baseline.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(195 110) scale(1.4) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <circle cx="195" cy="110" r="90" fill="none" stroke="#e7b955" stroke-width="1.5" opacity="0.8"/>
+        <circle cx="195" cy="110" r="60" fill="none" stroke="#e7b955" stroke-width="1" opacity="0.7"/>
+        <line x1="85" y1="110" x2="305" y2="110" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
+        <line x1="195" y1="0" x2="195" y2="220" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
+        <circle cx="195" cy="110" r="6" fill="#e7b955"/>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <p>This document defines the mission rationale, system context, operational concept, external environment, and states/modes baseline for SPARTA. It establishes the operational truth against which system requirements (Deliverable 02), architecture (Deliverable 03), and verification (Deliverable 04) are derived and shall remain consistent.</p>
+</section>
+
+<section id="scope">
+  <h2>2. Scope and Applicability</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scope &amp; Applicability" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="scope_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="scope_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="scope_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="scope_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#scope_bg)"/>
+  <rect width="1200" height="280" fill="url(#scope_grid)"/>
+  <rect width="1200" height="140" fill="url(#scope_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Scope &amp; Applicability</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Boundaries of what this document governs in the baseline.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(140 110) scale(1.1) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <circle cx="220" cy="100" r="68" fill="#ffffff" fill-opacity="0.05" stroke="#e7b955" stroke-width="3"/>
+        <circle cx="220" cy="100" r="50" fill="none" stroke="#7bb7e6" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="265" y1="148" x2="330" y2="200" stroke="#e7b955" stroke-width="7" stroke-linecap="round"/>
+        <line x1="268" y1="145" x2="325" y2="195" stroke="#1a4272" stroke-width="3" stroke-linecap="round"/>
+        <g transform="translate(220 100) scale(0.45) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.55" stroke="#e7b955" stroke-width="1"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <p>The scope covers system-level operational definition for SPARTA operating with tactical mobile nodes, the MARS mission system, one or more TSOCs, and relevant command authorities. It applies to PDR review activities where the operational concept is sufficiently mature to control architectural commitments and bound requirements, while specific platform integration parameters may remain provisional pending ICD freeze and representative threat analysis.</p>
+</section>
+
+<section id="baseline-context">
+  <h2>3. Referenced System Baseline and Context</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Referenced System Baseline" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="baseline_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="baseline_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="baseline_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="baseline_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#baseline_bg)"/>
+  <rect width="1200" height="280" fill="url(#baseline_grid)"/>
+  <rect width="1200" height="140" fill="url(#baseline_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Referenced System Baseline</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Source configuration and governing baseline anchor.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <rect x="50" y="170" width="300" height="30" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.3"/>
+        <text x="200" y="189" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P5 Integration &amp; Support Tooling</text>
+        <rect x="65" y="145" width="270" height="25" fill="#ffffff" fill-opacity="0.14" stroke="#cbdcf0" stroke-width="1.3"/>
+        <text x="200" y="162" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P4 Policy / Model Content (signed)</text>
+        <rect x="80" y="120" width="240" height="25" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <text x="200" y="137" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P3 Data Model &amp; Interfaces</text>
+        <rect x="95" y="95" width="210" height="25" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955" stroke-width="1.5"/>
+        <text x="200" y="112" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P1 SPARTA Edge Agent (Eurodrone)</text>
+        <g transform="translate(200 55) scale(0.7) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.35" stroke="#ffffff" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#ffffff" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#ffffff" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="metadata">
+    <thead><tr><th>Item</th><th>Baseline</th></tr></thead>
+    <tbody>
+      <tr><td>System name</td><td>SPARTA — Secure Platform Awareness, Resilience, Trust &amp; Assessment</td></tr>
+      <tr><td>Purpose</td><td>Provide real-time, mission-aware cyber situational awareness and trust assessment for distributed mobile nodes, enabling MARS and C2 to maintain mission effectiveness under cyber threat.</td></tr>
+      <tr><td>Primary mission ecosystem</td><td>MARS mission system, TSOC(s), peer tactical nodes, C2 / mission command</td></tr>
+      <tr><td>Primary operators / users</td><td>Military mission operators, cyber operators/analysts, and autonomous or semi-autonomous tactical nodes</td></tr>
+      <tr><td>Primary deployment hosts</td><td>Airborne, ground-mobile, and maritime tactical nodes of heterogeneous compute class</td></tr>
+      <tr><td>Governing baseline decision</td><td>Edge-local detection with optional tactical correlation and authoritative TSOC/MARS integration</td></tr>
+      <tr><td>Controlling document</td><td>SPARTA System Analysis Baseline — see <a href="index.html#analysis-baseline">Index §3</a></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="executive-overview">
+  <h2>4. Executive System Overview</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Engineering Summary" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="exec_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="exec_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="exec_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="exec_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#exec_bg)"/>
+  <rect width="1200" height="280" fill="url(#exec_grid)"/>
+  <rect width="1200" height="140" fill="url(#exec_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Engineering Summary</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Problem addressed, system outcome, and PDR-level commitments.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(110 90) scale(1.0) rotate(-15)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(230 140) scale(1.1) rotate(-5)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(330 80) scale(0.9) rotate(10)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.16" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g stroke="#e7b955" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.85" fill="none">
+          <line x1="130" y1="110" x2="210" y2="135"/>
+          <line x1="245" y1="130" x2="320" y2="95"/>
+          <line x1="145" y1="85" x2="325" y2="75"/>
+        </g>
+        <g fill="#e7b955">
+          <circle cx="170" cy="122" r="2.5"/><circle cx="283" cy="113" r="2.5"/>
+        </g>
+        <text x="195" y="200" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">NEIGHBORHOOD TRUST FUSION</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <p>SPARTA exists because distributed mission systems require trust decisions within a time frame faster than centralized cyber workflows can reliably provide, and with a richness of mission context that central cyber operators cannot always see. The system combines platform assurance evidence, communications behavior, mission-state consistency, and peer correlation to estimate node trust and publish recommendations that are operationally actionable by MARS and analytically useful to TSOC.</p>
+  <div class="callout decision">
+    <strong>Positioning</strong>
+    SPARTA is not a parallel mission system and not an enterprise SIEM. It is a mission-aware cyber sensing and trust-fusion layer embedded within the tactical mission ecosystem, operating under explicit authority boundaries with respect to MARS, TSOC, and C2.
+  </div>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_mission_context.png"
+         alt="Tactical MALE RPAS operating above distributed ground units, tactical edge nodes, and global networks, with a satellite visible above and annotations calling out multi-domain operations and tactical edge nodes."
+         loading="lazy"/>
+    <div class="caption">Figure 01-0a. Photographic mission-context rendering. A Eurodrone-class tactical platform is shown as the reference edge-node integration case, operating above distributed ground units and tactical edge nodes with global network reach-back — the operational envelope that SPARTA instruments for mission-aware cyber trust. SPARTA itself is platform-agnostic; the host platform is one of several candidate integration classes.</div>
+  </figure>
+
+  <div class="figure">
+    <div class="mermaid">
+flowchart LR
+  subgraph World["Mission Ecosystem"]
+    Evidence["Cyber &amp; mission-behavior evidence"]
+    Context["Mission context from MARS"]
+    Peers["Peer tactical nodes"]
+  end
+
+  subgraph SPARTA["SPARTA — Mission-aware cyber &amp; trust layer"]
+    Sense["Sense"] --> Detect["Detect"]
+    Detect --> Trust["Assess Trust"]
+    Trust --> Recommend["Recommend"]
+  end
+
+  Evidence --> Sense
+  Context --> Sense
+  Peers <--> Sense
+
+  Recommend --> MARS["MARS → mission adaptation"]
+  Trust --> TSOC["TSOC → adjudication &amp; oversight"]
+  Trust --> C2["C2 → mission authority"]
+    </div>
+    <div class="caption">Figure 01-0. SPARTA positioning between the mission ecosystem and the authority consumers.</div>
+  </div>
+</section>
+
+<section id="mission-objectives">
+  <h2>5. Mission Objectives, Drivers and Measures of Effectiveness</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mission Objectives &amp; MOE" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="objectives_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="objectives_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="objectives_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="objectives_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#objectives_bg)"/>
+  <rect width="1200" height="280" fill="url(#objectives_grid)"/>
+  <rect width="1200" height="140" fill="url(#objectives_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Mission Objectives &amp; MOE</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">What success means and how it is measured in operation.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(90 130) scale(1.1) rotate(25)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g stroke="#7bb7e6" stroke-dasharray="3 4" fill="none" stroke-width="1.3" opacity="0.8">
+          <path d="M 140 115 Q 200 80 265 60"/>
+        </g>
+        <line x1="290" y1="30" x2="290" y2="190" stroke="#cbdcf0" stroke-width="3"/>
+        <polygon points="290,35 360,55 290,75" fill="#e7b955"/>
+        <text x="325" y="60" fill="#1a4272" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">MOE</text>
+        <circle cx="290" cy="30" r="5" fill="#ffffff"/>
+        <g fill="#e7b955">
+          <circle cx="175" cy="97" r="3"/>
+          <circle cx="220" cy="78" r="3"/>
+          <circle cx="260" cy="65" r="3"/>
+        </g>
+        <text x="200" y="205" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Detect → Assess → Recommend → Continue Mission</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <h3>5.1 Mission Objectives</h3>
+  <ul>
+    <li>Detect cyber compromise, deception, or mission-behavior anomalies affecting tactical nodes.</li>
+    <li>Convert heterogeneous evidence into reliable node trust assessments with confidence and mission impact.</li>
+    <li>Support mission continuity through bounded recommendations and policy-enabled protective actions.</li>
+    <li>Preserve TSOC visibility and evidence continuity despite degraded tactical communications.</li>
+    <li>Provide explainable, auditable outputs that are consumable by mission operators, analysts, and automation.</li>
+  </ul>
+
+  <h3>5.2 Operational / Business Drivers</h3>
+  <ul>
+    <li>Sovereign, embedded cyber awareness in distributed crewed–uncrewed operations.</li>
+    <li>Reduced decision latency between cyber event detection and mission adaptation.</li>
+    <li>Operation under hybrid networking and intermittent reach-back.</li>
+    <li>Discrimination between faults, authorized autonomy adaptation, and adversarial manipulation.</li>
+    <li>Alignment with future joint/coalition cyber operations where trust is exchanged across organizations.</li>
+  </ul>
+
+  <h3>5.3 Measures of Effectiveness (MOE)</h3>
+  <table class="metadata">
+    <thead><tr><th>MOE ID</th><th>Measure</th><th>Success Intent</th><th>Observable Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>MOE-01</td><td>Mission trust awareness timeliness</td><td>MARS receives actionable trust output inside tactical decision windows.</td><td>Time from qualified anomaly to TrustAssessment on MARS bus.</td></tr>
+      <tr><td>MOE-02</td><td>Operational relevance of outputs</td><td>Trust outputs discriminate between technical anomalies and mission-significant threats.</td><td>Proportion of outputs with non-null mission impact that are operator-confirmed as relevant.</td></tr>
+      <tr><td>MOE-03</td><td>Mission continuity under degradation</td><td>Degraded and disconnected operations continue with bounded cyber visibility.</td><td>Mission-thread completion rate with TSOC unreachable.</td></tr>
+      <tr><td>MOE-04</td><td>Analyst utility</td><td>TSOC receives sufficient evidence for adjudication and correlation when links permit.</td><td>Adjudication turnaround time and evidence completeness score.</td></tr>
+      <tr><td>MOE-05</td><td>False-action containment</td><td>Mission-affecting protective recommendations remain explainable, reversible, and policy-controlled.</td><td>Audit rate of reversibility and post-mission review closure.</td></tr>
+      <tr><td>MOE-06</td><td>Adversary-resilience</td><td>Adversarial influence on correlation channels does not dominate consensus.</td><td>Red-team influence tolerance in controlled exercises.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="stakeholders">
+  <h2>6. Stakeholders and Roles</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stakeholders &amp; Roles" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="stakeholders_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="stakeholders_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="stakeholders_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="stakeholders_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#stakeholders_bg)"/>
+  <rect width="1200" height="280" fill="url(#stakeholders_grid)"/>
+  <rect width="1200" height="140" fill="url(#stakeholders_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Stakeholders &amp; Roles</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Actors interacting with SPARTA and its reference edge host.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(195 110) scale(1.0) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <circle cx="60" cy="48" r="7" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><rect x="50" y="56" width="20" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><text x="60" y="95" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">C2</text>
+        <circle cx="330" cy="48" r="7" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><rect x="320" y="56" width="20" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><text x="330" y="95" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">MARS</text>
+        <circle cx="60" cy="158" r="7" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><rect x="50" y="166" width="20" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><text x="60" y="205" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Operator</text>
+        <circle cx="330" cy="158" r="7" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><rect x="320" y="166" width="20" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.25" stroke="#7bb7e6" stroke-width="1.2"/><text x="330" y="205" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TSOC</text>
+        <g stroke="#cbdcf0" stroke-width="1" stroke-dasharray="2 3" opacity="0.75">
+          <line x1="80" y1="60" x2="155" y2="90"/>
+          <line x1="310" y1="60" x2="235" y2="90"/>
+          <line x1="80" y1="170" x2="155" y2="130"/>
+          <line x1="310" y1="170" x2="235" y2="130"/>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="metadata">
+    <thead><tr><th>Stakeholder</th><th>Role</th><th>Needs and Expectations</th><th>Key Interaction</th></tr></thead>
+    <tbody>
+      <tr><td>Mission commander / C2</td><td>Mission authority and prioritization</td><td>Concise trust constraints and mission-impact summaries, not raw cyber detail.</td><td>Receives trust impact summaries; authorizes policy envelopes.</td></tr>
+      <tr><td>MARS mission system</td><td>Mission orchestration and adaptation</td><td>Structured trust state, recommendations, and validity windows.</td><td>Bi-directional: mission context in, trust/advisory out.</td></tr>
+      <tr><td>TSOC cyber analyst</td><td>Cyber oversight, analytics, policy adjudication</td><td>Evidence, provenance, correlation inputs, and action override capability.</td><td>Bi-directional: evidence up, policy/adjudication down.</td></tr>
+      <tr><td>Platform operator / node host</td><td>Host platform stewardship</td><td>Low-overhead behavior, predictable interfaces, no unsafe interference.</td><td>Resource envelope, local health, integration.</td></tr>
+      <tr><td>System integrator</td><td>Architecture and verification integration</td><td>Stable decomposition, traceability, bounded assumptions.</td><td>Governs ICDs, accreditation evidence.</td></tr>
+      <tr><td>Accreditation authority</td><td>Certification of operational fitness</td><td>Predictable, bounded, auditable behavior and evidence.</td><td>Reviews policy contracts and authority envelopes.</td></tr>
+      <tr><td>Training &amp; sustainment</td><td>Operator readiness and content evolution</td><td>Replayable mission threads and controllable content updates.</td><td>Consumes reason-chains and evidence for exercises.</td></tr>
+      <tr><td>Coalition partner (future)</td><td>Cross-organization trust exchange</td><td>Interoperable trust objects under classification rules.</td><td>Receives filtered trust summaries; controlled by policy.</td></tr>
+    </tbody>
+  </table>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_tsoc_operators.png"
+         alt="Military operators at a Tactical Security Operations Centre. Wall displays show SYSTEM HEALTH, NETWORK INTEGRITY, and MISSION IMPACT with a world-map threat view and a THREAT LEVEL MODERATE indicator."
+         loading="lazy"/>
+    <div class="caption">Figure 01-2a. TSOC analyst team in live operation. The three wall-panel views — <em>system health</em>, <em>network integrity</em>, and <em>mission impact</em> — correspond directly to the three SPARTA output classes consumed by the TSOC stakeholder, and the explicit <em>threat level</em> indicator is the operator-facing aggregation of TrustAssessment objects.</div>
+  </figure>
+</section>
+
+<section id="soi-boundary">
+  <h2>7. System of Interest, Boundary and External Dependencies</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="System of Interest &amp; Boundary" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="boundary_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="boundary_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="boundary_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="boundary_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#boundary_bg)"/>
+  <rect width="1200" height="280" fill="url(#boundary_grid)"/>
+  <rect width="1200" height="140" fill="url(#boundary_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">System of Interest &amp; Boundary</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">SPARTA system of interest at the edge host vs external entities.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <rect x="95" y="45" width="200" height="130" rx="10" fill="#0f2843" fill-opacity="0.35" stroke="#e7b955" stroke-width="2" stroke-dasharray="6 4"/>
+        <g transform="translate(195 110) scale(0.95) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.24" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <text x="195" y="55" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">SPARTA SoI</text>
+        <g>
+          <rect x="10" y="30" width="60" height="26" rx="4" fill="#7bb7e6" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><text x="40" y="48" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">MARS</text>
+          <rect x="320" y="30" width="60" height="26" rx="4" fill="#7bb7e6" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><text x="350" y="48" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TSOC</text>
+          <rect x="10" y="170" width="60" height="26" rx="4" fill="#7bb7e6" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><text x="40" y="188" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Peers</text>
+          <rect x="320" y="170" width="60" height="26" rx="4" fill="#7bb7e6" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><text x="350" y="188" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">C2</text>
+        </g>
+        <g stroke="#7bb7e6" stroke-width="1" stroke-dasharray="2 3" opacity="0.7">
+          <line x1="70" y1="43" x2="110" y2="65"/>
+          <line x1="320" y1="43" x2="280" y2="65"/>
+          <line x1="70" y1="183" x2="110" y2="155"/>
+          <line x1="320" y1="183" x2="280" y2="155"/>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <h3>7.1 System of Interest</h3>
+  <p>SPARTA comprises edge-local software components (data acquisition, detection, trust, response, policy, evidence), optional tactical correlator services, interface adapters, data persistence, and security/policy enforcement relevant to cyber awareness and trust estimation. The SoI is the software baseline, its data contracts, and its deployment envelope on the host platform.</p>
+
+  <h3>7.2 Boundary and External Entities</h3>
+  <div class="figure" id="context-diagram">
+    <div class="mermaid">
+flowchart LR
+  subgraph SOI["<b>SPARTA System of Interest</b>"]
+    EA["Edge Agent"]
+    TC["Optional Tactical Correlator"]
+    PE["Policy &amp; Evidence Services"]
+  end
+
+  MARS["MARS Mission System"]
+  TSOC["Tactical SOC (TSOC)"]
+  C2["C2 / Mission Command"]
+  NODE["Peer Tactical Nodes"]
+  HOST["Host Platform · OS · Sensors · Comms"]
+  TI["Threat Intel / Policy Sources"]
+  IDP["Identity / Crypto Provisioning"]
+
+  HOST -->|"IF-EXT-04 telemetry"| EA
+  MARS <-->|"IF-EXT-01 mission ctx · trust · reco"| EA
+  EA <-->|"IF-EXT-03 peer summaries"| NODE
+  EA <-->|"IF-INT-05"| TC
+  TC <-->|"IF-EXT-03"| NODE
+  EA <-->|"IF-EXT-02 evidence · policy · adj."| TSOC
+  TC <-->|"IF-EXT-02"| TSOC
+  TSOC <-->|"organizational"| C2
+  TSOC <-->|"policy / intel"| TI
+  MARS <-->|"mission authority"| C2
+  IDP -->|"IF-EXT-05 identity/keys"| EA
+
+  classDef soi fill:#eaf1f8,stroke:#1f4e79,stroke-width:2px,color:#142033;
+  class SOI,EA,TC,PE soi;
+    </div>
+    <div class="caption">Figure 01-1. SPARTA system context diagram showing the System of Interest boundary, external entities, and principal interface channels.</div>
+  </div>
+
+  <h3>7.3 External Dependencies</h3>
+  <table class="metadata">
+    <thead><tr><th>Dependency</th><th>Type</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>MARS mission / state APIs &amp; timing behavior</td><td>Functional</td><td>Gates mission-aware detection quality.</td></tr>
+      <tr><td>Secure tactical comms transport</td><td>Infrastructure</td><td>Carries peer summaries and TSOC exchanges.</td></tr>
+      <tr><td>TSOC policy, intelligence, and evidence endpoints</td><td>Operational</td><td>Supports adjudication and policy refresh.</td></tr>
+      <tr><td>Host telemetry &amp; security-posture evidence</td><td>Functional</td><td>Provides the basis for local integrity assessment.</td></tr>
+      <tr><td>Identity / key management / crypto provisioning</td><td>Security</td><td>Underpins authenticity and provenance of all exchanges.</td></tr>
+      <tr><td>PNT / common time reference</td><td>Infrastructure</td><td>Enables event ordering and validity windows.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="environment">
+  <h2>8. Operational Environment, Constraints and Assumptions</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Operational Environment" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="env_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="env_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="env_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="env_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#env_bg)"/>
+  <rect width="1200" height="280" fill="url(#env_grid)"/>
+  <rect width="1200" height="140" fill="url(#env_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Operational Environment</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Contested networks, dynamic topology, heterogeneous nodes.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <path d="M 0 180 Q 80 150 160 175 T 320 170 T 400 180 L 400 220 L 0 220 Z" fill="#0a5b47" fill-opacity="0.4"/>
+        <path d="M 0 155 Q 80 130 160 150 T 320 145 T 400 155" fill="none" stroke="#7bb7e6" stroke-width="1" stroke-dasharray="3 4" opacity="0.7"/>
+        <g transform="translate(100 80) scale(0.85) rotate(-10)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(210 55) scale(0.9) rotate(5)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(320 90) scale(0.75) rotate(15)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g stroke="#e7b955" stroke-width="1" stroke-dasharray="2 3" fill="none" opacity="0.8">
+          <path d="M 120 95 Q 160 110 200 80"/>
+          <path d="M 230 75 Q 275 85 310 100"/>
+          <path d="M 110 100 Q 200 140 320 105"/>
+        </g>
+        <g fill="#e7b955">
+          <circle cx="160" cy="107" r="2.5"/>
+          <circle cx="270" cy="83" r="2.5"/>
+        </g>
+        <text x="200" y="215" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">HYBRID · INTERMITTENT · BANDWIDTH-CONSTRAINED</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <h3>8.1 Operational Environment</h3>
+  <p>SPARTA operates across airborne and mobile tactical nodes in mission networks characterized by changing topology, asymmetric bandwidth (kbps to Mbps), intermittent links (availability typically 60–95% per leg), mixed security domains, heterogeneous compute classes (from SWaP-constrained embedded to fog-node servers), and potentially degraded navigation and timing. Nodes may shift between isolated, clustered, and reach-back conditions within a single mission thread.</p>
+
+  <div class="figure">
+    <div class="mermaid">
+flowchart LR
+  subgraph Env["Operational Environment Envelope"]
+    A["Topology<br/>dynamic · hybrid"]
+    B["Bandwidth<br/>asymmetric · prioritized"]
+    C["Availability<br/>intermittent"]
+    D["Timing<br/>±50 ms required"]
+    E["Adversary<br/>continuously present"]
+  end
+  Env -->|"drives"| Resilience["Resilience<br/>&amp; graceful degradation"]
+  Env -->|"drives"| Compact["Compact<br/>tactical exchanges"]
+  Env -->|"drives"| Authority["Authority<br/>separation"]
+    </div>
+    <div class="caption">Figure 01-1b. Environmental envelope and its architectural consequences.</div>
+  </div>
+
+  <h3>8.2 Constraints (operational)</h3>
+  <ul>
+    <li>SPARTA shall not assume stable IP topology or continuous end-to-end connectivity.</li>
+    <li>SPARTA shall not take mission-breaking actions outside pre-authorized policy envelopes.</li>
+    <li>Bandwidth allocated to SPARTA is subordinate to mission traffic.</li>
+    <li>Local analytics shall remain bounded by host-platform resource and safety constraints.</li>
+    <li>Cross-domain exchanges shall comply with mission classification policy.</li>
+  </ul>
+
+  <h3>8.3 Assumptions</h3>
+  <div class="twocol">
+    <div class="callout assumption">
+      <strong>Assumption Set A (operational)</strong>
+      <ul>
+        <li>MARS role/task context is accessible on each relevant node via IF-EXT-01.</li>
+        <li>Each node maintains a local clock of sufficient quality (±50 ms) for event ordering.</li>
+        <li>Node-to-node exchange of compact trust summaries is permissible under policy.</li>
+        <li>Identity and keys are provisioned prior to mission execution.</li>
+      </ul>
+    </div>
+    <div class="callout constraint">
+      <strong>Assumption Sensitivity</strong>
+      <p>If MARS context is sparse or latency-burdened, mission-aware anomaly detection must degrade to a narrower integrity/communications baseline and associated capability claims shall be re-scoped. If timing quality degrades below the assumed envelope, correlation shall switch to tolerant-ordering mode with explicit confidence reduction.</p>
+    </div>
+  </div>
+</section>
+
+<section id="interaction-view">
+  <h2>9. Stakeholder Interaction View</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stakeholder Interactions" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="interaction_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="interaction_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="interaction_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="interaction_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#interaction_bg)"/>
+  <rect width="1200" height="280" fill="url(#interaction_grid)"/>
+  <rect width="1200" height="140" fill="url(#interaction_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Stakeholder Interactions</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Authority, data, and operational exchange across actors.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(195 110) scale(0.95) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <rect x="20" y="85" width="90" height="50" rx="8" fill="#7bb7e6" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.2"/>
+        <text x="65" y="110" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="12" font-weight="700" text-anchor="middle">MARS</text><text x="65" y="125" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Mission Ctx</text>
+        <rect x="280" y="85" width="90" height="50" rx="8" fill="#7bb7e6" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.2"/>
+        <text x="325" y="110" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="12" font-weight="700" text-anchor="middle">TSOC</text><text x="325" y="125" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Policy/Evidence</text>
+        <g stroke="#e7b955" stroke-width="1.6" fill="none">
+          <path d="M 112 103 L 150 103 L 145 98 M 150 103 L 145 108"/>
+          <path d="M 150 117 L 112 117 L 117 112 M 112 117 L 117 122"/>
+          <path d="M 240 103 L 278 103 L 273 108 M 278 103 L 273 98"/>
+          <path d="M 278 117 L 240 117 L 245 112 M 240 117 L 245 122"/>
+        </g>
+        <text x="130" y="95" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">ctx</text><text x="130" y="130" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">trust</text>
+        <text x="260" y="95" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">evidence</text><text x="260" y="130" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">policy</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="figure">
+    <div class="mermaid">
+flowchart TB
+  C2["Mission Commander / C2"]
+  M["MARS Operator / Mission Apps"]
+  T["TSOC Analyst"]
+  N["Node / Platform Operator"]
+  S["SPARTA"]
+  A["Accreditation Authority"]
+
+  C2 -->|"Mission priorities · authority envelopes"| M
+  M <-->|"Trust outputs · recommendations · mission ctx"| S
+  T <-->|"Policies · evidence · adjudication"| S
+  N <-->|"Health · resource caps · local controls"| S
+  S -->|"Mission impact · trust state"| C2
+  A -->|"Policy bounds · audit requirements"| T
+  A -->|"Authority envelopes"| C2
+    </div>
+    <div class="caption">Figure 01-2. Actor/system interaction view showing authority flow and operational coupling.</div>
+  </div>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_c2_situational_awareness.png"
+         alt="Mission commanders around a table-mounted tactical display showing a geographic map with air-track overlays and multiple operator workstations in the background."
+         loading="lazy"/>
+    <div class="caption">Figure 01-2b. Multi-operator situational-awareness view. SPARTA TrustAssessment outputs contribute trust-state and mission-impact overlays to the common operational picture without removing the operator from the decision loop — enforcing the authority-partition principle (SYS-DC-001).</div>
+  </figure>
+</section>
+
+<section id="use-cases">
+  <h2>10. Use Cases and Mission Threads</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Use Cases &amp; Mission Threads" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="usecase_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="usecase_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="usecase_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="usecase_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#usecase_bg)"/>
+  <rect width="1200" height="280" fill="url(#usecase_grid)"/>
+  <rect width="1200" height="140" fill="url(#usecase_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Use Cases &amp; Mission Threads</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Mission-driven scenarios and operational chains.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g>
+          <rect x="20" y="30" width="80" height="50" rx="6" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="60" y="55" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">UC-01</text><text x="60" y="70" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Nominal</text>
+          <rect x="110" y="30" width="80" height="50" rx="6" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="150" y="55" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">UC-02</text><text x="150" y="70" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Anomaly</text>
+          <rect x="200" y="30" width="80" height="50" rx="6" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="240" y="55" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">UC-03</text><text x="240" y="70" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Disagree</text>
+          <rect x="290" y="30" width="80" height="50" rx="6" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="330" y="55" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">UC-04</text><text x="330" y="70" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="400" text-anchor="middle">Discon.</text>
+        </g>
+        <g transform="translate(100 150) scale(0.7) rotate(-15)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.2"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(195 165) scale(0.8) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g transform="translate(290 150) scale(0.7) rotate(15)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.2"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g stroke="#7bb7e6" stroke-width="1.2" stroke-dasharray="3 3" fill="none" opacity="0.85">
+          <path d="M 120 155 L 175 160"/>
+          <path d="M 215 160 L 270 155"/>
+          <path d="M 100 90 L 100 130"/>
+          <path d="M 195 90 L 195 135"/>
+          <path d="M 290 90 L 290 130"/>
+        </g>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div id="mission-thread-matrix">
+  <table class="metadata">
+    <thead><tr><th>Use Case</th><th>Summary</th><th>Driving Need</th><th>Primary Actors</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td>UC-01 Nominal mission monitoring</td><td>Continuous assessment of node integrity and mission consistency during normal operation.</td><td>Persistent cyber visibility</td><td>SPARTA · MARS · TSOC</td><td>Mission active</td></tr>
+      <tr><td>UC-02 Local anomaly containment</td><td>Node detects local anomaly, stores evidence, updates trust, and publishes recommendation.</td><td>Low-latency local action</td><td>SPARTA Edge · MARS</td><td>Local anomaly qualified</td></tr>
+      <tr><td>UC-03 Tactical cross-node disagreement</td><td>Peer inconsistency in track, handoff, or trust observation triggers tactical fusion.</td><td>Distributed deception detection</td><td>SPARTA Edge · Correlator · Peers</td><td>Peer-disagreement threshold crossed</td></tr>
+      <tr><td>UC-04 Disconnected mission continuation</td><td>TSOC unreachable; node and neighborhood continue within bounded policy.</td><td>Resilience to link loss</td><td>SPARTA Edge · Peers</td><td>TSOC link loss &gt; T_disc</td></tr>
+      <tr><td>UC-05 Reconstitution and reintegration</td><td>Suspect node evidence reviewed; trust is restored, constrained, or node remains isolated.</td><td>Recovery and lifecycle continuity</td><td>TSOC · SPARTA · MARS</td><td>Adjudication closure or timeout</td></tr>
+      <tr><td>UC-06 Policy / model refresh</td><td>TSOC issues a signed policy/model bundle; SPARTA validates, versions, and activates.</td><td>Operational content evolution</td><td>TSOC · SPARTA</td><td>Policy push or scheduled refresh</td></tr>
+      <tr><td>UC-07 Operator query / explanation</td><td>Operator or analyst requests the reason-chain for a specific trust output.</td><td>Explainability &amp; trust-in-automation</td><td>Operator · SPARTA</td><td>On-demand</td></tr>
+      <tr><td>UC-08 Red-team exercise mode</td><td>SPARTA ingests exercise-injected events and surfaces them with exercise tags.</td><td>Training &amp; validation</td><td>Exercise control · SPARTA</td><td>Exercise enable</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="figure" id="nominal-scenario">
+    <div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant Host as Host Platform
+  participant Sparta as SPARTA Edge Agent
+  participant Peer as Peer / Tactical Correlator
+  participant Mars as MARS
+  participant Tsoc as TSOC
+
+  Host->>Sparta: Platform telemetry + comms state
+  Mars->>Sparta: Mission role / task / state context
+  Sparta->>Sparta: Normalize · detect · classify
+  Sparta->>Peer: PeerSummary (compact, signed)
+  Peer-->>Sparta: Corroboration / disagreement
+  Sparta->>Sparta: Estimate trust + confidence + impact
+  Sparta->>Mars: TrustAssessment + Recommendation + validUntil
+  Sparta->>Tsoc: EvidencePackage (when link available)
+  Mars-->>Sparta: Mission adaptation feedback
+  Tsoc-->>Sparta: Adjudication / policy updates
+    </div>
+    <div class="caption">Figure 01-3. UC-01 nominal operational scenario flow.</div>
+  </div>
+
+  <div class="figure">
+    <div class="mermaid">
+flowchart LR
+  A["Mission startup"] --> B["Role / task loaded from MARS"]
+  B --> C["Local sensing &amp; detection"]
+  C --> D["Peer summary exchange"]
+  D --> E["Trust update with confidence"]
+  E --> F["MARS adapts or continues"]
+  F --> G["Evidence synchronized to TSOC when connected"]
+  G --> H["Mission end · post-mission replay"]
+    </div>
+    <div class="caption">Figure 01-4. UC-01 mission thread timeline for nominal trust assessment.</div>
+  </div>
+
+  <div class="figure">
+    <div class="mermaid">
+sequenceDiagram
+  autonumber
+  participant A as Node A SPARTA
+  participant B as Node B SPARTA
+  participant C as Tactical Correlator
+  participant M as MARS
+  A->>A: Qualify anomaly, integrity and mission ctx
+  A->>B: PeerSummary
+  B-->>A: Disagreement, conflicting observation
+  A->>C: Publish anomaly and peer disagreement
+  C-->>A: Corroboration weight and graph finding
+  A->>M: Trust SUSPECT, recommend role-restrict
+  Note over A,M: Advisory only, MARS retains authority
+    </div>
+    <div class="caption">Figure 01-5. UC-03 tactical cross-node disagreement thread.</div>
+  </div>
+
+  <h3>10.1 Operator-Facing 7-Phase Mission Thread (Eurodrone reference mission)</h3>
+  <p>The mission thread is expressed in operator-facing terminology as seven sequential phases, spanning pre-flight through post-mission analysis. This view is intended to be read alongside the SPARTA state machine in §12; the reconciliation table in §10.2 maps each operator phase to the underlying SPARTA mode(s) and data objects.</p>
+
+  <div class="figure mission-thread-diorama">
+    <img src="assets/mission_thread_diorama.png"
+         alt="Seven-phase Eurodrone mission thread rendered as a 3D isometric diorama: the blue-shaded permissive ground environment on the left hosts the Mission Control Centre (MCC) and runway (Phase 1 Mission Preparation), the Eurodrone departs into permissive airspace (Phase 2 Connected Mission), approaches the contested red zone (Phase 3 Link Loss), operates autonomously in denied airspace with cyber threats (Phase 4 Disconnected Mission), returns with restored link (Phase 5 Link Recovery), completes high-bandwidth verification (Phase 6 Return), and lands for forensic analysis and fleet learning (Phase 7 Post-Mission Analysis)."
+         loading="lazy" />
+    <div class="caption">Figure 01-6. Operator-facing seven-phase mission thread of the Eurodrone reference host platform, rendered as a 3D isometric diorama. The permissive ground environment (blue tile zone) hosts the MCC and airfield. The aircraft transits into the contested zone (red tile area) where cyber threats are indicated by warning markers. The dashed route closes back to base, where post-mission analysis (Phase 7) feeds signed-content updates back to Phase 1 for the next sortie (SYS-DC-004, SYS-RAM-002).</div>
+  </div>
+
+  <h3>10.2 Phase-to-Mode Reconciliation</h3>
+  <p>The seven operator-facing phases are a higher-abstraction narrative of the nine SPARTA modes defined in §12. The following table binds each phase to its primary SPARTA mode, governing use case(s), and canonical data objects produced or consumed.</p>
+
+  <table class="matrix">
+    <thead>
+      <tr><th>Phase</th><th>Operator label</th><th>SPARTA primary mode(s)</th><th>Driving use case(s)</th><th>Data objects produced / consumed</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Mission Preparation</td><td>Standby → Initialize</td><td>UC-06 Policy / model refresh; commissioning</td><td>PolicyBundle v(n+1); HealthReport; NodeStatus (initial)</td></tr>
+      <tr><td>2</td><td>Connected Mission</td><td>Monitor → Correlate (Mode B / C)</td><td>UC-01 Nominal monitoring</td><td>Streaming NodeStatus, AnomalyEvent, TrustAssessment</td></tr>
+      <tr><td>3</td><td>Link Loss</td><td>Monitor → Degraded (transition)</td><td>New scenario — <em>anticipatory posture change</em> (§11.7)</td><td>Degraded-provenance flag on outputs; validity windows tightened</td></tr>
+      <tr><td>4</td><td>Disconnected Mission</td><td>Degraded → Assess → Recommend (Mode A only)</td><td>UC-04 Disconnected continuation</td><td>Locally-buffered EvidencePackage; degraded-provenance TrustAssessment</td></tr>
+      <tr><td>5</td><td>Link Recovery</td><td>Monitor → Recover</td><td>UC-05 Reintegration; re-sync</td><td>Priority-queued backhaul of staged EvidencePackage; resumed TSOC adjudication</td></tr>
+      <tr><td>6</td><td>Return</td><td>Monitor → Recover</td><td>UC-05 bounded trust restoration</td><td>Validated NodeStatus; closed-out ResponseRecommendations</td></tr>
+      <tr><td>7</td><td>Post-Mission Analysis</td><td>(offline; Standby)</td><td>Deliv. 04 §9 Operations Support; SYS-RAM-002</td><td>Forensic EvidencePackage; updated models and PolicyBundles → feedback to Phase 1 for next sortie</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout decision">
+    <strong>Two Abstractions, One Baseline</strong>
+    <p>The 7-phase operator thread (Figure 01-6) and the 9-mode state machine (§12) are <em>coherent views of the same baseline</em>. The operator thread is the narrative used in briefings, exercises, and operator training. The 9-mode state machine is the internal specification used for requirements allocation and verification. Any apparent gap between them (e.g. anticipatory posture change at Phase 3) shall be closed by enriching the state machine, not by forking the narrative.</p>
+  </div>
+
+  <h3>10.3 Multi-Node Mode-B Companion Thread</h3>
+  <p>The 7-phase thread above is the <em>single-platform</em> view. SPARTA's tactical-correlation differentiator is expressed at the <em>multi-node neighborhood</em> level. The figure below overlays two Eurodrones operating in Mode B, exchanging PeerSummary objects and participating in tactical consensus.</p>
+
+  <div class="figure">
+    <svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mode-B multi-node mission thread" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="mnb_bg" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#eaf1f8"/>
+          <stop offset="100%" stop-color="#f4f8fc"/>
+        </linearGradient>
+      </defs>
+      <rect width="1200" height="320" fill="url(#mnb_bg)"/>
+
+      <!-- Node A swimlane -->
+      <g font-family="Inter,sans-serif">
+        <text x="70" y="40" font-size="13" font-weight="700" fill="#1f4e79">Node A (Eurodrone 1)</text>
+        <rect x="50" y="50" width="1100" height="50" rx="6" fill="#ffffff" stroke="#7bb7e6" stroke-width="1.5"/>
+        <!-- Eurodrone mini silhouette -->
+        <g transform="translate(75 75) scale(0.35)">
+          <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#7bb7e6" stroke="#1f4e79" stroke-width="1.5"/>
+        </g>
+
+        <text x="70" y="135" font-size="13" font-weight="700" fill="#1f4e79">Node B (Eurodrone 2)</text>
+        <rect x="50" y="145" width="1100" height="50" rx="6" fill="#ffffff" stroke="#7bb7e6" stroke-width="1.5"/>
+        <g transform="translate(75 170) scale(0.35)">
+          <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#7bb7e6" stroke="#1f4e79" stroke-width="1.5"/>
+        </g>
+
+        <text x="70" y="230" font-size="13" font-weight="700" fill="#0a5b47">Tactical Correlator (fog node)</text>
+        <rect x="50" y="240" width="1100" height="45" rx="6" fill="#ecfdf5" stroke="#0a5b47" stroke-width="1.5"/>
+        <g transform="translate(90 262)">
+          <rect x="-12" y="-10" width="24" height="20" fill="#9bd8bf" stroke="#0a5b47"/>
+          <circle cx="-5" cy="-3" r="1.5" fill="#0a5b47"/>
+          <circle cx="0" cy="-3" r="1.5" fill="#0a5b47"/>
+          <circle cx="5" cy="-3" r="1.5" fill="#0a5b47"/>
+          <circle cx="-5" cy="3" r="1.5" fill="#0a5b47"/>
+          <circle cx="0" cy="3" r="1.5" fill="#0a5b47"/>
+          <circle cx="5" cy="3" r="1.5" fill="#0a5b47"/>
+        </g>
+      </g>
+
+      <!-- event markers and arrows -->
+      <g font-family="Inter,sans-serif" font-size="11" fill="#142033">
+        <!-- Time 1: both publish NodeStatus -->
+        <circle cx="200" cy="75" r="6" fill="#1f4e79"/>
+        <circle cx="200" cy="170" r="6" fill="#1f4e79"/>
+        <text x="200" y="20" text-anchor="middle" font-weight="700" fill="#1f4e79">t₁</text>
+        <text x="200" y="305" text-anchor="middle" fill="#52627a">Publish NodeStatus</text>
+
+        <!-- Time 2: Node A qualifies anomaly -->
+        <rect x="340" y="67" width="20" height="16" rx="2" fill="#e7b955"/>
+        <text x="350" y="79" text-anchor="middle" font-weight="700" fill="#142033">!</text>
+        <text x="350" y="20" text-anchor="middle" font-weight="700" fill="#8a5a00">t₂</text>
+        <text x="350" y="305" text-anchor="middle" fill="#52627a">Node A qualifies AnomalyEvent</text>
+
+        <!-- Time 3: PeerSummary exchange -->
+        <line x1="500" y1="75" x2="500" y2="170" stroke="#e7b955" stroke-width="2"/>
+        <polygon points="500,170 496,160 504,160" fill="#e7b955"/>
+        <line x1="530" y1="170" x2="530" y2="75" stroke="#e7b955" stroke-width="2"/>
+        <polygon points="530,75 526,85 534,85" fill="#e7b955"/>
+        <text x="515" y="20" text-anchor="middle" font-weight="700" fill="#8a5a00">t₃</text>
+        <text x="515" y="305" text-anchor="middle" fill="#52627a">PeerSummary exchange (signed)</text>
+
+        <!-- Time 4: Both publish to correlator -->
+        <line x1="680" y1="75" x2="680" y2="262" stroke="#0a5b47" stroke-width="2"/>
+        <polygon points="680,262 676,252 684,252" fill="#0a5b47"/>
+        <line x1="710" y1="170" x2="710" y2="262" stroke="#0a5b47" stroke-width="2"/>
+        <polygon points="710,262 706,252 714,252" fill="#0a5b47"/>
+        <text x="695" y="20" text-anchor="middle" font-weight="700" fill="#0a5b47">t₄</text>
+        <text x="695" y="305" text-anchor="middle" fill="#52627a">Publish to correlator</text>
+
+        <!-- Time 5: Correlator returns consensus -->
+        <line x1="850" y1="262" x2="850" y2="75" stroke="#0a5b47" stroke-width="2"/>
+        <polygon points="850,75 846,85 854,85" fill="#0a5b47"/>
+        <line x1="880" y1="262" x2="880" y2="170" stroke="#0a5b47" stroke-width="2"/>
+        <polygon points="880,170 876,180 884,180" fill="#0a5b47"/>
+        <text x="865" y="20" text-anchor="middle" font-weight="700" fill="#0a5b47">t₅</text>
+        <text x="865" y="305" text-anchor="middle" fill="#52627a">Byzantine-tolerant consensus</text>
+
+        <!-- Time 6: Updated TrustAssessment to MARS -->
+        <rect x="1040" y="65" width="50" height="20" rx="4" fill="#9bd8bf" stroke="#0a5b47"/>
+        <text x="1065" y="79" text-anchor="middle" font-weight="700" fill="#0a5b47">Trust</text>
+        <rect x="1040" y="160" width="50" height="20" rx="4" fill="#9bd8bf" stroke="#0a5b47"/>
+        <text x="1065" y="174" text-anchor="middle" font-weight="700" fill="#0a5b47">Trust</text>
+        <text x="1065" y="20" text-anchor="middle" font-weight="700" fill="#0a5b47">t₆</text>
+        <text x="1065" y="305" text-anchor="middle" fill="#52627a">TrustAssessment → MARS</text>
+      </g>
+    </svg>
+    <div class="caption">Figure 01-7. Mode-B multi-node companion mission thread — two Eurodrones exchanging PeerSummary objects and feeding the tactical correlator. The Byzantine-tolerant consensus (t₅) is the SPARTA differentiator that a single-platform view (Figure 01-6) does not expose. MARS retains execution authority throughout (SYS-DC-001).</div>
+  </div>
+</section>
+
+<section id="off-nominal">
+  <h2>11. Degraded, Contingency and Recovery Scenarios</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Degraded &amp; Contingency Scenarios" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="offnominal_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="offnominal_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="offnominal_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="offnominal_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#offnominal_bg)"/>
+  <rect width="1200" height="280" fill="url(#offnominal_grid)"/>
+  <rect width="1200" height="140" fill="url(#offnominal_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Degraded &amp; Contingency Scenarios</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Resilience, recovery, and bounded local response.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(130 110) scale(1.15) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.25" stroke="#e7b955" stroke-width="1.6"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <polygon points="280,40 360,160 200,160" fill="#0f2843" fill-opacity="0.5" stroke="#e7b955" stroke-width="3"/>
+        <line x1="280" y1="75" x2="280" y2="125" stroke="#e7b955" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="280" cy="145" r="4" fill="#e7b955"/>
+        <g stroke="#e7b955" stroke-width="1" fill="none" opacity="0.6">
+          <circle cx="130" cy="110" r="55"/>
+          <circle cx="130" cy="110" r="75" stroke-dasharray="3 3"/>
+        </g>
+        <text x="130" y="195" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TRUST = SUSPECT</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <h3>11.1 Degraded Connectivity (UC-04)</h3>
+  <p>When TSOC connectivity is lost, edge-local assessment and tactical fusion continue. Policy updates are frozen to the last-valid, signed state and flagged with validity age. Evidence is buffered locally in the EvidenceStore. MARS still receives trust outputs, but with a degraded-provenance annotation indicating reduced external adjudication availability.</p>
+
+  <figure class="figure photo-figure">
+    <img src="assets/photo_forward_operator.png"
+         alt="Forward operator in mountainous terrain at sunset, with a ruggedized tablet displaying a mission map and a tactical comms node beside him, while a MALE RPAS passes low in the distance."
+         loading="lazy"/>
+    <div class="caption">Figure 01-4a. Forward operator during a disconnected-mission phase (UC-04). The operator's ruggedized tablet consumes locally-buffered SPARTA trust outputs via the tactical node while TSOC reach-back is unavailable — the edge autonomy requirement (SYS-OPS-001) made physical.</div>
+  </figure>
+
+  <h3>11.2 Suspect Node in Formation (UC-03)</h3>
+  <p>When one node exhibits implausible track handoffs, inconsistent peer trust, or local integrity anomalies, SPARTA downgrades trust, marks mission impact, recommends role restrictions to MARS, and requests corroboration from peers. The downgrade is explainable by a reason-chain and carries a validity window; MARS retains execution authority.</p>
+
+  <h3>11.3 Recovery and Reintegration (UC-05)</h3>
+  <p>When evidence or TSOC adjudication clears a suspect node, trust state is not restored instantaneously. Recovery proceeds through bounded intermediate states (Isolated → Suspect → Degraded → Trusted) with expiry windows, additional scrutiny, and synchronized event closure. Partial reintegration is preferred over binary trust restoration.</p>
+
+  <h3>11.4 Policy Bundle Integrity Failure</h3>
+  <p>If a received policy bundle fails signature or schema validation, SPARTA rejects it, maintains the prior valid bundle, raises an alert, and logs the rejection with provenance. Operations continue under the last-known-good content.</p>
+
+  <h3>11.5 Timing Reference Degradation</h3>
+  <p>If the common time reference degrades beyond the assumed envelope, SPARTA enters tolerant-ordering mode, shortens validity windows, and flags affected outputs with reduced confidence.</p>
+
+  <h3>11.6 Host Resource Pressure</h3>
+  <p>If host resource pressure exceeds the allocated SPARTA envelope, SPARTA performs graceful internal degradation: high-priority detectors remain active, lower-priority correlators shed load, and the degraded state is reported to MARS/TSOC for visibility.</p>
+
+  <h3>11.7 Anticipatory Posture Change (Pre-Degraded)</h3>
+  <p>When the host platform transitions toward a contested environment (Phase 3 in §10.1), SPARTA enters an <em>anticipatory</em> Pre-Degraded posture: validity windows are shortened, peer exchange cadence is increased, and the last-valid PolicyBundle is pinned locally. This posture change is driven by MARS-reported mission state (e.g. "entering denied airspace") or by observed comms-quality trends, and it occurs <em>before</em> link loss is fully qualified. The posture is reversible and non-mission-affecting; it prepares the node for Phase 4 Disconnected Mission without waiting for Degraded-mode entry. This scenario was imported from the operator-facing mission thread (Figure 01-6) during the <em>Images.pptx</em> reconciliation exercise.</p>
+</section>
+
+<section id="states-modes">
+  <h2>12. States and Modes</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="States &amp; Modes" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="states_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="states_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="states_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="states_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#states_bg)"/>
+  <rect width="1200" height="280" fill="url(#states_grid)"/>
+  <rect width="1200" height="140" fill="url(#states_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">States &amp; Modes</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">SPARTA operating regimes and controlled transitions.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <g transform="translate(195 115) scale(0.85) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g>
+          <rect x="20" y="35" width="75" height="30" rx="15" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="57" y="54" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Monitor</text>
+          <rect x="295" y="35" width="75" height="30" rx="15" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="332" y="54" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Assess</text>
+          <rect x="20" y="165" width="75" height="30" rx="15" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="57" y="184" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Recover</text>
+          <rect x="295" y="165" width="75" height="30" rx="15" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="332" y="184" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Isolate</text>
+        </g>
+        <g stroke="#cbdcf0" stroke-width="1.3" fill="none">
+          <path d="M 95 50 C 150 50 180 75 160 95 M 157 92 L 160 95 L 157 98"/>
+          <path d="M 230 95 C 245 75 275 55 295 50 M 293 53 L 295 50 L 292 47"/>
+          <path d="M 230 135 C 260 150 280 160 295 175 M 294 172 L 295 175 L 291 175"/>
+          <path d="M 95 180 C 135 155 155 140 160 135 M 158 138 L 160 135 L 163 138"/>
+        </g>
+        <text x="195" y="220" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Transitions driven by evidence and policy</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="figure">
+    <div class="mermaid">
+stateDiagram-v2
+  [*] --> Standby
+  Standby --> Initialize : power-on / mission load
+  Initialize --> Monitor : config valid + services healthy
+  Monitor --> Correlate : peer data available
+  Monitor --> Degraded : link loss / data source loss
+  Correlate --> Assess : anomaly or disagreement detected
+  Assess --> Recommend : trust update produced
+  Recommend --> Monitor : advisory issued
+  Recommend --> Recover : remediation or adjudication in progress
+  Degraded --> Assess : local anomaly detected
+  Recover --> Monitor : trust stabilized
+  Assess --> Isolate : policy-gated local protection
+  Isolate --> Recover : controlled re-entry
+  Monitor --> Safe : fault / watchdog
+  Safe --> Initialize : restart permitted
+    </div>
+    <div class="caption">Figure 01-8. SPARTA high-level state and mode view.</div>
+  </div>
+
+  <table class="metadata">
+    <thead><tr><th>Mode</th><th>Description</th><th>Key Outputs</th><th>Active Elements</th></tr></thead>
+    <tbody>
+      <tr><td>Standby</td><td>Installed, not mission-active</td><td>Health self-check only</td><td>Minimal services</td></tr>
+      <tr><td>Initialize</td><td>Loading policies, bindings, mission context</td><td>Configuration status</td><td>Policy Manager, Comms Adapter</td></tr>
+      <tr><td>Monitor</td><td>Nominal continuous sensing and assessment</td><td>NodeStatus, anomaly candidates</td><td>Data Acquisition, Detection, Trust</td></tr>
+      <tr><td>Correlate</td><td>Peer summary exchange and tactical fusion active</td><td>Consensus/disagreement products</td><td>+ Correlator</td></tr>
+      <tr><td>Assess</td><td>Trust logic evaluating evidence</td><td>TrustAssessment with rationale</td><td>Trust Engine</td></tr>
+      <tr><td>Recommend</td><td>Recommendation and evidence publication</td><td>ResponseRecommendation, evidence package</td><td>Response Engine, Evidence Store</td></tr>
+      <tr><td>Degraded</td><td>Missing links, source loss, or reduced function</td><td>Reduced-confidence outputs</td><td>Core + flags</td></tr>
+      <tr><td>Isolate</td><td>Policy-gated local protective posture</td><td>Restricted local participation</td><td>Policy Engine, Response</td></tr>
+      <tr><td>Recover</td><td>Re-entry and validation after mitigation or adjudication</td><td>Stepwise trust restoration</td><td>Trust, Policy, Comms</td></tr>
+      <tr><td>Safe</td><td>Fault-driven fail-safe</td><td>Safe-state heartbeat only</td><td>Watchdog + minimal output</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="responsibilities">
+  <h2>13. Human vs Automation Responsibilities</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Human vs Automation Authority" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="humaut_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="humaut_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="humaut_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="humaut_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#humaut_bg)"/>
+  <rect width="1200" height="280" fill="url(#humaut_grid)"/>
+  <rect width="1200" height="140" fill="url(#humaut_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Human vs Automation Authority</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Authority partitioning between operator, MARS and SPARTA.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <circle cx="70" cy="93.2" r="9.799999999999999" fill="#cbdcf0" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/><rect x="56.0" y="104.4" width="28.0" height="30.799999999999997" rx="4.199999999999999" fill="#cbdcf0" fill-opacity="0.25" stroke="#cbdcf0" stroke-width="1.2"/>
+        <text x="70" y="170" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Operator</text>
+        <g transform="translate(195 110) scale(0.9) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <text x="195" y="175" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">SPARTA Agent</text>
+        <g transform="translate(320 110)">
+          <rect x="-28" y="-30" width="56" height="56" rx="6" fill="#7bb7e6" fill-opacity="0.3" stroke="#7bb7e6" stroke-width="1.5"/>
+          <circle cx="-10" cy="-12" r="4" fill="#cbdcf0"/>
+          <circle cx="10" cy="-12" r="4" fill="#cbdcf0"/>
+          <rect x="-12" y="5" width="24" height="4" rx="2" fill="#cbdcf0"/>
+          <line x1="0" y1="-30" x2="0" y2="-40" stroke="#cbdcf0" stroke-width="1.5"/>
+          <circle cx="0" cy="-42" r="3" fill="#e7b955"/>
+        </g>
+        <text x="320" y="175" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">MARS Automation</text>
+        <g stroke="#cbdcf0" stroke-width="1" stroke-dasharray="3 3" fill="none" opacity="0.7">
+          <line x1="95" y1="110" x2="150" y2="110"/>
+          <line x1="240" y1="110" x2="290" y2="110"/>
+        </g>
+        <text x="122" y="105" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">advice</text>
+        <text x="265" y="105" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">reco</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <table class="matrix">
+    <thead><tr><th>Decision Area</th><th>SPARTA (Automation)</th><th>MARS</th><th>TSOC</th><th>C2 / Commander</th></tr></thead>
+    <tbody>
+      <tr><td>Local anomaly detection</td><td>Primary</td><td>Consumes</td><td>Reviews</td><td>—</td></tr>
+      <tr><td>Trust estimation</td><td>Primary</td><td>Applies constraints</td><td>May adjudicate</td><td>Sees impact</td></tr>
+      <tr><td>Mission adaptation</td><td>Advisory only</td><td>Primary execution authority</td><td>Policy / override</td><td>Strategic authority</td></tr>
+      <tr><td>Fleet-wide correlation</td><td>Provides inputs</td><td>Consumes conclusions</td><td>Primary</td><td>Oversight</td></tr>
+      <tr><td>Strong isolation actions</td><td>Only when policy-enabled and time-bounded</td><td>May coordinate</td><td>Approves / constrains</td><td>May direct</td></tr>
+      <tr><td>Policy / model content updates</td><td>Validates &amp; activates signed bundles</td><td>—</td><td>Primary</td><td>Sets envelope</td></tr>
+      <tr><td>Reintegration decisions</td><td>Executes stepwise logic</td><td>Applies role change</td><td>Adjudicates</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="callout decision">
+    <strong>Authority Partitioning Principle</strong>
+    SPARTA detects and recommends. MARS adapts mission behavior. TSOC adjudicates and sets policy. C2 retains strategic authority. This partitioning is the controlling principle for all response-related requirements and architecture decisions.
+  </div>
+</section>
+
+<section id="timelines">
+  <h2>14. Operational Timelines and Event Chains</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Operational Timelines" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="timeline_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="timeline_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="timeline_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="timeline_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#timeline_bg)"/>
+  <rect width="1200" height="280" fill="url(#timeline_grid)"/>
+  <rect width="1200" height="140" fill="url(#timeline_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Operational Timelines</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Event chains across the trust decision window.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <line x1="30" y1="130" x2="370" y2="130" stroke="#cbdcf0" stroke-width="2"/>
+        <g fill="#e7b955">
+          <circle cx="60" cy="130" r="5"/><circle cx="140" cy="130" r="5"/>
+          <circle cx="220" cy="130" r="5"/><circle cx="300" cy="130" r="5"/>
+        </g>
+        <g stroke="#7bb7e6" stroke-width="1.3" opacity="0.8">
+          <line x1="60" y1="130" x2="60" y2="95"/>
+          <line x1="140" y1="130" x2="140" y2="75"/>
+          <line x1="220" y1="130" x2="220" y2="65"/>
+          <line x1="300" y1="130" x2="300" y2="100"/>
+        </g>
+        <text x="60" y="88" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">T0</text>
+        <text x="140" y="68" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Qualify</text>
+        <text x="220" y="58" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">TrustAssess</text>
+        <text x="300" y="93" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">MARS</text>
+        <g transform="translate(220 160) scale(0.55) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.4" stroke="#e7b955" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <path d="M 365 130 L 378 130 L 371 124 M 378 130 L 371 136" fill="none" stroke="#cbdcf0" stroke-width="2"/>
+        <text x="200" y="205" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Objective 2 s · Threshold 5 s (P95)</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="figure">
+    <svg viewBox="0 0 980 180" role="img" aria-label="Operational timeline for a qualified anomaly">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f4e79"/>
+        </marker>
+      </defs>
+      <line x1="40" y1="90" x2="940" y2="90" stroke="#1f4e79" stroke-width="2" marker-end="url(#arr)"/>
+      <g font-size="12" fill="#142033" text-anchor="middle">
+        <circle cx="80" cy="90" r="6" fill="#1f4e79"/>
+        <text x="80" y="70">T0</text>
+        <text x="80" y="120">Anomaly raw</text>
+
+        <circle cx="240" cy="90" r="6" fill="#1f4e79"/>
+        <text x="240" y="70">T0 + ~0.3 s</text>
+        <text x="240" y="120">Qualified event</text>
+
+        <circle cx="420" cy="90" r="6" fill="#1f4e79"/>
+        <text x="420" y="70">T0 + ~1.0 s</text>
+        <text x="420" y="120">Peer summaries</text>
+
+        <circle cx="600" cy="90" r="6" fill="#1f4e79"/>
+        <text x="600" y="70">T0 + ~1.6 s</text>
+        <text x="600" y="120">TrustAssessment</text>
+
+        <circle cx="780" cy="90" r="6" fill="#1f4e79"/>
+        <text x="780" y="70">T0 + ~2.0 s</text>
+        <text x="780" y="120">MARS consumes</text>
+
+        <circle cx="920" cy="90" r="6" fill="#0a5b47"/>
+        <text x="920" y="70">Opportunistic</text>
+        <text x="920" y="120">TSOC sync</text>
+      </g>
+      <text x="490" y="30" text-anchor="middle" font-size="13" fill="#52627a">
+        Qualified anomaly → mission-consumable trust output · provisional objective 2 s / threshold 5 s
+      </text>
+    </svg>
+    <div class="caption">Figure 01-9. Operational timeline for a qualified high-severity anomaly under Mode B.</div>
+  </div>
+</section>
+
+<section id="ops-risks">
+  <h2>15. Operational Risks, Sensitivities and Architecture-Driving Implications</h2>
+  <figure class="hero-illustration">
+<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Operational Risks &amp; Sensitivities" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="risks_bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#081a30"/>
+      <stop offset="50%" stop-color="#142d4f"/>
+      <stop offset="100%" stop-color="#2a5f97"/>
+    </linearGradient>
+    <linearGradient id="risks_glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="risks_halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="risks_grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="280" fill="url(#risks_bg)"/>
+  <rect width="1200" height="280" fill="url(#risks_grid)"/>
+  <rect width="1200" height="140" fill="url(#risks_glow)"/>
+  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
+    <line x1="40" y1="20" x2="48" y2="20"/>
+    <line x1="40" y1="30" x2="60" y2="30"/>
+    <line x1="40" y1="40" x2="48" y2="40"/>
+    <line x1="1160" y1="260" x2="1152" y2="260"/>
+    <line x1="1160" y1="250" x2="1140" y2="250"/>
+    <line x1="1160" y1="240" x2="1152" y2="240"/>
+  </g>
+  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
+  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
+  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Operational Risks &amp; Sensitivities</text>
+  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">What drives architecture, policy, and V&amp;V decisions.</text>
+  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
+  <g transform="translate(780 30)">
+    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
+    <circle cx="195" cy="110" r="90" fill="none" stroke="#cbdcf0" stroke-width="1" opacity="0.5"/>
+        <circle cx="195" cy="110" r="60" fill="none" stroke="#cbdcf0" stroke-width="1" opacity="0.5"/>
+        <circle cx="195" cy="110" r="30" fill="none" stroke="#cbdcf0" stroke-width="1" opacity="0.5"/>
+        <line x1="105" y1="110" x2="285" y2="110" stroke="#cbdcf0" stroke-width="1" opacity="0.4"/>
+        <line x1="195" y1="20" x2="195" y2="200" stroke="#cbdcf0" stroke-width="1" opacity="0.4"/>
+        <path d="M 195 110 L 270 60 A 90 90 0 0 1 265 155 Z" fill="#e7b955" fill-opacity="0.25" stroke="#e7b955" stroke-width="1"/>
+        <g transform="translate(195 110) scale(0.65) rotate(0)">
+        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.3"/>
+        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
+        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
+        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
+      </g>
+        <g fill="#e7b955">
+          <circle cx="270" cy="60" r="4"/><circle cx="265" cy="155" r="4"/>
+          <circle cx="125" cy="160" r="4"/><circle cx="110" cy="75" r="4"/>
+        </g>
+        <text x="200" y="215" fill="#c8e1f4" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">R-01 False-positive · R-03 Trust poisoning · R-07 Timing</text>
+  </g>
+  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
+  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
+</svg>
+</figure>
+  <div class="callout risk">
+    <strong>Operational Risk Summary</strong>
+    <ul>
+      <li>False positives can create mission-denial behavior operationally equivalent to an adversary success.</li>
+      <li>Insufficient context can lead to technically correct but mission-irrelevant alerts.</li>
+      <li>Adversarial influence on correlation channels can distort consensus unless provenance and weighting are enforced.</li>
+      <li>Policy ambiguity at the SPARTA/MARS/TSOC boundary can stall accreditation and operational adoption.</li>
+      <li>Timing reference loss can produce out-of-order evidence that degrades trust credibility.</li>
+    </ul>
+  </div>
+
+  <h3>15.1 Architecture-Driving Operational Implications</h3>
+  <ul>
+    <li>Mission-aware checks require explicit interface allocation to MARS for role, task, and state context (drives IF-EXT-01).</li>
+    <li>Disconnected operation requires local evidence buffering, durable trust state, and policy validity management (drives EvidenceStore and PolicyManager).</li>
+    <li>Peer correlation requires compact, signed, provenance-bearing summaries rather than raw telemetry exchange (drives PeerSummary contract).</li>
+    <li>Recovery scenarios require stateful reintegration logic rather than binary trust restoration (drives Trust Engine state machine).</li>
+    <li>Resource envelopes must be contractual rather than best-effort (drives host-resource contract with platform integrator).</li>
+    <li>Content evolution must be decoupled from the accredited software baseline (drives signed PolicyBundle / model package lifecycle).</li>
+  </ul>
+
+  <h3>15.2 Outputs into Deliverable 02</h3>
+  <p>These operational drivers are converted into enforceable system requirements in <a href="02_system_requirements.html">Deliverable 02 — System Requirements Specification</a>, and allocated in <a href="03_architecture_data_definition.html">Deliverable 03 — Architecture &amp; Data Definition</a>.</p>
+</section>
+
+        <div class="footer-nav">
+          <a href="index.html">← Index</a>
+          <a href="02_system_requirements.html">02 System Requirements →</a>
+        </div>
+      </main>
+    </div>
+  </div>
+    <div class="page-footer-mark">
+      <img src="assets/sparta_logo_64.png" alt="" />
+      <span>SPARTA · Cyber Defense Programme · Airbus Restricted</span>
+    </div>
+</body>
+</html>
