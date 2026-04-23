@@ -1,1213 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>SPARTA · 03 — System Architecture &amp; Data Definition</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/sparta_logo_32.png" />
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/sparta_logo_64.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/sparta_logo_180.png" />
-  <script src="assets/mermaid.min.js"></script>
-  <script>
-    (function(){
-      if (typeof mermaid !== 'undefined' && mermaid && typeof mermaid.initialize === 'function') {
-        mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose', flowchart: { curve: 'basis' } });
-      } else {
-        document.addEventListener('DOMContentLoaded', function(){
-          document.querySelectorAll('.mermaid').forEach(function(el){
-            var src = (el.textContent || '').trim();
-            el.innerHTML = '<div style="padding:12px;border:1px dashed #97a8c2;border-radius:8px;color:#52627a;font-size:.9rem;">Mermaid diagram (renderer not available — source retained below for review).</div><pre style="margin-top:6px">' + src.replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}) + '</pre>';
-          });
-        });
-      }
-    })();
-  </script>
-</head>
-<body>
-  <div class="page">
-    <div class="topbar">
-      <div class="logo-mark" aria-hidden="true" title="SPARTA Cyber Defense"><img src="assets/sparta_logo.png" alt="" /></div>
-      <div class="kicker">SPARTA System Definition Datapack · PDR Baseline · Deliverable 03</div>
-      <h1>03 — System Architecture &amp; Data Definition</h1>
-      <div class="subtitle">Functional, logical, and physical architecture with interfaces, connectivity, data entities, schemas, and key sequence behavior.</div>
-      <div class="doc-meta">
-        <div class="item"><strong>System (Product)</strong><br>SPARTA — platform-agnostic edge trust layer</div>
-        <div class="item"><strong>Reference Integration Case</strong><br>Eurodrone-class RPAS (illustrative only)</div>
-        <div class="item"><strong>Review Level</strong><br>PDR baseline (CDR bridge)</div>
-        <div class="item"><strong>External Interfaces</strong><br>5 (IF-EXT-01..05), contract-grade schemas in §11</div>
-        <div class="item"><strong>Issue</strong><br>Draft C — 23 April 2026</div>
-      </div>
-    </div>
-
-    <div class="breadcrumbs"><a href="index.html">Datapack</a> › <strong>03 Architecture &amp; Data Definition</strong></div>
-
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="panel toc">
-          <div class="kicker">Navigation</div>
-          <h3>Contents</h3>
-          <ol>
-            <li><a href="#purpose">Purpose</a></li>
-            <li><a href="#scope">Scope</a></li>
-            <li><a href="#drivers-principles">Drivers &amp; Principles</a></li>
-            <li><a href="#functional-architecture">Functional Architecture (FBS)</a></li>
-            <li><a href="#logical-architecture">Logical Architecture</a></li>
-            <li><a href="#physical-architecture">Physical Architecture / PBS</a></li>
-            <li><a href="#allocation-view">Allocation View</a></li>
-            <li><a href="#interface-map">Interfaces &amp; Connectivity</a></li>
-            <li><a href="#data-flows">Control / Data Flows</a></li>
-            <li><a href="#sequences">Key Sequences</a></li>
-            <li><a href="#data-model">Data Model</a></li>
-            <li><a href="#timing-modes-tradeoffs">Timing, Trade-offs, Risks</a></li>
-          </ol>
-        </div>
-        <div class="panel">
-          <h3>Datapack</h3>
-          <ul>
-            <li><a href="index.html">Index</a></li>
-            <li><a href="01_mission_conops_context.html">01 Mission, ConOps &amp; Context</a></li>
-            <li><a href="02_system_requirements.html">02 System Requirements</a></li>
-            <li><a href="03_architecture_data_definition.html">03 Architecture &amp; Data</a></li>
-            <li><a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle</a></li>
-            <li><a href="05_strategic_analysis_airbus_fcas.html">05 Strategic Analysis (Airbus / FCAS)</a></li>
-            <li><a href="06_security_safety_assurance.html">06 Security, Safety &amp; Assurance</a></li>
-          </ul>
-        </div>
-      </aside>
-
-      <main class="content">
-
-<section id="purpose">
-  <h2>1. Purpose of Document</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Purpose of Document" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="purpose_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="purpose_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="purpose_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="purpose_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#purpose_bg)"/>
-  <rect width="1200" height="280" fill="url(#purpose_grid)"/>
-  <rect width="1200" height="140" fill="url(#purpose_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Purpose of Document</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">The intent this deliverable serves in the SPARTA baseline.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(195 110) scale(1.4) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <circle cx="195" cy="110" r="90" fill="none" stroke="#e7b955" stroke-width="1.5" opacity="0.8"/>
-        <circle cx="195" cy="110" r="60" fill="none" stroke="#e7b955" stroke-width="1" opacity="0.7"/>
-        <line x1="85" y1="110" x2="305" y2="110" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
-        <line x1="195" y1="0" x2="195" y2="220" stroke="#e7b955" stroke-width="1" opacity="0.6"/>
-        <circle cx="195" cy="110" r="6" fill="#e7b955"/>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <p>This document defines the SPARTA system architecture baseline at PDR maturity, including functional, logical, and physical decomposition; external and internal interfaces; connectivity and data flows; the key data entities and their schemas; and selected sequence behavior for mission-critical exchanges. It is the allocation target for <a href="02_system_requirements.html">Deliverable 02</a> and the subject of verification in <a href="04_performance_vnv_lifecycle.html">Deliverable 04</a>.</p>
-</section>
-
-<section id="scope">
-  <h2>2. Scope and Applicability</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scope &amp; Applicability" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="scope_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="scope_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="scope_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="scope_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#scope_bg)"/>
-  <rect width="1200" height="280" fill="url(#scope_grid)"/>
-  <rect width="1200" height="140" fill="url(#scope_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Scope &amp; Applicability</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Boundaries of what this document governs in the baseline.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(140 110) scale(1.1) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <circle cx="220" cy="100" r="68" fill="#ffffff" fill-opacity="0.05" stroke="#e7b955" stroke-width="3"/>
-        <circle cx="220" cy="100" r="50" fill="none" stroke="#7bb7e6" stroke-width="1" stroke-dasharray="3 3"/>
-        <line x1="265" y1="148" x2="330" y2="200" stroke="#e7b955" stroke-width="7" stroke-linecap="round"/>
-        <line x1="268" y1="145" x2="325" y2="195" stroke="#1a4272" stroke-width="3" stroke-linecap="round"/>
-        <g transform="translate(220 100) scale(0.45) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#e7b955" fill-opacity="0.55" stroke="#e7b955" stroke-width="1"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#e7b955" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#e7b955" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <p>The scope is system-level architecture. Detailed subsystem design, implementation-specific technology selections, and program-specific ICD ownership boundaries remain open to refinement but are provisionally framed here where necessary for coherence. Values prefixed <em>provisional</em> will be confirmed by the integration campaign.</p>
-</section>
-
-<section id="drivers-principles">
-  <h2>3. Architecture Drivers, Assumptions and Principles</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture Drivers &amp; Principles" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="drivers_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="drivers_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="drivers_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="drivers_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#drivers_bg)"/>
-  <rect width="1200" height="280" fill="url(#drivers_grid)"/>
-  <rect width="1200" height="140" fill="url(#drivers_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Architecture Drivers &amp; Principles</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">What shapes SPARTA&#x27;s decomposition and interfaces.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(90 110)">
-          <circle r="38" fill="#7bb7e6" fill-opacity="0.3" stroke="#7bb7e6" stroke-width="1.5"/>
-          <g fill="#7bb7e6">
-            <rect x="-5" y="-44" width="10" height="10"/><rect x="-5" y="34" width="10" height="10"/>
-            <rect x="-44" y="-5" width="10" height="10"/><rect x="34" y="-5" width="10" height="10"/>
-            <rect x="-33" y="-33" width="9" height="9" transform="rotate(45)"/>
-            <rect x="24" y="-33" width="9" height="9" transform="rotate(45)"/>
-          </g>
-          <circle r="14" fill="#0f2843"/>
-        </g>
-        <g transform="translate(170 65)">
-          <circle r="24" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.5"/>
-          <g fill="#e7b955">
-            <rect x="-3" y="-30" width="6" height="8"/><rect x="-3" y="22" width="6" height="8"/>
-            <rect x="-30" y="-3" width="8" height="6"/><rect x="22" y="-3" width="8" height="6"/>
-          </g>
-          <circle r="8" fill="#0f2843"/>
-        </g>
-        <g transform="translate(290 125) scale(1.0) rotate(5)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.22" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <g stroke="#e7b955" stroke-width="1.4" fill="none" opacity="0.85">
-          <path d="M 130 100 L 155 80"/>
-          <path d="M 192 80 L 240 100 L 235 95 M 240 100 L 235 105"/>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-
-  <h3>3.1 Drivers</h3>
-  <ul>
-    <li>Fast conversion of cyber evidence into mission-consumable trust outputs (SYS-PERF-001).</li>
-    <li>Operation with and without TSOC connectivity (SYS-OPS-001).</li>
-    <li>Authority-aware separation between cyber advice and mission command execution (SYS-DC-001).</li>
-    <li>Compact tactical exchanges and richer evidential exports (SYS-PERF-002, SYS-DATA-*).</li>
-    <li>Phased deployment A/B/C under a stable external data model (SYS-DC-002).</li>
-    <li>Independent lifecycle of content (policies, rules, models) from the accredited software baseline (SYS-DC-004).</li>
-  </ul>
-
-  <h3>3.2 Governing Architecture Principles</h3>
-  <ul>
-    <li><strong>Process locally; correlate tactically; fuse strategically.</strong> Trust is generated at the edge, corroborated with neighbors, and adjudicated by TSOC.</li>
-    <li><strong>Stable data objects across modes.</strong> External contracts are identical in Mode A/B/C; richness varies, semantics do not.</li>
-    <li><strong>Separation of concerns.</strong> Sensing, inference, recommendation, and actuation are distinct internal interfaces.</li>
-    <li><strong>Provenance on every output.</strong> Trust, recommendations, and evidence carry reason-chain and validity metadata.</li>
-    <li><strong>Resource contract.</strong> Edge footprint is contractual, not best-effort.</li>
-    <li><strong>Content-signed, software-separated.</strong> Policies and models are signed content; the software stack is accredited separately.</li>
-    <li><strong>Authority-safe defaults.</strong> Unknown policy = most restrictive action envelope.</li>
-  </ul>
-
-  <h3>3.3 Architecture Assumptions</h3>
-  <div class="callout assumption">
-    <strong>Controlling Architecture Assumptions</strong>
-    <ul>
-      <li>MARS exposes mission role/task/state context via a published, versioned interface.</li>
-      <li>Identity and keys are provisioned in advance of mission execution.</li>
-      <li>Common time reference (±50 ms) is available.</li>
-      <li>Tactical correlator functionality can be logically co-hosted or hosted on a dedicated fog node.</li>
-    </ul>
-  </div>
-</section>
-
-<section id="functional-architecture">
-  <h2>4. Functional Architecture — Functional Breakdown Structure</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Functional Architecture (FBS)" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="fbs_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="fbs_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="fbs_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="fbs_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#fbs_bg)"/>
-  <rect width="1200" height="280" fill="url(#fbs_grid)"/>
-  <rect width="1200" height="140" fill="url(#fbs_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Functional Architecture (FBS)</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Hierarchy of functions realized by a SPARTA edge-node instance (Eurodrone shown as reference integration case).</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <rect x="140" y="30" width="110" height="26" rx="4" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955" stroke-width="1.2"/><text x="195" y="47" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">SPARTA F0</text>
-        <rect x="40" y="80" width="80" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="80" y="96" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F1 Acquire</text>
-        <rect x="155" y="80" width="80" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="195" y="96" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F3 Detect</text>
-        <rect x="270" y="80" width="85" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="312" y="96" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F5 Recommend</text>
-        <rect x="40" y="125" width="80" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="80" y="141" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F4 Trust</text>
-        <rect x="155" y="125" width="80" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="195" y="141" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F6 Evidence</text>
-        <rect x="270" y="125" width="85" height="24" rx="4" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="1.2"/><text x="312" y="141" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">F9 TSOC Sync</text>
-        <g stroke="#7bb7e6" stroke-width="1.2" fill="none">
-          <path d="M 195 56 L 195 70 L 80 70 L 80 80 M 195 70 L 195 80 M 195 70 L 312 70 L 312 80"/>
-        </g>
-        <g transform="translate(195 185) scale(0.55) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <div class="figure">
-    <div class="mermaid">
+<!DOCTYPE html><html lang="en"><head><title>SPARTA · 03 — System Architecture &amp; Data Definition</title><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="stylesheet" href="style.css" /><link rel="icon" type="image/png" sizes="32x32" href="assets/sparta_logo_32.png" /><link rel="icon" type="image/png" sizes="64x64" href="assets/sparta_logo_64.png" /><link rel="apple-touch-icon" sizes="180x180" href="assets/sparta_logo_180.png" />
+<script src="assets/mermaid.min.js" defer></script>
+<script src="assets/sparta-init.js" defer></script>
+</head><body><div class="page"><div class="topbar"><div class="logo-mark" aria-hidden="true" title="SPARTA Cyber Defense"><img src="assets/sparta_logo.webp" alt="" /></div><div class="kicker">SPARTA System Definition Datapack · PDR Baseline · Deliverable 03</div><h1>03 — System Architecture &amp; Data Definition</h1><div class="subtitle">Functional, logical, and physical architecture with interfaces, connectivity, data entities, schemas, and key sequence behavior.</div><div class="doc-meta"><div class="item"><strong>System (Product)</strong><br>SPARTA — platform-agnostic edge trust layer</div><div class="item"><strong>Reference Integration Case</strong><br>Eurodrone-class RPAS (illustrative only)</div><div class="item"><strong>Review Level</strong><br>PDR baseline (CDR bridge)</div><div class="item"><strong>External Interfaces</strong><br>5 (IF-EXT-01..05), contract-grade schemas in §11</div><div class="item"><strong>Issue</strong><br>Draft C — 23 April 2026</div></div></div><div class="breadcrumbs"><a href="index.html">Datapack</a> › <strong>03 Architecture &amp; Data Definition</strong></div><div class="layout"><aside class="sidebar"><div class="panel toc"><div class="kicker">Navigation</div><h3>Contents</h3><ol><li><a href="#purpose">Purpose</a></li><li><a href="#scope">Scope</a></li><li><a href="#drivers-principles">Drivers &amp; Principles</a></li><li><a href="#functional-architecture">Functional Architecture (FBS)</a></li><li><a href="#logical-architecture">Logical Architecture</a></li><li><a href="#physical-architecture">Physical Architecture / PBS</a></li><li><a href="#allocation-view">Allocation View</a></li><li><a href="#interface-map">Interfaces &amp; Connectivity</a></li><li><a href="#data-flows">Control / Data Flows</a></li><li><a href="#sequences">Key Sequences</a></li><li><a href="#data-model">Data Model</a></li><li><a href="#timing-modes-tradeoffs">Timing, Trade-offs, Risks</a></li></ol></div><div class="panel"><h3>Datapack</h3><ul><li><a href="index.html">Index</a></li><li><a href="01_mission_conops_context.html">01 Mission, ConOps &amp; Context</a></li><li><a href="02_system_requirements.html">02 System Requirements</a></li><li><a href="03_architecture_data_definition.html">03 Architecture &amp; Data</a></li><li><a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle</a></li><li><a href="05_strategic_analysis_airbus_fcas.html">05 Strategic Analysis (Airbus / FCAS)</a></li><li><a href="06_security_safety_assurance.html">06 Security, Safety &amp; Assurance</a></li>
+</ul></div></aside><main class="content"><section id="purpose"><h2>1. Purpose of Document</h2><p>This document defines the SPARTA system architecture baseline at PDR maturity, including functional, logical, and physical decomposition; external and internal interfaces; connectivity and data flows; the key data entities and their schemas; and selected sequence behavior for mission-critical exchanges. It is the allocation target for <a href="02_system_requirements.html">Deliverable 02</a> and the subject of verification in <a href="04_performance_vnv_lifecycle.html">Deliverable 04</a>.</p></section><section id="scope"><h2>2. Scope and Applicability</h2><p>The scope is system-level architecture. Detailed subsystem design, implementation-specific technology selections, and program-specific ICD ownership boundaries remain open to refinement but are provisionally framed here where necessary for coherence. Values prefixed <em>provisional</em> will be confirmed by the integration campaign.</p></section><section id="drivers-principles"><h2>3. Architecture Drivers, Assumptions and Principles</h2><h3>3.1 Drivers</h3><ul><li>Fast conversion of cyber evidence into mission-consumable trust outputs (SYS-PERF-001).</li><li>Operation with and without TSOC connectivity (SYS-OPS-001).</li><li>Authority-aware separation between cyber advice and mission command execution (SYS-DC-001).</li><li>Compact tactical exchanges and richer evidential exports (SYS-PERF-002, SYS-DATA-*).</li><li>Phased deployment A/B/C under a stable external data model (SYS-DC-002).</li><li>Independent lifecycle of content (policies, rules, models) from the accredited software baseline (SYS-DC-004).</li></ul><h3>3.2 Governing Architecture Principles</h3><ul><li><strong>Process locally; correlate tactically; fuse strategically.</strong> Trust is generated at the edge, corroborated with neighbors, and adjudicated by TSOC.</li><li><strong>Stable data objects across modes.</strong> External contracts are identical in Mode A/B/C; richness varies, semantics do not.</li><li><strong>Separation of concerns.</strong> Sensing, inference, recommendation, and actuation are distinct internal interfaces.</li><li><strong>Provenance on every output.</strong> Trust, recommendations, and evidence carry reason-chain and validity metadata.</li><li><strong>Resource contract.</strong> Edge footprint is contractual, not best-effort.</li><li><strong>Content-signed, software-separated.</strong> Policies and models are signed content; the software stack is accredited separately.</li><li><strong>Authority-safe defaults.</strong> Unknown policy = most restrictive action envelope.</li></ul><h3>3.3 Architecture Assumptions</h3><div class="callout assumption"><strong>Controlling Architecture Assumptions</strong><ul><li>MARS exposes mission role/task/state context via a published, versioned interface.</li><li>Identity and keys are provisioned in advance of mission execution.</li><li>Common time reference (±50 ms) is available.</li><li>Tactical correlator functionality can be logically co-hosted or hosted on a dedicated fog node.</li></ul></div></section><section id="functional-architecture"><h2>4. Functional Architecture — Canonical FBS (FM)</h2><div class="callout decision"><strong>Canonical FBS — supersedes earlier F1..F12</strong>
+The canonical SPARTA functional breakdown is <strong>FM — Airborne Cyber Threat Detection &amp; Forwarding</strong>, with ten top-level functions F1..F10. This replaces the earlier F1..F12 baseline used in prior drafts. Sub-function drill-down (66 leaves, 71 IDs including the F7.4 and F10.1..F10.4 group headers) is in §4.2 below; this section §4.1 gives the canonical diagram, one-line descriptions, SYS-* trace, and realizing components.</div>
+<div class="figure"><div class="mermaid">
 flowchart TB
-  A["<b>F1</b> Acquire Data"] --> B["<b>F2</b> Normalize &amp; Time-Align"]
-  B --> C["<b>F3</b> Detect &amp; Classify Local Anomalies"]
-  C --> D["<b>F4</b> Estimate Trust"]
-  D --> E["<b>F5</b> Generate Recommendations"]
-  C --> F["<b>F6</b> Persist Evidence"]
-  D --> G["<b>F7</b> Exchange Peer Summaries"]
-  G --> H["<b>F8</b> Tactical Correlation"]
-  H --> D
-  F --> I["<b>F9</b> Synchronize with TSOC"]
-  E --> J["<b>F10</b> Publish to MARS / C2 Consumers"]
-  K["<b>F11</b> Manage Policies &amp; Content"] --> D
-  K --> E
-  L["<b>F12</b> Self-Health &amp; Fault Management"] --> J
-  L --> F
+F1["<b>F1</b> COLLECT<br/>security-relevant data"] --> F2["<b>F2</b> NORMALIZE &amp; ENRICH<br/>locally"]
+F2 --> F3["<b>F3</b> DETECT<br/>threats &amp; anomalies"]
+F3 --> F4["<b>F4</b> PRIORITIZE &amp; TRIAGE<br/>alerts"]
+F4 --> F5["<b>F5</b> STORE &amp; PROTECT<br/>resiliently"]
+F5 --> F6["<b>F6</b> TRANSMIT<br/>DDIL-aware"]
+F6 --> F7["<b>F7</b> INTERFACE<br/>with Airbus TSOC"]
+F7 -.signed rule update.-> F3
+F8["<b>F8</b> INTEGRATE<br/>with drone environment<br/>(read-only)"] --> F1
+F9["<b>F9</b> MANAGE<br/>system integrity &amp; config"] -.self-attest.-> F3
+F9 -.self-attest.-> F6
+F10["<b>F10</b> CONFIGURE<br/>threat detection locally"] --> F3
+F10 --> F4
+classDef core fill:#eaf1f8,stroke:#1f4e79,color:#142033;
+classDef ext fill:#ebfff7,stroke:#0a5b47,color:#142033;
+classDef mgmt fill:#fff7e6,stroke:#8a5a00,color:#142033;
+class F1,F2,F3,F4,F5,F6 core;
+class F7,F8 ext;
+class F9,F10 mgmt;
+</div><div class="caption">Figure 03-1. Canonical SPARTA FBS (FM). Core detection/forwarding chain F1→F7 in blue; platform-integration surface F8 in green (read-only on avionics side); cross-cutting integrity/configuration F9/F10 in amber. Peer exchange and neighbourhood Byzantine correlation are deliberately outside the canonical FBS — see §4.1.</div></div>
+<table class="metadata"><thead><tr><th>Function</th><th>Description</th><th>SYS-* trace</th><th>Realizing Components</th></tr></thead><tbody>
+<tr><td>F1 COLLECT</td><td>Collect system logs, network metadata, hardware telemetry, RF/comms link data, MARS-virtualization events, and security-control audit.</td><td>SYS-FUNC-001, SYS-FUNC-002</td><td>Host collector · Network collector · RF/link collector · MARS event collector · Audit collector</td></tr>
+<tr><td>F2 NORMALIZE &amp; ENRICH</td><td>Parse heterogeneous formats, normalize to ECS/CEF-compatible schema, timestamp/synchronize, enrich with asset context.</td><td>SYS-DATA-001..004, SYS-FUNC-007 (AC)</td><td>Parser registry · Schema normalizer · Time-fusion module · Asset-context enricher</td></tr>
+<tr><td>F3 DETECT</td><td>Signature detection (IOCs), behavioural/anomaly detection (ML), lateral-movement detection, integrity-violation detection, cross-domain correlation hint emission.</td><td>SYS-FUNC-003, SYS-FUNC-004, SYS-SEC-003, SYS-FUNC-010</td><td>IOC engine · ML detector(s) · Integrity attester · Cross-domain hinter</td></tr>
+<tr><td>F4 PRIORITIZE &amp; TRIAGE</td><td>Score alerts (severity × mission-criticality × asset weight), local correlation, FP suppression, queue by DDIL priority.</td><td><strong>SYS-FUNC-011</strong>, SYS-FUNC-005, SYS-HFE-002</td><td>Triage Engine · Priority queue · Context-filter</td></tr>
+<tr><td>F5 STORE &amp; PROTECT</td><td>Ring-buffer raw events, compress/deduplicate, persist prioritized alerts for guaranteed delivery, enforce retention &amp; secure deletion, encrypt at rest.</td><td>SYS-FUNC-008, SYS-DATA-005, SYS-SEC-002, SYS-RAM-002</td><td>Evidence store · Retention enforcer · Crypto services</td></tr>
+<tr><td>F6 TRANSMIT (DDIL)</td><td>Select best available platform link; transmit high-priority alerts first; operate autonomously when link unavailable; resync on restoration; end-to-end encrypted.</td><td>SYS-PERF-001, SYS-OPS-003, <strong>SYS-OPS-006</strong>, SYS-IF-001..005</td><td>DDIL scheduler · Link selector · Backhaul transport · Crypto services</td></tr>
+<tr><td>F7 INTERFACE with TSOC</td><td>Forward normalized alerts + context; expose asset inventory; receive &amp; apply signed hot-swap rule updates (F7.4); ACK TSOC response actions (read-only); support TSOC-driven forensic pull.</td><td>SYS-IF-003, <strong>SYS-DC-005</strong>, <strong>SYS-IF-006</strong>, <strong>SYS-IF-007</strong>, SYS-DC-004</td><td>TSOC Adapter · Rule-update chain · Identity Adapter · Forensic pull handler</td></tr>
+<tr><td>F8 INTEGRATE with drone</td><td>Read-only: monitor hypervisor/container events, consume drone APIs, receive MARS-layer events, support hot rule updates without reboot. No write path to avionics.</td><td>SYS-DC-001, SYS-IF-004</td><td>MARS (virtualization) adapter · Hypervisor-event consumer · Read-only drone-API client</td></tr>
+<tr><td>F9 MANAGE integrity &amp; config</td><td>Zero-trust auth of components, signed rule/signature chain, self-health watchdog, remote config via secured channel.</td><td>SYS-FUNC-010, SYS-SEC-001..003, SYS-SAFE-003</td><td>Attestation engine · Crypto services · Health monitor · Secure remote-config handler</td></tr>
+<tr><td>F10 CONFIGURE locally</td><td>Manage threat-pattern library, detection tuning, update-source trust policy, config lifecycle (export/import, RBAC, tamper-evident log), mission-specific profiles.</td><td>SYS-OPS-002, SYS-HFE-001, SYS-DC-004</td><td>Policy/Content Manager · Profile switcher · Tamper-evident audit log</td></tr>
+</tbody></table>
+<h3>4.1 Note on peer correlation (Mode-B-peer extension)</h3>
+<p>The canonical FM does <em>not</em> include a peer-exchange function. Neighbourhood-level cross-node correlation (previously F7 "Exchange Peer Summaries" and F8 "Tactical Correlation") is retained as a <strong>post-CDR optional extension — "Mode-B-peer"</strong>. Baseline SPARTA produces cross-domain correlation <em>hints</em> (F3 sub-function) that a suitably-equipped TSOC correlates at fleet level. Hooks for Mode-B-peer remain in the baseline under the softened SYS-FUNC-006 (see Deliv. 02 §5.1), but its verification plan and Byzantine-tolerance evidence (Deliv. 06 NT-16, BY-02) are extension-scope, not baseline-scope.</p>
 
-  classDef core fill:#eaf1f8,stroke:#1f4e79,color:#142033;
-  classDef ext fill:#ebfff7,stroke:#0a5b47,color:#142033;
-  class A,B,C,D,E,F core;
-  class G,H,I,J,K,L ext;
-    </div>
-    <div class="caption">Figure 03-1. SPARTA Functional Breakdown Structure (FBS). Core functions in blue; supporting functions in green.</div>
-  </div>
-
-  <table class="metadata">
-    <thead><tr><th>Function</th><th>Description</th><th>Realizing Sub-functions</th></tr></thead>
-    <tbody>
-      <tr><td>F1 Acquire Data</td><td>Collect host, network, mission-context, and peer/TSOC inputs.</td><td>Host collector · Network collector · MARS context collector · Peer ingress</td></tr>
-      <tr><td>F2 Normalize &amp; Time-Align</td><td>Normalize units, identifiers, schemas, and temporal order.</td><td>Schema normalizer · Identifier resolver · Time aligner</td></tr>
-      <tr><td>F3 Detect &amp; Classify</td><td>Identify integrity, communications, and mission-plausibility anomalies.</td><td>Integrity detectors · Comms detectors · Mission-plausibility detectors · Classifier</td></tr>
-      <tr><td>F4 Estimate Trust</td><td>Fuse evidence into trust state, confidence, impact, and validity.</td><td>Evidence fuser · State machine · Mission-impact estimator</td></tr>
-      <tr><td>F5 Generate Recommendations</td><td>Produce bounded response options and constraints.</td><td>Policy filter · Action envelope generator · Reversibility planner</td></tr>
-      <tr><td>F6 Persist Evidence</td><td>Store events and rationales in a survivable form.</td><td>EvidencePackage builder · Storage manager · Retention enforcer</td></tr>
-      <tr><td>F7 Exchange Peer Summaries</td><td>Issue and consume signed PeerSummary exchanges.</td><td>Summary builder · Signer · Verifier · Transport scheduler</td></tr>
-      <tr><td>F8 Tactical Correlation</td><td>Resolve peer disagreement, consensus, and graph anomalies.</td><td>Peer graph builder · Consensus scorer · Byzantine-tolerant aggregator</td></tr>
-      <tr><td>F9 Synchronize with TSOC</td><td>Transmit evidence and receive policies/intel/adjudication.</td><td>Backhaul scheduler · Priority queue · Adjudication handler</td></tr>
-      <tr><td>F10 Publish to MARS</td><td>Emit TrustAssessment and ResponseRecommendation.</td><td>MARS adapter · Schema validator · QoS manager</td></tr>
-      <tr><td>F11 Manage Policy &amp; Content</td><td>Validate, version, and activate signed PolicyBundle / model bundles.</td><td>Signature verifier · Version manager · Activation controller</td></tr>
-      <tr><td>F12 Self-Health &amp; Fault</td><td>Monitor internal health, handle faults, fail safely.</td><td>Watchdog · Resource monitor · Fail-safe controller</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<section id="logical-architecture">
-  <h2>5. Logical Architecture</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logical Architecture" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="logical_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="logical_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="logical_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="logical_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#logical_bg)"/>
-  <rect width="1200" height="280" fill="url(#logical_grid)"/>
-  <rect width="1200" height="140" fill="url(#logical_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Logical Architecture</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Components and couplings inside the SPARTA edge agent (Eurodrone-class host shown as reference).</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(195 110) scale(2.4)">
-          <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.06" stroke="#cbdcf0" stroke-width="0.5"/>
-        </g>
-        <g>
-          <rect x="120" y="60" width="60" height="22" rx="4" fill="#7bb7e6" fill-opacity="0.5" stroke="#7bb7e6" stroke-width="1.2"/><text x="150" y="75" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Acquire</text>
-          <rect x="210" y="60" width="60" height="22" rx="4" fill="#7bb7e6" fill-opacity="0.5" stroke="#7bb7e6" stroke-width="1.2"/><text x="240" y="75" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Detect</text>
-          <rect x="165" y="95" width="60" height="22" rx="4" fill="#e7b955" fill-opacity="0.5" stroke="#e7b955" stroke-width="1.2"/><text x="195" y="110" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Trust</text>
-          <rect x="120" y="130" width="60" height="22" rx="4" fill="#9bd8bf" fill-opacity="0.5" stroke="#9bd8bf" stroke-width="1.2"/><text x="150" y="145" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Response</text>
-          <rect x="210" y="130" width="60" height="22" rx="4" fill="#9bd8bf" fill-opacity="0.5" stroke="#9bd8bf" stroke-width="1.2"/><text x="240" y="145" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Evidence</text>
-          <rect x="165" y="165" width="60" height="22" rx="4" fill="#c4b6ff" fill-opacity="0.5" stroke="#c4b6ff" stroke-width="1.2"/><text x="195" y="180" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Comms</text>
-        </g>
-        <g stroke="#cbdcf0" stroke-width="1" fill="none" opacity="0.6">
-          <line x1="180" y1="71" x2="210" y2="71"/>
-          <line x1="240" y1="82" x2="215" y2="95"/>
-          <line x1="150" y1="82" x2="180" y2="95"/>
-          <line x1="180" y1="117" x2="165" y2="130"/>
-          <line x1="210" y1="117" x2="225" y2="130"/>
-          <line x1="195" y1="152" x2="195" y2="165"/>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <div class="figure">
-    <div class="mermaid">
+<h3>4.2 Sub-function detail (F1..F10 — 66 leaf functions · 71 IDs)</h3>
+<p>The ten top-level functions decompose into 66 leaf functions (plus 5 intermediate group headers: F7.4 and F10.1..F10.4). Leaf count per function: F1 = 6, F2 = 4, F3 = 5, F4 = 4, F5 = 5, F6 = 5, F7 = 5 direct leaves + F7.4 group with 7 sub-leaves (12 functions total under F7), F8 = 4, F9 = 4, F10 = 4 groups × {5, 4, 4, 4} sub-leaves = 17. Drill-down is given per-function as a collapsible block so that the §4.1 top-level table stays scannable.</p>
+<details><summary><strong>F1 — COLLECT security-relevant data</strong> <span class="small">(6 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F1.1</td><td>Collect system logs (OS, application, hypervisor)</td><td>syslog, journald, hypervisor event stream</td></tr>
+<tr><td>F1.2</td><td>Collect network traffic metadata (flows, packets)</td><td>NetFlow / IPFIX preferred; packet capture only on demand</td></tr>
+<tr><td>F1.3</td><td>Collect hardware telemetry (anomalous resource usage)</td><td>CPU, memory, thermal, watchdog</td></tr>
+<tr><td>F1.4</td><td>Collect RF / comms link monitoring data</td><td>Link quality, modulation, packet-loss distribution</td></tr>
+<tr><td>F1.5</td><td>Collect MARS virtualization-layer events</td><td>Read-only view over published MARS interface (IF-EXT-01)</td></tr>
+<tr><td>F1.6</td><td>Collect security controls (RBAC, access audit)</td><td>Auth events, sudo/elevation, key-use events</td></tr>
+</tbody></table></details>
+<details><summary><strong>F2 — NORMALIZE &amp; ENRICH data locally</strong> <span class="small">(4 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F2.1</td><td>Parse heterogeneous log formats</td><td>syslog, SNMP, custom binary; extensible parser registry</td></tr>
+<tr><td>F2.2</td><td>Normalize to common schema</td><td>ECS / CEF-compatible; maps to SPARTA Envelope v1.0 (Deliv. 06 §10.1)</td></tr>
+<tr><td>F2.3</td><td>Timestamp &amp; synchronize events</td><td>GNSS-disciplined preferred; multi-source time fusion per Deliv. 06 §3.6 T6.c</td></tr>
+<tr><td>F2.4</td><td>Enrich with asset context</td><td>Platform ID, role, mission criticality, data classification</td></tr>
+</tbody></table></details>
+<details><summary><strong>F3 — DETECT threats &amp; anomalies</strong> <span class="small">(5 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F3.1</td><td>Apply signature-based detection (known IOCs)</td><td>IOC store signed by TSOC; updated via SYS-DC-005 hot-swap chain (§10)</td></tr>
+<tr><td>F3.2</td><td>Apply behavioural / anomaly detection (ML baseline)</td><td>Per-platform baselines; retraining triggers in F10.2.4</td></tr>
+<tr><td>F3.3</td><td>Detect lateral movement across VMs / platforms</td><td>Inter-VM traffic + auth correlation</td></tr>
+<tr><td>F3.4</td><td>Detect integrity violations (firmware, boot chain, memory)</td><td>Attestation-based; fail-unknown on divergence (Deliv. 06 §8)</td></tr>
+<tr><td>F3.5</td><td>Detect cross-domain correlation candidates</td><td>Produces <em>correlation hints</em> only; final correlation at TSOC (see §12.5)</td></tr>
+</tbody></table></details>
+<details><summary><strong>F4 — PRIORITIZE &amp; TRIAGE alerts</strong> <span class="small">(4 leaves) · realizes SYS-FUNC-011</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F4.1</td><td>Score alerts by severity &amp; mission criticality</td><td>Weighted by asset criticality (F10.2.2) and mission phase</td></tr>
+<tr><td>F4.2</td><td>Correlate events across sources (SIEM-like pipeline)</td><td>Local correlation only; deep correlation deferred to TSOC</td></tr>
+<tr><td>F4.3</td><td>Suppress false positives via context filtering</td><td>Mission-profile whitelists (F10.2.3)</td></tr>
+<tr><td>F4.4</td><td>Queue alerts by transmission priority for DDIL uplink</td><td>See DDIL operational pattern in Deliv. 01 §13.1</td></tr>
+</tbody></table></details>
+<details><summary><strong>F5 — STORE and PROTECT data resiliently</strong> <span class="small">(5 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F5.1</td><td>Buffer raw events locally (ring buffer / tiered storage)</td><td>Pre-allocated; oldest-first ejection with explicit audit</td></tr>
+<tr><td>F5.2</td><td>Compress &amp; deduplicate before storage</td><td>Per-class codecs; deduplication on <code>message_id</code></td></tr>
+<tr><td>F5.3</td><td>Persist prioritized alerts for guaranteed delivery</td><td>Persist across power-cycle; delivery receipt required</td></tr>
+<tr><td>F5.4</td><td>Enforce retention policies &amp; secure deletion</td><td>Per classification; secure erase on disposal (KO-7)</td></tr>
+<tr><td>F5.5</td><td>Encrypt and authenticate data at rest</td><td>AES-256-GCM; keys in TPM / secure element (SYS-SEC-002)</td></tr>
+</tbody></table></details>
+<details><summary><strong>F6 — TRANSMIT data adaptively (DDIL-aware)</strong> <span class="small">(5 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F6.1</td><td>Select best available link (satellite, RF, datalink)</td><td>SPARTA uses existing platform links; does not own RF hardware</td></tr>
+<tr><td>F6.2</td><td>Transmit high-priority alerts first (priority queuing)</td><td>Priorities from F4.1</td></tr>
+<tr><td>F6.3</td><td>Operate autonomously when link is unavailable</td><td>Store per F5.3; Mode C behaviour per Deliv. 06 §8; DDIL fallback ruleset per SYS-OPS-006</td></tr>
+<tr><td>F6.4</td><td>Synchronize with TSOC upon link restoration</td><td>Ordered by priority; idempotent on <code>message_id</code></td></tr>
+<tr><td>F6.5</td><td>Encrypt all transmitted data (end-to-end)</td><td>TLS 1.3 FIPS profile; signed envelope</td></tr>
+</tbody></table></details>
+<details><summary><strong>F7 — INTERFACE with Airbus TSOC</strong> <span class="small">(6 leaves; F7.4 expands to 7 sub-leaves — 13 functions total) · realizes SYS-DC-005, SYS-IF-006, SYS-IF-007</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F7.1</td><td>Forward normalized alerts to TSOC ingestion endpoint</td><td>IF-EXT-02 (see Deliv. 06 §10.4)</td></tr>
+<tr><td>F7.2</td><td>Provide full event context per alert</td><td>Raw logs, timeline, provenance; bounded by freshness TTL</td></tr>
+<tr><td>F7.3</td><td>Expose asset inventory &amp; platform topology to TSOC</td><td>Read-only; mission-instance scoped</td></tr>
+<tr><td><strong>F7.4</strong></td><td><strong>Receive &amp; apply updated detection rules from TSOC</strong></td><td>Signed hot-swap chain — realizes SYS-DC-005. Expanded below (F7.4.1..F7.4.7); flow diagram in §10.2 Figure 03-9.</td></tr>
+<tr><td style="padding-left:2em">F7.4.1</td><td>Receive signed rule / IOC packages from TSOC</td><td>Delivered over IF-EXT-02; idempotent on package ID</td></tr>
+<tr><td style="padding-left:2em">F7.4.2</td><td>Validate package signature &amp; version integrity</td><td>Issuer-cert pinned; monotonic counter enforced; rollback only with two-person-rule break-glass</td></tr>
+<tr><td style="padding-left:2em">F7.4.3</td><td>Stage update (do not apply until validated)</td><td>Loaded in parallel with active ruleset; shadow-mode evaluation permitted</td></tr>
+<tr><td style="padding-left:2em">F7.4.4</td><td>Apply update without service interruption (hot-swap)</td><td>Atomic switch at boundary event; detection-engine gap ≤ 100 ms (AC-SYS-DC-005 AC-3)</td></tr>
+<tr><td style="padding-left:2em">F7.4.5</td><td>Roll back to previous ruleset on failure</td><td>Automatic on hot-swap fail OR on MOE-regression in shadow-mode window; prior ruleset preserved in memory until success confirmed</td></tr>
+<tr><td style="padding-left:2em">F7.4.6</td><td>Acknowledge successful update to TSOC</td><td>Individual ACK per package; success logged in tamper-evident audit</td></tr>
+<tr><td style="padding-left:2em">F7.4.7</td><td>Queue updates received during DDIL for ordered apply on link restoration</td><td>Monotonic-order application on link-up; each ACK'd individually; realizes the DDIL-queue invariant of SYS-DC-005</td></tr>
+<tr><td>F7.5</td><td>Acknowledge TSOC response actions (read-only feedback)</td><td>SPARTA does <em>not</em> execute TSOC-commanded response on the platform; it acknowledges receipt for TSOC workflow tracking</td></tr>
+<tr><td>F7.6</td><td>Support TSOC-driven remote forensic data pull</td><td>Authorized pull only; audited; DDIL-aware</td></tr>
+</tbody></table></details>
+<details><summary><strong>F8 — INTEGRATE with drone environment</strong> <span class="small">(4 leaves · platform-integration surface, read-only)</span></summary>
+<p>F8 is a <strong>platform-integration surface</strong> rather than a SPARTA-internal function — it defines what SPARTA expects from the host, not what SPARTA does to the host.</p>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F8.1</td><td>Monitor hypervisor / container orchestration events</td><td>Read-only subscription via IF-EXT-01</td></tr>
+<tr><td>F8.2</td><td>Interface with drone APIs (read-only telemetry)</td><td>No write surface on avionics bus — SYS-DC-001 hard boundary; FCS telemetry read-only</td></tr>
+<tr><td>F8.3</td><td>Forward MARS-layer events to detection engine</td><td>MARS (virtualization) publishes; SPARTA consumes</td></tr>
+<tr><td>F8.4</td><td>Support hot-update of detection rules without reboot</td><td>Realized by F7.4 chain / SYS-DC-005</td></tr>
+</tbody></table></details>
+<details><summary><strong>F9 — MANAGE system integrity &amp; configuration</strong> <span class="small">(4 leaves)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td>F9.1</td><td>Authenticate all system components (zero-trust)</td><td>Per-component certificate chained to accredited CA (IF-EXT-05); mutual auth</td></tr>
+<tr><td>F9.2</td><td>Maintain signed rule/signature update chain</td><td>Monotonic counter; break-glass only via two-person rule (SYS-DC-005)</td></tr>
+<tr><td>F9.3</td><td>Monitor own health (watchdog, self-diagnostics)</td><td>Fail-unknown on fault (Deliv. 06 §8)</td></tr>
+<tr><td>F9.4</td><td>Support remote configuration via secured channel</td><td>RBAC per F10.4.3</td></tr>
+</tbody></table></details>
+<details><summary><strong>F10 — CONFIGURE threat detection locally</strong> <span class="small">(4 sub-groups F10.1..F10.4 · 17 sub-leaves total)</span></summary>
+<table class="wide-table"><thead><tr><th>ID</th><th>Function</th><th>Note</th></tr></thead><tbody>
+<tr><td><strong>F10.1</strong></td><td><strong>MANAGE threat pattern library</strong></td><td>Rule &amp; IOC management — 5 sub-leaves</td></tr>
+<tr><td style="padding-left:2em">F10.1.1</td><td>Import threat patterns / IOC sets (manual or media)</td><td>Air-gap path via secure media; signature required</td></tr>
+<tr><td style="padding-left:2em">F10.1.2</td><td>Author custom detection rules (local operator)</td><td>Audited; shadow-mode rollout by default</td></tr>
+<tr><td style="padding-left:2em">F10.1.3</td><td>Activate / deactivate individual rules or rulesets</td><td>Granular; logged</td></tr>
+<tr><td style="padding-left:2em">F10.1.4</td><td>Define mission-specific threat profiles</td><td>Catalogue in Deliv. 01 §13.2 — e.g. "firefighting comms", "contested airspace"</td></tr>
+<tr><td style="padding-left:2em">F10.1.5</td><td>Version and track all rule changes locally</td><td>Tamper-evident log</td></tr>
+<tr><td><strong>F10.2</strong></td><td><strong>MANAGE detection tuning</strong></td><td>Threshold, weighting, whitelist, retraining — 4 sub-leaves</td></tr>
+<tr><td style="padding-left:2em">F10.2.1</td><td>Adjust detection thresholds per sensor type</td><td>Within policy-permitted range</td></tr>
+<tr><td style="padding-left:2em">F10.2.2</td><td>Configure asset criticality weighting</td><td>Affects F4.1 scoring</td></tr>
+<tr><td style="padding-left:2em">F10.2.3</td><td>Define platform-specific whitelists / baselines</td><td>Per-host profile</td></tr>
+<tr><td style="padding-left:2em">F10.2.4</td><td>Configure ML model retraining triggers</td><td>Per-class cadence; drift detection</td></tr>
+<tr><td><strong>F10.3</strong></td><td><strong>MANAGE update sources &amp; trust</strong></td><td>Sources, acceptance policy, keys, fallback — 4 sub-leaves</td></tr>
+<tr><td style="padding-left:2em">F10.3.1</td><td>Define trusted update sources</td><td>TSOC (primary), local, secure media (fallback)</td></tr>
+<tr><td style="padding-left:2em">F10.3.2</td><td>Configure update acceptance policy</td><td>Auto-apply vs operator-confirmed; mission-phase aware</td></tr>
+<tr><td style="padding-left:2em">F10.3.3</td><td>Manage signing key store for rule validation</td><td>In secure element; rotation via signed key-rollover object</td></tr>
+<tr><td style="padding-left:2em">F10.3.4</td><td>Define DDIL fallback ruleset (frozen baseline)</td><td>Realizes SYS-OPS-006 (detection floor when all links down)</td></tr>
+<tr><td><strong>F10.4</strong></td><td><strong>MANAGE configuration lifecycle</strong></td><td>Export, import, RBAC, tamper-evident log — 4 sub-leaves</td></tr>
+<tr><td style="padding-left:2em">F10.4.1</td><td>Export current configuration for backup / audit</td><td>Signed export artefact</td></tr>
+<tr><td style="padding-left:2em">F10.4.2</td><td>Import configuration from secure media (air-gap)</td><td>Two-person rule; post-import integrity check</td></tr>
+<tr><td style="padding-left:2em">F10.4.3</td><td>Enforce role-based access to configuration</td><td>Operator / admin / TSOC-remote</td></tr>
+<tr><td style="padding-left:2em">F10.4.4</td><td>Log all configuration changes (tamper-evident)</td><td>Append-only audit to TSOC</td></tr>
+</tbody></table></details>
+</section><section id="logical-architecture"><h2>5. Logical Architecture</h2><div class="figure"><div class="mermaid">
 flowchart LR
-  subgraph Edge["SPARTA Edge Agent (per node)"]
-    DA["Data Acquisition Layer"]
-    NM["Normalizer &amp; Time Aligner"]
-    DE["Detection Engine"]
-    TE["Trust Engine"]
-    RE["Response &amp; Constraint Engine"]
-    ES["Evidence Store"]
-    CM["Comms Manager"]
-    PM["Policy Manager"]
-    SS["Security Services"]
-    HM["Health Monitor / Watchdog"]
-  end
-
-  subgraph Tactical["Optional Tactical Correlator (per neighborhood)"]
-    PF["Peer Fusion"]
-    GA["Graph / Consensus Analytics"]
-    TA["Trust Aggregator"]
-  end
-
-  subgraph External["External Systems"]
-    MARS["MARS"]
-    TSOC["TSOC"]
-    Peer["Peer Nodes"]
-    Host["Host Platform Services"]
-    IDP["Identity / Crypto Provisioning"]
-  end
-
-  Host --> DA
-  MARS <--> DA
-  IDP --> SS
-  DA --> NM --> DE --> TE
-  TE --> RE
-  DE --> ES
-  TE --> ES
-  PM --> TE
-  PM --> RE
-  PM --> DE
-  SS --> CM
-  SS --> PM
-  CM <--> Peer
-  CM <--> TSOC
-  TE --> CM
-  ES --> CM
-  CM <--> PF
-  PF --> GA --> TA --> TE
-  RE --> MARS
-  HM --> TE
-  HM --> RE
-  HM --> CM
-    </div>
-    <div class="caption">Figure 03-2. Logical architecture block diagram. Security Services and Health Monitor are cross-cutting.</div>
-  </div>
-
-  <h3>5.1 Component Responsibilities</h3>
-  <table class="metadata">
-    <thead><tr><th>Component</th><th>Responsibility</th><th>Key Requirements</th></tr></thead>
-    <tbody>
-      <tr><td>Data Acquisition Layer</td><td>Collect raw host, network, MARS, and peer inputs.</td><td>SYS-FUNC-001, 002</td></tr>
-      <tr><td>Normalizer &amp; Time Aligner</td><td>Canonicalize schemas, identifiers, and timestamps.</td><td>SYS-FUNC-001..002; SYS-DATA-*</td></tr>
-      <tr><td>Detection Engine</td><td>Detect and classify anomalies across integrity, comms, mission-plausibility.</td><td>SYS-FUNC-003, 004</td></tr>
-      <tr><td>Trust Engine</td><td>Fuse evidence into TrustAssessment with confidence, impact, validity, and reason-chain.</td><td>SYS-FUNC-005; SYS-OPS-002, 003; SYS-DATA-003</td></tr>
-      <tr><td>Response Engine</td><td>Generate bounded ResponseRecommendation objects under policy.</td><td>SYS-FUNC-007; SYS-OPS-004; SYS-SAFE-002</td></tr>
-      <tr><td>Evidence Store</td><td>Durable, retention-managed, survivable evidence persistence.</td><td>SYS-FUNC-008; SYS-PERF-003, 006; SYS-RAM-003</td></tr>
-      <tr><td>Comms Manager</td><td>Schema-validated, authenticated, prioritized external messaging.</td><td>SYS-IF-003, 005; SYS-SEC-001, 002; SYS-PERF-002</td></tr>
-      <tr><td>Policy Manager</td><td>Validate, version, activate signed PolicyBundle / model bundles.</td><td>SYS-FUNC-009; SYS-SEC-004; SYS-DC-004</td></tr>
-      <tr><td>Security Services</td><td>Cryptographic identity, signing, verification, key lifecycle.</td><td>SYS-IF-004; SYS-SEC-001..004</td></tr>
-      <tr><td>Health Monitor / Watchdog</td><td>Internal health, resource, and fault management; fail-safe enforcement.</td><td>SYS-FUNC-010; SYS-SAFE-003; SYS-RAM-004</td></tr>
-      <tr><td>Peer Fusion / Graph / Aggregator</td><td>Neighborhood-level correlation, consensus scoring, Byzantine-tolerant aggregation.</td><td>SYS-FUNC-006; SYS-DATA-004</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<section id="physical-architecture">
-  <h2>6. Physical Architecture — Product Breakdown Structure</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Physical Architecture (PBS)" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="pbs_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="pbs_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="pbs_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="pbs_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#pbs_bg)"/>
-  <rect width="1200" height="280" fill="url(#pbs_grid)"/>
-  <rect width="1200" height="140" fill="url(#pbs_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Physical Architecture (PBS)</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Product breakdown and deployment footprints on the reference edge host (Eurodrone shown).</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(100 110) scale(1.1) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <g stroke="#e7b955" stroke-width="1" stroke-dasharray="2 3" fill="none" opacity="0.7">
-          <path d="M 130 75 L 200 50"/>
-          <path d="M 135 95 L 200 95"/>
-          <path d="M 135 125 L 200 140"/>
-          <path d="M 125 145 L 200 185"/>
-        </g>
-        <g>
-          <rect x="205" y="35" width="165" height="30" rx="4" fill="#7bb7e6" fill-opacity="0.35" stroke="#7bb7e6" stroke-width="1.2"/><text x="287" y="54" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P1 Edge Agent SW</text>
-          <rect x="205" y="80" width="165" height="30" rx="4" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955" stroke-width="1.2"/><text x="287" y="99" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P2 Tactical Correlator</text>
-          <rect x="205" y="125" width="165" height="30" rx="4" fill="#9bd8bf" fill-opacity="0.35" stroke="#9bd8bf" stroke-width="1.2"/><text x="287" y="144" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P3 Data Model / Interfaces</text>
-          <rect x="205" y="170" width="165" height="30" rx="4" fill="#c4b6ff" fill-opacity="0.35" stroke="#c4b6ff" stroke-width="1.2"/><text x="287" y="189" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">P4 Signed Policy / Content</text>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <div class="figure">
-    <div class="mermaid">
+subgraph Edge["SPARTA Edge Agent (per node)"]
+DA["Data Acquisition Layer"]
+NM["Normalizer &amp; Time Aligner"]
+DE["Detection Engine"]
+TE["Trust Engine"]
+RE["Response &amp; Constraint Engine"]
+ES["Evidence Store"]
+CM["Comms Manager"]
+PM["Policy Manager"]
+SS["Security Services"]
+HM["Health Monitor / Watchdog"]
+end
+subgraph Tactical["Optional Tactical Correlator (per neighborhood)"]
+PF["Peer Fusion"]
+GA["Graph / Consensus Analytics"]
+TA["Trust Aggregator"]
+end
+subgraph External["External Systems"]
+MARS["MARS"]
+TSOC["TSOC"]
+Peer["Peer Nodes"]
+Host["Host Platform Services"]
+IDP["Identity / Crypto Provisioning"]
+end
+Host --> DA
+MARS <--> DA
+IDP --> SS
+DA --> NM --> DE --> TE
+TE --> RE
+DE --> ES
+TE --> ES
+PM --> TE
+PM --> RE
+PM --> DE
+SS --> CM
+SS --> PM
+CM <--> Peer
+CM <--> TSOC
+TE --> CM
+ES --> CM
+CM <--> PF
+PF --> GA --> TA --> TE
+RE --> MARS
+HM --> TE
+HM --> RE
+HM --> CM
+</div><div class="caption">Figure 03-2. Logical architecture block diagram. Security Services and Health Monitor are cross-cutting.</div></div><h3>5.1 Component Responsibilities</h3><table class="metadata"><thead><tr><th>Component</th><th>Responsibility</th><th>Key Requirements</th></tr></thead><tbody><tr><td>Data Acquisition Layer</td><td>Collect raw host, network, MARS, and peer inputs.</td><td>SYS-FUNC-001, 002</td></tr><tr><td>Normalizer &amp; Time Aligner</td><td>Canonicalize schemas, identifiers, and timestamps.</td><td>SYS-FUNC-001..002; SYS-DATA-*</td></tr><tr><td>Detection Engine</td><td>Detect and classify anomalies across integrity, comms, mission-plausibility.</td><td>SYS-FUNC-003, 004</td></tr><tr><td>Trust Engine</td><td>Fuse evidence into TrustAssessment with confidence, impact, validity, and reason-chain.</td><td>SYS-FUNC-005; SYS-OPS-002, 003; SYS-DATA-003</td></tr><tr><td>Response Engine</td><td>Generate bounded ResponseRecommendation objects under policy.</td><td>SYS-FUNC-007; SYS-OPS-004; SYS-SAFE-002</td></tr><tr><td>Evidence Store</td><td>Durable, retention-managed, survivable evidence persistence.</td><td>SYS-FUNC-008; SYS-PERF-003, 006; SYS-RAM-003</td></tr><tr><td>Comms Manager</td><td>Schema-validated, authenticated, prioritized external messaging.</td><td>SYS-IF-003, 005; SYS-SEC-001, 002; SYS-PERF-002</td></tr><tr><td>Policy Manager</td><td>Validate, version, activate signed PolicyBundle / model bundles.</td><td>SYS-FUNC-009; SYS-SEC-004; SYS-DC-004</td></tr><tr><td>Security Services</td><td>Cryptographic identity, signing, verification, key lifecycle.</td><td>SYS-IF-004; SYS-SEC-001..004</td></tr><tr><td>Health Monitor / Watchdog</td><td>Internal health, resource, and fault management; fail-safe enforcement.</td><td>SYS-FUNC-010; SYS-SAFE-003; SYS-RAM-004</td></tr><tr><td>Peer Fusion / Graph / Aggregator</td><td>Neighborhood-level correlation, consensus scoring, Byzantine-tolerant aggregation.</td><td>SYS-FUNC-006; SYS-DATA-004</td></tr></tbody></table></section><section id="physical-architecture"><h2>6. Physical Architecture — Product Breakdown Structure</h2><div class="figure"><div class="mermaid">
 flowchart TB
-  SPARTA["<b>SPARTA System</b>"]
-  SPARTA --> P1["P1 Edge Agent Software Package"]
-  SPARTA --> P2["P2 Optional Tactical Correlator Package"]
-  SPARTA --> P3["P3 Shared Data Model &amp; Interface Libraries"]
-  SPARTA --> P4["P4 Policy / Rule / Model Content Package (signed)"]
-  SPARTA --> P5["P5 Integration &amp; Support Tooling"]
-  SPARTA --> P6["P6 Identity &amp; Key Material (per node)"]
-
-  P1 --> P11["Telemetry Collectors"]
-  P1 --> P12["Detection Services"]
-  P1 --> P13["Trust &amp; Recommendation Services"]
-  P1 --> P14["Local Evidence Store"]
-  P1 --> P15["Comms Adapter"]
-  P1 --> P16["Policy &amp; Security Services"]
-  P1 --> P17["Health Monitor / Watchdog"]
-
-  P2 --> P21["Peer Fusion Service"]
-  P2 --> P22["Graph / Consensus Service"]
-  P2 --> P23["Trust Aggregator Service"]
-
-  P3 --> P31["Canonical Schemas"]
-  P3 --> P32["Adapter SDKs"]
-  P3 --> P33["Validation Libraries"]
-
-  P5 --> P51["Replay &amp; Reason-Chain Viewer"]
-  P5 --> P52["Exercise Injector"]
-  P5 --> P53["Commissioning &amp; Sanity Harness"]
-    </div>
-    <div class="caption">Figure 03-3. Physical architecture / PBS view.</div>
-  </div>
-
-  <table class="metadata">
-    <thead><tr><th>Node Class (reference)</th><th>Deployment</th><th>Typical Footprint</th></tr></thead>
-    <tbody>
-      <tr><td>SWaP-constrained embedded</td><td>Edge Agent, Mode A; selective Mode B participation</td><td>CPU ≤ 1 core-equiv · RAM ≤ 256 MB · Storage ≤ 2 GB</td></tr>
-      <tr><td>Standard tactical node</td><td>Edge Agent, Mode A/B</td><td>CPU ≤ 10% of 2 cores · RAM ≤ 512 MB · Storage ≤ 8 GB</td></tr>
-      <tr><td>Fog / gateway node</td><td>Edge Agent + Tactical Correlator, Mode B/C</td><td>CPU ≤ 20% of 4 cores · RAM ≤ 2 GB · Storage ≤ 32 GB</td></tr>
-    </tbody>
-  </table>
-  <p class="small">Values are provisional PDR reference class footprints. Final per-program tailoring is expected.</p>
-</section>
-
-<section id="allocation-view">
-  <h2>7. Functional-to-Physical Allocation and Decomposition Rationale</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Functional-to-Physical Allocation" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="allocmat_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="allocmat_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="allocmat_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="allocmat_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#allocmat_bg)"/>
-  <rect width="1200" height="280" fill="url(#allocmat_grid)"/>
-  <rect width="1200" height="140" fill="url(#allocmat_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Functional-to-Physical Allocation</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">How each function lands on physical products aboard the reference edge host.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g stroke="#cbdcf0" stroke-width="1" opacity="0.7">
-          <rect x="40" y="30" width="330" height="170" fill="#ffffff" fill-opacity="0.05"/>
-          <line x1="130" y1="30" x2="130" y2="200"/>
-          <line x1="210" y1="30" x2="210" y2="200"/>
-          <line x1="290" y1="30" x2="290" y2="200"/>
-          <line x1="40" y1="60" x2="370" y2="60"/>
-          <line x1="40" y1="95" x2="370" y2="95"/>
-          <line x1="40" y1="130" x2="370" y2="130"/>
-          <line x1="40" y1="165" x2="370" y2="165"/>
-        </g>
-        <g fill="#cbdcf0" font-family="Inter" font-size="9" font-weight="700">
-          <text x="170" y="50" text-anchor="middle">P1 Edge</text>
-          <text x="250" y="50" text-anchor="middle">P2 Corr</text>
-          <text x="330" y="50" text-anchor="middle">P3 Data</text>
-          <text x="45" y="80">F1 Acquire</text>
-          <text x="45" y="115">F3 Detect</text>
-          <text x="45" y="150">F4 Trust</text>
-          <text x="45" y="185">F8 Correlate</text>
-        </g>
-        <g fill="#9bd8bf" stroke="#0a5b47" stroke-width="1">
-          <circle cx="170" cy="78" r="6"/><circle cx="330" cy="78" r="6"/>
-          <circle cx="170" cy="113" r="6"/>
-          <circle cx="170" cy="148" r="6"/><circle cx="330" cy="148" r="6"/>
-          <circle cx="170" cy="183" r="6"/><circle cx="250" cy="183" r="6"/>
-        </g>
-        <g fill="#e7b955" fill-opacity="0.8">
-          <rect x="35" y="35" width="5" height="160" rx="2"/>
-          <rect x="45" y="25" width="320" height="5" rx="2"/>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <table class="matrix">
-    <thead><tr><th>Function</th><th>Primary Physical Allocation</th><th>Allocation Rationale</th></tr></thead>
-    <tbody>
-      <tr><td>F1 Acquire Data</td><td>Edge Agent (P1)</td><td>Must remain local to source and survive disconnection.</td></tr>
-      <tr><td>F2 Normalize &amp; Time-Align</td><td>Edge Agent (P1)</td><td>Canonicalization must precede every downstream function.</td></tr>
-      <tr><td>F3 Detect &amp; Classify</td><td>Edge Agent (P1)</td><td>Requires low latency and host-near visibility.</td></tr>
-      <tr><td>F4 Estimate Trust</td><td>Edge Agent (P1)</td><td>Primary output to MARS must exist locally.</td></tr>
-      <tr><td>F5 Generate Recommendations</td><td>Edge Agent (P1)</td><td>Policy-bound advisory generation belongs with trust context.</td></tr>
-      <tr><td>F6 Persist Evidence</td><td>Edge Agent · Local Evidence Store (P1/P14)</td><td>Supports disconnected survivability and forensics.</td></tr>
-      <tr><td>F7 Peer Summaries</td><td>Edge Agent · Comms Adapter (P15)</td><td>Needed on every participating node.</td></tr>
-      <tr><td>F8 Tactical Correlation</td><td>Tactical Correlator (P2) or co-hosted service</td><td>Scalable neighborhood mode without dedicated hardware lock-in.</td></tr>
-      <tr><td>F9 Sync with TSOC</td><td>Edge Agent · Comms Adapter (P15)</td><td>Opportunistic, non-blocking backhaul.</td></tr>
-      <tr><td>F10 Publish to MARS</td><td>Edge Agent · MARS Adapter</td><td>MARS consumes on each node.</td></tr>
-      <tr><td>F11 Policy / Content</td><td>Policy Manager (P16) + signed Content (P4)</td><td>Decouples deployable software from content evolution.</td></tr>
-      <tr><td>F12 Self-Health &amp; Fault</td><td>Health Monitor / Watchdog (P17)</td><td>Platform-local fault containment.</td></tr>
-    </tbody>
-  </table>
-  <div class="callout decision">
-    <strong>Decomposition Decision</strong>
-    Tactical correlation is architected as a logical capability that may be hosted on a selected node, a local gateway, or a dedicated fog node. This avoids premature hardware lock-in while preserving functional claims across Mode A/B/C.
-  </div>
-</section>
-
-<section id="interface-map">
-  <h2>8. External / Internal Interfaces and Connectivity</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="External / Internal Interfaces" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="ifs_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="ifs_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="ifs_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="ifs_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#ifs_bg)"/>
-  <rect width="1200" height="280" fill="url(#ifs_grid)"/>
-  <rect width="1200" height="140" fill="url(#ifs_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">External / Internal Interfaces</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Five external interfaces plus internal couplings (reference host shown).</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(195 110) scale(1.0) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.18" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <g>
-          <rect x="25" y="40" width="70" height="28" rx="4" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="60" y="58" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">MARS</text>
-          <rect x="295" y="40" width="70" height="28" rx="4" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="330" y="58" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">TSOC</text>
-          <rect x="25" y="152" width="70" height="28" rx="4" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="60" y="170" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Peers</text>
-          <rect x="295" y="152" width="70" height="28" rx="4" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="330" y="170" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="11" font-weight="700" text-anchor="middle">Host</text>
-        </g>
-        <g stroke="#e7b955" stroke-width="1.5" fill="none">
-          <line x1="95" y1="54" x2="155" y2="90"/><text x="120" y="68" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="8" font-weight="700" text-anchor="middle">IF-EXT-01</text>
-          <line x1="295" y1="54" x2="235" y2="90"/><text x="275" y="68" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="8" font-weight="700" text-anchor="middle">IF-EXT-02</text>
-          <line x1="95" y1="166" x2="155" y2="130"/><text x="120" y="155" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="8" font-weight="700" text-anchor="middle">IF-EXT-03</text>
-          <line x1="295" y1="166" x2="235" y2="130"/><text x="275" y="155" fill="#e7b955" font-family="Inter,Segoe UI,sans-serif" font-size="8" font-weight="700" text-anchor="middle">IF-EXT-04</text>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-
-  <h3>8.1 External Interface Catalogue</h3>
-  <table class="metadata">
-    <thead><tr><th>ID</th><th>Endpoints</th><th>Direction</th><th>Primary Payloads</th><th>Protocol / QoS (provisional)</th><th>Security</th></tr></thead>
-    <tbody>
-      <tr><td>IF-EXT-01</td><td>SPARTA ↔ MARS</td><td>Bi-directional</td><td>Mission context (in); TrustAssessment, ResponseRecommendation, NodeStatus (out)</td><td>Publish/subscribe · schema-governed · low-latency</td><td>Authenticated · integrity-protected</td></tr>
-      <tr><td>IF-EXT-02</td><td>SPARTA ↔ TSOC</td><td>Bi-directional</td><td>Alerts · EvidencePackage (out); PolicyBundle · adjudication · intel (in)</td><td>Reliable, prioritized · store-and-forward</td><td>Mutually authenticated · encrypted · signed content</td></tr>
-      <tr><td>IF-EXT-03</td><td>SPARTA ↔ Peer Nodes</td><td>Bi-directional</td><td>PeerSummary</td><td>Compact broadcast / multicast · rate-managed</td><td>Signed · provenance-bearing</td></tr>
-      <tr><td>IF-EXT-04</td><td>SPARTA ↔ Host Platform</td><td>Inbound</td><td>Host telemetry, comms state, sensor health</td><td>Platform-native · low-overhead</td><td>Platform-local trust</td></tr>
-      <tr><td>IF-EXT-05</td><td>SPARTA ↔ Identity Provisioning</td><td>Inbound</td><td>Node identity · keys · trust anchors</td><td>Out-of-band at provisioning; on-demand rekey</td><td>Mutual auth · sealed channel</td></tr>
-    </tbody>
-  </table>
-
-  <h3>8.2 Internal Interface Catalogue</h3>
-  <table class="metadata">
-    <thead><tr><th>ID</th><th>From → To</th><th>Primary Payloads</th></tr></thead>
-    <tbody>
-      <tr><td>IF-INT-01</td><td>Data Acquisition → Normalizer</td><td>Raw host / network / MARS records</td></tr>
-      <tr><td>IF-INT-02</td><td>Normalizer → Detection</td><td>Canonical time-aligned events</td></tr>
-      <tr><td>IF-INT-03</td><td>Detection → Trust</td><td>AnomalyEvent stream</td></tr>
-      <tr><td>IF-INT-04</td><td>Trust → Response</td><td>TrustAssessment with mission impact</td></tr>
-      <tr><td>IF-INT-05</td><td>Comms ↔ Correlator</td><td>PeerSummary batches, graph products</td></tr>
-      <tr><td>IF-INT-06</td><td>All → Evidence Store</td><td>AnomalyEvent, TrustAssessment, reason-chains</td></tr>
-      <tr><td>IF-INT-07</td><td>Policy Manager → Trust/Response/Detection</td><td>Active thresholds, enabled actions, envelopes</td></tr>
-    </tbody>
-  </table>
-
-  <div class="figure" id="connectivity">
-    <div class="mermaid">
+SPARTA["<b>SPARTA System</b>"]
+SPARTA --> P1["P1 Edge Agent Software Package"]
+SPARTA --> P2["P2 Optional Tactical Correlator Package"]
+SPARTA --> P3["P3 Shared Data Model &amp; Interface Libraries"]
+SPARTA --> P4["P4 Policy / Rule / Model Content Package (signed)"]
+SPARTA --> P5["P5 Integration &amp; Support Tooling"]
+SPARTA --> P6["P6 Identity &amp; Key Material (per node)"]
+P1 --> P11["Telemetry Collectors"]
+P1 --> P12["Detection Services"]
+P1 --> P13["Trust &amp; Recommendation Services"]
+P1 --> P14["Local Evidence Store"]
+P1 --> P15["Comms Adapter"]
+P1 --> P16["Policy &amp; Security Services"]
+P1 --> P17["Health Monitor / Watchdog"]
+P2 --> P21["Peer Fusion Service"]
+P2 --> P22["Graph / Consensus Service"]
+P2 --> P23["Trust Aggregator Service"]
+P3 --> P31["Canonical Schemas"]
+P3 --> P32["Adapter SDKs"]
+P3 --> P33["Validation Libraries"]
+P5 --> P51["Replay &amp; Reason-Chain Viewer"]
+P5 --> P52["Exercise Injector"]
+P5 --> P53["Commissioning &amp; Sanity Harness"]
+</div><div class="caption">Figure 03-3. Physical architecture / PBS view.</div></div><table class="metadata"><thead><tr><th>Node Class (reference)</th><th>Deployment</th><th>Typical Footprint</th></tr></thead><tbody><tr><td>SWaP-constrained embedded</td><td>Edge Agent, Mode A; selective Mode B participation</td><td>CPU ≤ 1 core-equiv · RAM ≤ 256 MB · Storage ≤ 2 GB</td></tr><tr><td>Standard tactical node</td><td>Edge Agent, Mode A/B</td><td>CPU ≤ 10% of 2 cores · RAM ≤ 512 MB · Storage ≤ 8 GB</td></tr><tr><td>Fog / gateway node</td><td>Edge Agent + Tactical Correlator, Mode B/C</td><td>CPU ≤ 20% of 4 cores · RAM ≤ 2 GB · Storage ≤ 32 GB</td></tr></tbody></table><p class="small">Values are provisional PDR reference class footprints. Final per-program tailoring is expected.</p>
+<h3>6.2 Ecosystem component catalogue</h3>
+<p>Beyond SPARTA's own PBS above, the airborne deployment integrates with a fixed set of ecosystem components — the drone host, peer drones, the Airbus TSOC with its service products, and the ground-side authority chain (MGS / C2 / Security-C2). SPARTA is the product of interest; every other component is either a host, a consumer or an authority.</p>
+<table class="wide-table"><thead><tr><th>Component</th><th>Role relative to SPARTA</th><th>Authority</th><th>Interface</th><th>Notes</th></tr></thead><tbody>
+<tr><td><strong>SPARTA edge agent</strong></td><td>Product of interest (runs on drone host)</td><td>Advisory only</td><td>IF-EXT-01..07</td><td>Platform-agnostic; runs in MARS virtualization layer or dedicated partition</td></tr>
+<tr><td>SPARTA tactical correlator</td><td>Neighbourhood-level function of SPARTA (Mode-B-peer extension, post-CDR optional)</td><td>Advisory only</td><td>Peer protocol (IF-EXT-03)</td><td>Co-host with Edge Agent or fog node</td></tr>
+<tr><td>Drone on which SPARTA runs</td><td>Reference edge host (Eurodrone-class)</td><td>Host authority (airframe)</td><td>F8 read-only surface (IF-EXT-04)</td><td>SPARTA consumes telemetry; never writes to avionics bus</td></tr>
+<tr><td>Other drones</td><td>Peer nodes (Mode-B-peer extension only)</td><td>Their own edge SPARTA</td><td>IF-EXT-03</td><td>Byzantine-tolerant consensus with k ≥ 4 — extension-scope (post-CDR)</td></tr>
+<tr><td><strong>Airbus TSOC</strong></td><td>Reference upstream SOC</td><td>Policy &amp; cyber-response authority</td><td>IF-EXT-02, IF-EXT-05, IF-EXT-06</td><td>Host for Orion Malware® / CymID® services; see §8 and Deliv. 01 §6.4</td></tr>
+<tr><td>MGS — Mission Ground Segment / Control System</td><td>Mission planning &amp; ground mission authority</td><td>Mission planning + mission-end authority</td><td>Ground-side, via Airbus TSOC summary feed</td><td>Not a direct SPARTA consumer; sees advisories via TSOC-ingested summary</td></tr>
+<tr><td>FCS — Flight Control System</td><td>Safety-critical avionics</td><td>Flight-safety authority (sole)</td><td>IF-EXT-04 read-only telemetry</td><td><strong>Hard boundary.</strong> SPARTA has no API surface for FCS actuation. Prohibited by SYS-DC-001.</td></tr>
+<tr><td>C2 — Command &amp; Control (mission)</td><td>Mission command</td><td>Engagement / mission-change / physical-link-disconnect (mission-scope)</td><td>Ground-side (informed via Airbus TSOC / MGS chain)</td><td>Receives bounded advisories only</td></tr>
+<tr><td><strong>Security-C2</strong></td><td>Defensive cyber C2 (ground)</td><td>Cyber-scope link-disconnect; co-signs fleet-wide PolicyBundle release and re-key break-glass</td><td>Via Airbus TSOC</td><td>Distinct from mission C2</td></tr>
+<tr><td><strong>MARS (virtualization)</strong></td><td>On-platform hypervisor / container orchestration on the drone host</td><td>Self-managed; passive for SPARTA</td><td>IF-EXT-01 (read-only subscription)</td><td>Publishes hypervisor events to SPARTA; consumes nothing from SPARTA</td></tr>
+</tbody></table></section><section id="allocation-view"><h2>7. Functional-to-Physical Allocation and Decomposition Rationale</h2><p>Allocation is given for the canonical FM F1..F10 (§4.1). PBS identifiers (P1..P17) refer to §6.1.</p><table class="matrix"><thead><tr><th>FM Function</th><th>Primary Physical Allocation</th><th>Allocation Rationale</th></tr></thead><tbody>
+<tr><td>F1 COLLECT</td><td>Edge Agent · Telemetry Collectors (P1/P11)</td><td>Must remain local to source and survive disconnection.</td></tr>
+<tr><td>F2 NORMALIZE &amp; ENRICH</td><td>Edge Agent (P1)</td><td>Canonicalization must precede every downstream function.</td></tr>
+<tr><td>F3 DETECT</td><td>Edge Agent · Detection Services (P1/P12)</td><td>Requires low latency and host-near visibility.</td></tr>
+<tr><td>F4 PRIORITIZE &amp; TRIAGE</td><td>Edge Agent · Triage Engine (P1/P13)</td><td>Scoring and context-filter decisions must be co-located with detection to bound decision latency.</td></tr>
+<tr><td>F5 STORE &amp; PROTECT</td><td>Edge Agent · Local Evidence Store (P1/P14)</td><td>Supports disconnected survivability and forensics; encrypted at rest (SYS-SEC-002).</td></tr>
+<tr><td>F6 TRANSMIT (DDIL)</td><td>Edge Agent · Comms Adapter (P1/P15)</td><td>Opportunistic, non-blocking backhaul with priority queuing; DDIL-aware.</td></tr>
+<tr><td>F7 INTERFACE with TSOC</td><td>Edge Agent · TSOC Adapter (P15) · Policy &amp; Security Services (P16)</td><td>Includes signed hot-swap chain (SYS-DC-005), Orion Malware® verdict loop (IF-EXT-06, SYS-IF-006) and CymID®-class identity (IF-EXT-05, SYS-IF-007).</td></tr>
+<tr><td>F8 INTEGRATE with drone</td><td>Edge Agent · Platform Adapter + MARS-virt subscriber</td><td>Read-only surface on IF-EXT-04 and IF-EXT-01; no write path to FCS or avionics bus.</td></tr>
+<tr><td>F9 MANAGE integrity &amp; config</td><td>Policy &amp; Security Services (P16) · Health Monitor / Watchdog (P17)</td><td>Zero-trust auth, signed content chain, self-health; fault containment is platform-local.</td></tr>
+<tr><td>F10 CONFIGURE locally</td><td>Policy Manager (P16) + signed Content (P4)</td><td>Decouples deployable software from content evolution; mission-specific threat profiles per Deliv. 01 §13.2.</td></tr>
+<tr><td><em>Mode-B-peer extension</em> (hooks)</td><td>Tactical Correlator (P2) — optional, post-CDR</td><td>Neighborhood-level peer fabric not part of baseline; architectural hooks live on each participating node via the Comms Adapter (P15) but are not exercised in the baseline verification.</td></tr>
+</tbody></table>
+<div class="callout decision"><strong>Decomposition Decision</strong>
+The optional Mode-B-peer tactical correlator is architected as a logical capability that may be hosted on a selected node, a local gateway, or a dedicated fog node if the extension is enabled. This avoids premature hardware lock-in while preserving the option for future neighborhood-level correlation. Baseline F1..F10 allocation is entirely co-resident on the Edge Agent.</div></section><section id="interface-map"><h2>8. External / Internal Interfaces and Connectivity</h2><h3>8.1 External Interface Catalogue</h3><table class="metadata"><thead><tr><th>ID</th><th>Endpoints</th><th>Direction</th><th>Primary Payloads</th><th>Protocol / QoS (provisional)</th><th>Security</th></tr></thead><tbody><tr><td>IF-EXT-01</td><td>SPARTA ↔ <strong>MARS</strong> <span class="small">(on-platform virtualization layer)</span></td><td>Inbound (primarily)</td><td>Hypervisor / container-orchestration events; VM state; MARS-layer audit. (No write path — see SYS-DC-001.)</td><td>Read-only subscription · schema-governed · low-latency</td><td>Authenticated · integrity-protected</td></tr><tr><td>IF-EXT-02</td><td>SPARTA ↔ <strong>Airbus TSOC</strong> (primary upstream SOC)</td><td>Bi-directional</td><td>Out: normalized alerts · EvidencePackage · HealthReport · forensic-pull responses. In: signed PolicyBundle · signed hot-swap rule updates (F7.4, SYS-DC-005) · adjudication · response-action acknowledgements (read-only).</td><td>DDIL-aware · reliable prioritized · store-and-forward; hot-swap apply without reboot</td><td>Mutually authenticated · end-to-end encrypted · signed content</td></tr><tr><td>IF-EXT-03</td><td>SPARTA ↔ Peer Nodes <span class="small">(Mode-B-peer extension — post-CDR optional, see §4.1)</span></td><td>Bi-directional (when extension enabled)</td><td>PeerSummary (extension only)</td><td>Compact broadcast / multicast · rate-managed</td><td>Signed · provenance-bearing</td></tr><tr><td>IF-EXT-04</td><td>SPARTA ↔ Host Platform (drone systems · OS/NW/HW · FCS read-only telemetry)</td><td>Inbound</td><td>Host telemetry, network metadata, hardware telemetry, RF/comms link quality, FCS read-only telemetry. <strong>No</strong> write path to FCS or avionics bus.</td><td>Platform-native · low-overhead</td><td>Platform-local trust</td></tr><tr><td>IF-EXT-05</td><td>SPARTA ↔ <strong>Accredited Identity Provider</strong> <span class="small">(e.g. Airbus CymID®-class)</span> <span class="small">— realizes SYS-IF-007</span></td><td>Inbound / on-demand</td><td>Node identity · operator identity · peer certificates · revocation lists · trust anchors; on-demand rekey.</td><td>Out-of-band at provisioning; on-demand rekey; revocation within AC-SYS-SEC-001 latency</td><td>Mutual auth · sealed channel</td></tr><tr><td><strong>IF-EXT-06</strong></td><td>SPARTA ↔ <strong>TSOC Malware-Verdict Service</strong> <span class="small">(e.g. Airbus Orion Malware®-class)</span> <span class="small">— realizes SYS-IF-006</span></td><td>Bi-directional</td><td>Out: suspicious file artefact for analysis. In: signed malware verdict (idempotent on verdict-ID); updates IOC store or context filter.</td><td>Request/response, DDIL-tolerant, deduplicated on verdict-ID</td><td>Mutually authenticated · signed verdicts</td></tr><tr><td><strong>IF-EXT-07</strong></td><td>SPARTA ↔ Cross-Domain Release Sanitizer <span class="small">(coalition / multi-classification scenarios)</span></td><td>Outbound</td><td>Objects presented for release with mandatory classification + releasability markings; sanitizer re-wraps with own provenance.</td><td>Deny-by-default; audited release decisions</td><td>Hardware-separated sanitizer; mutual auth</td></tr></tbody></table><h3>8.2 Internal Interface Catalogue</h3><table class="metadata"><thead><tr><th>ID</th><th>From → To</th><th>Primary Payloads</th></tr></thead><tbody><tr><td>IF-INT-01</td><td>Data Acquisition → Normalizer</td><td>Raw host / network / MARS records</td></tr><tr><td>IF-INT-02</td><td>Normalizer → Detection</td><td>Canonical time-aligned events</td></tr><tr><td>IF-INT-03</td><td>Detection → Trust</td><td>AnomalyEvent stream</td></tr><tr><td>IF-INT-04</td><td>Trust → Response</td><td>TrustAssessment with mission impact</td></tr><tr><td>IF-INT-05</td><td>Comms ↔ Correlator</td><td>PeerSummary batches, graph products</td></tr><tr><td>IF-INT-06</td><td>All → Evidence Store</td><td>AnomalyEvent, TrustAssessment, reason-chains</td></tr><tr><td>IF-INT-07</td><td>Policy Manager → Trust/Response/Detection</td><td>Active thresholds, enabled actions, envelopes</td></tr></tbody></table><div class="figure" id="connectivity"><div class="mermaid">
 flowchart LR
-  H["Host Platform"] -->|"IF-EXT-04"| A["Edge Agent"]
-  M["MARS"] <-->|"IF-EXT-01"| A
-  A <-->|"IF-EXT-03"| P1["Peer Node 1"]
-  A <-->|"IF-EXT-03"| P2["Peer Node 2"]
-  A <-->|"IF-EXT-02"| T["TSOC"]
-  A <-->|"IF-INT-05"| C["Optional Tactical Correlator"]
-  C <-->|"IF-EXT-03"| P1
-  C <-->|"IF-EXT-03"| P2
-  C <-->|"IF-EXT-02"| T
-  T <-->|"organizational"| M
-  I["Identity Provisioning"] -->|"IF-EXT-05"| A
-    </div>
-    <div class="caption">Figure 03-4. Connectivity and interface map showing external and inter-element links.</div>
-  </div>
+H["Host Platform"] -->|"IF-EXT-04"| A["Edge Agent"]
+M["MARS"] <-->|"IF-EXT-01"| A
+A <-->|"IF-EXT-03"| P1["Peer Node 1"]
+A <-->|"IF-EXT-03"| P2["Peer Node 2"]
+A <-->|"IF-EXT-02"| T["TSOC"]
+A <-->|"IF-INT-05"| C["Optional Tactical Correlator"]
+C <-->|"IF-EXT-03"| P1
+C <-->|"IF-EXT-03"| P2
+C <-->|"IF-EXT-02"| T
+T <-->|"organizational"| M
+I["Identity Provisioning"] -->|"IF-EXT-05"| A
+</div><div class="caption">Figure 03-4. Connectivity and interface map showing external and inter-element links.</div></div><figure class="figure photo-figure"><img src="assets/photo_edge_relay_ground.webp"
+alt="Ground operator on a mountain ridge with a MALE RPAS visible in the distance, a river valley below, and connecting blue lines annotated EDGE NODE, RELAY NODE, and GROUND STATION joining the three elements."
+loading="lazy"/><div class="caption">Figure 03-4a. Photographic view of the three physical node classes in the SPARTA ecosystem — <strong>edge node</strong> (airborne tactical platform, IF-EXT-04), <strong>relay node</strong> (tactical peer/forwarder, IF-EXT-03), and <strong>ground station</strong> (operator / TSOC reach-back, IF-EXT-02 / IF-EXT-01). These correspond to the connectivity topology in Figure 03-4 above.</div></figure>
 
-  <figure class="figure photo-figure">
-    <img src="assets/photo_edge_relay_ground.png"
-         alt="Ground operator on a mountain ridge with a MALE RPAS visible in the distance, a river valley below, and connecting blue lines annotated EDGE NODE, RELAY NODE, and GROUND STATION joining the three elements."
-         loading="lazy"/>
-    <div class="caption">Figure 03-4a. Photographic view of the three physical node classes in the SPARTA ecosystem — <strong>edge node</strong> (airborne tactical platform, IF-EXT-04), <strong>relay node</strong> (tactical peer/forwarder, IF-EXT-03), and <strong>ground station</strong> (operator / TSOC reach-back, IF-EXT-02 / IF-EXT-01). These correspond to the connectivity topology in Figure 03-4 above.</div>
-  </figure>
-</section>
-
-<section id="data-flows">
-  <h2>9. Control Flows and Data Flows</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Control &amp; Data Flows" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="dataflow_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="dataflow_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="dataflow_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="dataflow_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#dataflow_bg)"/>
-  <rect width="1200" height="280" fill="url(#dataflow_grid)"/>
-  <rect width="1200" height="140" fill="url(#dataflow_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Control &amp; Data Flows</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Data moves from sensing through fusion to consumption.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(90 110) scale(1.0) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <g stroke="#e7b955" stroke-width="2" fill="none" opacity="0.85">
-          <path d="M 135 85 L 175 55 L 220 55"/>
-          <path d="M 140 110 L 220 110"/>
-          <path d="M 135 135 L 175 165 L 220 165"/>
-        </g>
-        <g>
-          <rect x="220" y="40" width="145" height="30" rx="4" fill="#9bd8bf" fill-opacity="0.35" stroke="#9bd8bf" stroke-width="1.2"/><text x="292" y="59" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TrustAssessment → MARS</text>
-          <rect x="220" y="95" width="145" height="30" rx="4" fill="#e7b955" fill-opacity="0.35" stroke="#e7b955" stroke-width="1.2"/><text x="292" y="114" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">AnomalyEvent → TSOC</text>
-          <rect x="220" y="150" width="145" height="30" rx="4" fill="#7bb7e6" fill-opacity="0.35" stroke="#7bb7e6" stroke-width="1.2"/><text x="292" y="169" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">PeerSummary → Peers</text>
-        </g>
-        <g fill="#e7b955">
-          <circle cx="175" cy="55" r="3"/><circle cx="180" cy="110" r="3"/><circle cx="175" cy="165" r="3"/>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <div class="figure">
-    <div class="mermaid">
+<h3>8.3 Airborne ↔ Airbus TSOC integration view</h3>
+<div class="figure"><div class="mermaid">
+flowchart LR
+  subgraph AIR["AIRBORNE PLATFORM (Eurodrone-class reference host)"]
+    MARS["MARS<br/>(virtualization)"]
+    PLAT["Platform Systems<br/>OS / NW / HW"]
+    subgraph SPARTA["SPARTA Cyber Detection System"]
+      F1["F1 Collect"] --> F2["F2 Normalize"]
+      F2 --> F3["F3 Detect"]
+      F3 --> F4["F4 Triage"]
+      F4 --> F5["F5 Store"]
+      F5 --> F6["F6 Transmit (DDIL)"]
+      F9["F9 Self-manage"] -.-> F3
+      F9 -.-> F6
+    end
+    MARS -- "F8 (IF-EXT-01)" --> SPARTA
+    PLAT -- "F1 (IF-EXT-04)" --> SPARTA
+  end
+  subgraph TSOC["Airbus TSOC"]
+    INGEST["Alert ingestion<br/>&amp; cockpit"]
+    INV["Incident<br/>investigation"]
+    ORION["Orion Malware®<br/>file analysis<br/>(IF-EXT-06)"]
+    CYMID["CymID®<br/>identity / PKI<br/>(IF-EXT-05)"]
+    ORCH["Response<br/>orchestration"]
+    PUSH["Rule update push<br/>(signed hot-swap)"]
+    PULL["Remote forensic<br/>data pull"]
+  end
+  F6 == "IF-EXT-02<br/>encrypted, DDIL-aware,<br/>store-and-forward" ==> INGEST
+  PUSH -. "F7.4 signed rule update<br/>SYS-DC-005" .-> F3
+  PULL -. "F7.6 authorized pull" .-> F5
+  ORION -. "signed verdict<br/>SYS-IF-006" .-> F3
+  CYMID -. "accredited identity<br/>SYS-IF-007" .-> F9
+  classDef sp fill:#ecfdf5,stroke:#0a5b47,color:#101a2d
+  classDef ts fill:#eaf1f8,stroke:#1f4e79,color:#101a2d
+  classDef pl fill:#fff7e6,stroke:#8a5a00,color:#101a2d
+  class SPARTA sp
+  class TSOC ts
+  class AIR pl
+</div><div class="caption">Figure 03-4b. Airborne ↔ Airbus TSOC integration view. The encrypted uplink is DDIL-aware and operates store-and-forward when unavailable. TSOC-side services (Orion Malware® verdict loop, CymID® identity service) are consumed via TSOC APIs; SPARTA does not re-implement them. Authority-boundary note: SPARTA does not execute TSOC-commanded response actions on the platform (F7.5 read-only ack only); mission-effect execution stays with MARS host / C2 (Deliv. 06 §7).</div></div></section><section id="data-flows"><h2>9. Control Flows and Data Flows</h2><div class="figure"><div class="mermaid">
 flowchart TB
-  S1["Host · Network · Mission data"] --> N["Normalizer"]
-  N --> D["Detection &amp; Classification"]
-  D --> T["Trust Estimation"]
-  T --> R["Recommendation Generation"]
-  D --> E["Evidence Store"]
-  T --> E
-  T --> P["PeerSummary Publisher"]
-  P --> X["Peer / Tactical Correlation"]
-  X --> T
-  R --> M["MARS Output"]
-  E --> Y["TSOC Export"]
-  Z["TSOC Policy / Adjudication"] --> Pol["Policy Manager"]
-  Pol --> T
-  Pol --> R
-  Pol --> D
-  HM["Health Monitor"] --> R
-  HM --> M
-    </div>
-    <div class="caption">Figure 03-5. System data flow diagram with policy and health cross-cutting paths.</div>
-  </div>
-</section>
-
-<section id="sequences">
-  <h2>10. Key Sequence Behavior</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Key Sequence Behavior" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="seq_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="seq_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="seq_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="seq_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#seq_bg)"/>
-  <rect width="1200" height="280" fill="url(#seq_grid)"/>
-  <rect width="1200" height="140" fill="url(#seq_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Key Sequence Behavior</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Message-level choreography across a mission thread.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g stroke="#cbdcf0" stroke-width="1.3">
-          <line x1="60" y1="40" x2="60" y2="200"/>
-          <line x1="145" y1="40" x2="145" y2="200"/>
-          <line x1="240" y1="40" x2="240" y2="200"/>
-          <line x1="330" y1="40" x2="330" y2="200"/>
-        </g>
-        <g>
-          <rect x="30" y="22" width="60" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="60" y="37" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">Host</text>
-          <rect x="115" y="22" width="60" height="22" rx="3" fill="#e7b955" fill-opacity="0.3" stroke="#e7b955" stroke-width="1.2"/><text x="145" y="37" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">SPARTA</text>
-          <rect x="210" y="22" width="60" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="240" y="37" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">MARS</text>
-          <rect x="300" y="22" width="60" height="22" rx="3" fill="#7bb7e6" fill-opacity="0.3" stroke="#cbdcf0" stroke-width="1.2"/><text x="330" y="37" fill="#cbdcf0" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">TSOC</text>
-        </g>
-        <g stroke="#e7b955" stroke-width="1.5" fill="none">
-          <path d="M 60 65 L 145 65 L 140 62 M 145 65 L 140 68"/>
-          <path d="M 240 90 L 145 90 L 150 87 M 145 90 L 150 93"/>
-          <path d="M 145 120 L 240 120 L 235 117 M 240 120 L 235 123"/>
-          <path d="M 145 150 L 330 150 L 325 147 M 330 150 L 325 153"/>
-        </g>
-        <g fill="#e7b955" font-family="Inter" font-size="8">
-          <text x="102" y="62">telemetry</text>
-          <text x="185" y="87">ctx</text>
-          <text x="185" y="117">TrustAssess</text>
-          <text x="225" y="147">EvidencePackage</text>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-
-  <h3>10.1 Sequence — Implausible Handoff (UC-03)</h3>
-  <div class="figure">
-    <div class="mermaid">
+S1["Host · Network · RF · MARS-virt · RBAC<br/><i>F1 COLLECT (IF-EXT-01/04)</i>"] --> N["Normalizer + Enricher<br/><i>F2</i>"]
+N --> D["Signature / ML / Integrity<br/>Detection<br/><i>F3</i>"]
+D --> TR["Triage: score · correlate · filter<br/><i>F4 (SYS-FUNC-011)</i>"]
+TR --> E["Evidence Store (encrypted)<br/><i>F5</i>"]
+E --> TX["DDIL Transmitter<br/><i>F6</i>"]
+TX --> TA["TSOC Adapter<br/><i>F7 (IF-EXT-02)</i>"]
+TA --> TSOC["Airbus TSOC<br/>ingestion / cockpit"]
+ORION["Orion Malware® verdict<br/>(IF-EXT-06, SYS-IF-006)"] -.-> Pol["Policy / Content Manager<br/><i>F10</i>"]
+Pol -.signed hot-swap<br/>SYS-DC-005.-> D
+Pol -.-> TR
+TSOC -.-> Pol
+CYMID["CymID® identity<br/>(IF-EXT-05, SYS-IF-007)"] -.-> Crypto["Crypto &amp; Identity Services<br/><i>F9</i>"]
+HM["Health Monitor / Watchdog<br/><i>F9</i>"] -.-> TA
+HM -.fail-unknown on fault.-> TR
+D -. F3.5 cross-domain<br/>correlation hint .-> TA
+PEER["Peer nodes <br/>(Mode-B-peer — extension)"] -.- TR
+classDef core fill:#eaf1f8,stroke:#1f4e79,color:#101a2d
+classDef tsoc fill:#ecfdf5,stroke:#0a5b47,color:#101a2d
+classDef ext fill:#fff7e6,stroke:#8a5a00,color:#101a2d
+classDef opt stroke-dasharray: 4 3,fill:#f4f0ff,stroke:#513c8c,color:#101a2d
+class S1,N,D,TR,E,TX,HM,Pol,Crypto core
+class TA,TSOC,ORION,CYMID tsoc
+class PEER opt
+</div><div class="caption">Figure 03-5. Canonical SPARTA data-flow aligned with the FM F1..F10. Baseline path: F1→F2→F3→F4→F5→F6→F7 (to Airbus TSOC). Cross-cutting: F9 (health + identity/crypto) and F10 (signed content pipeline, SYS-DC-005 hot-swap). TSOC-side services (Orion Malware® verdict, CymID® identity) feed back into F3/F9. Mode-B-peer peer fabric (dashed violet) is a post-CDR extension and does not close the baseline loop.</div></div></section><section id="sequences"><h2>10. Key Sequence Behavior</h2><h3>10.1 Sequence — Implausible Handoff (UC-03)</h3><div class="figure"><div class="mermaid">
 sequenceDiagram
-  autonumber
-  participant M as Node A MARS
-  participant A as Node A SPARTA
-  participant B as Node B SPARTA
-  participant C as Tactical Correlator
-  participant T as TSOC
-
-  M->>A: Handoff context + role/task state
-  A->>A: Qualify implausible handoff
-  A->>B: PeerSummary request
-  B-->>A: Conflicting observation
-  A->>C: Anomaly + peer disagreement
-  C-->>A: Weighted corroboration
-  A->>M: Trust = SUSPECT · reco = role-restrict
-  A->>T: EvidencePackage (opportunistic)
-    </div>
-    <div class="caption">Figure 03-6. Cross-node disagreement thread producing a trust downgrade under advisory authority.</div>
-  </div>
-
-  <h3>10.2 Sequence — Policy Bundle Activation (UC-06)</h3>
-  <div class="figure">
-    <div class="mermaid">
+autonumber
+participant M as Node A MARS
+participant A as Node A SPARTA
+participant B as Node B SPARTA
+participant C as Tactical Correlator
+participant T as TSOC
+M->>A: Handoff context + role/task state
+A->>A: Qualify implausible handoff
+A->>B: PeerSummary request
+B-->>A: Conflicting observation
+A->>C: Anomaly + peer disagreement
+C-->>A: Weighted corroboration
+A->>M: Trust = SUSPECT · reco = role-restrict
+A->>T: EvidencePackage (opportunistic)
+</div><div class="caption">Figure 03-6. Cross-node disagreement thread producing a trust downgrade under advisory authority.</div></div><h3>10.2 Sequence — Policy Bundle Activation (UC-06)</h3><div class="figure"><div class="mermaid">
 sequenceDiagram
-  autonumber
-  participant T as TSOC
-  participant C as Comms Manager
-  participant P as Policy Manager
-  participant S as Security Services
-  participant E as Trust/Response/Detection
-
-  T->>C: PolicyBundle v(n+1) signed
-  C->>P: Bundle received
-  P->>S: Verify signature + trust anchor
-  S-->>P: OK · issuer identity
-  P->>P: Validate schema · compare version
-  P->>E: Stage + activate PolicyBundle v(n+1)
-  E-->>P: Ack · previous version archived
-  P->>C: Ack to TSOC (with version + validity)
-    </div>
-    <div class="caption">Figure 03-7. Signed policy bundle activation under schema, version, and signature control.</div>
-  </div>
-
-  <h3>10.3 Sequence — Disconnected Evidence Survival (UC-04)</h3>
-  <div class="figure">
-    <div class="mermaid">
+autonumber
+participant T as TSOC
+participant C as Comms Manager
+participant P as Policy Manager
+participant S as Security Services
+participant E as Trust/Response/Detection
+T->>C: PolicyBundle v(n+1) signed
+C->>P: Bundle received
+P->>S: Verify signature + trust anchor
+S-->>P: OK · issuer identity
+P->>P: Validate schema · compare version
+P->>E: Stage + activate PolicyBundle v(n+1)
+E-->>P: Ack · previous version archived
+P->>C: Ack to TSOC (with version + validity)
+</div><div class="caption">Figure 03-7. Signed policy bundle activation under schema, version, and signature control.</div></div><h3>10.3 Sequence — Disconnected Evidence Survival (UC-04)</h3><div class="figure"><div class="mermaid">
 sequenceDiagram
-  autonumber
-  participant A as SPARTA Edge
-  participant E as Evidence Store
-  participant C as Comms Manager
-  participant T as TSOC
-  A->>A: TSOC link lost (timeout T_disc)
-  A->>E: Buffer AnomalyEvent + TrustAssessment
-  A->>A: Continue Monitor / Assess / Recommend
-  Note over A: Annotate outputs with degraded-provenance flag
-  A->>C: Backhaul attempt (retries, backoff)
-  C-->>A: Link restored
-  E->>C: Staged EvidencePackage batch
-  C->>T: Replayed evidence in priority order
-  T-->>A: Post-hoc adjudication
-    </div>
-    <div class="caption">Figure 03-8. Disconnected-operation evidence survival and restored-link synchronization.</div>
-  </div>
-</section>
+autonumber
+participant A as SPARTA Edge
+participant E as Evidence Store
+participant C as Comms Manager
+participant T as TSOC
+A->>A: TSOC link lost (timeout T_disc)
+A->>E: Buffer AnomalyEvent + TrustAssessment
+A->>A: Continue Monitor / Assess / Recommend
+Note over A: Annotate outputs with degraded-provenance flag
+A->>C: Backhaul attempt (retries, backoff)
+C-->>A: Link restored
+E->>C: Staged EvidencePackage batch
+C->>T: Replayed evidence in priority order
+T-->>A: Post-hoc adjudication
+</div><div class="caption">Figure 03-8. Disconnected-operation evidence survival and restored-link synchronization.</div></div>
 
-<section id="data-model">
-  <h2>11. Key Data Entities and Information Model</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Key Data Entities" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="data_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="data_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="data_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="data_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#data_bg)"/>
-  <rect width="1200" height="280" fill="url(#data_grid)"/>
-  <rect width="1200" height="140" fill="url(#data_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Key Data Entities</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Canonical SPARTA objects produced and consumed by a reference edge host.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(95 110) scale(1.0) rotate(0)">
-        <path d="M 0 -55 L 4 -42 L 5 -15 L 10 -10 L 15 -9 L 17 -14 L 22 -14 L 23 -9 L 55 -3 L 55 3 L 22 5 L 10 7 L 5 12 L 4 38 L 18 42 L 18 48 L 4 45 L 3 55 L -3 55 L -4 45 L -18 48 L -18 42 L -4 38 L -5 12 L -10 7 L -22 5 L -55 3 L -55 -3 L -23 -9 L -22 -14 L -17 -14 L -15 -9 L -10 -10 L -5 -15 L -4 -42 Z" fill="#ffffff" fill-opacity="0.2" stroke="#cbdcf0" stroke-width="1.3"/>
-        <ellipse cx="0" cy="-20" rx="4" ry="6" fill="#cbdcf0" fill-opacity="0.55"/>
-        <rect x="-2" y="-8" width="4" height="20" rx="1" fill="#cbdcf0" fill-opacity="0.45"/>
-        <circle cx="0" cy="35" r="2.5" fill="#e7b955" fill-opacity="0.9"/>
-      </g>
-        <g stroke="#e7b955" stroke-width="1" stroke-dasharray="2 3" fill="none" opacity="0.7">
-          <line x1="140" y1="85" x2="200" y2="50"/>
-          <line x1="140" y1="100" x2="200" y2="85"/>
-          <line x1="140" y1="115" x2="200" y2="120"/>
-          <line x1="140" y1="130" x2="200" y2="155"/>
-        </g>
-        <g>
-          <rect x="200" y="38" width="170" height="25" rx="4" fill="#9bd8bf" fill-opacity="0.4" stroke="#9bd8bf" stroke-width="1.2"/><text x="285" y="55" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">NodeStatus</text>
-          <rect x="200" y="73" width="170" height="25" rx="4" fill="#e7b955" fill-opacity="0.4" stroke="#e7b955" stroke-width="1.2"/><text x="285" y="90" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">AnomalyEvent</text>
-          <rect x="200" y="108" width="170" height="25" rx="4" fill="#7bb7e6" fill-opacity="0.4" stroke="#7bb7e6" stroke-width="1.2"/><text x="285" y="125" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">TrustAssessment</text>
-          <rect x="200" y="143" width="170" height="25" rx="4" fill="#c4b6ff" fill-opacity="0.4" stroke="#c4b6ff" stroke-width="1.2"/><text x="285" y="160" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">PeerSummary</text>
-          <rect x="200" y="178" width="170" height="25" rx="4" fill="#efbdd0" fill-opacity="0.4" stroke="#efbdd0" stroke-width="1.2"/><text x="285" y="195" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="9" font-weight="700" text-anchor="middle">ResponseRecommendation</text>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-  <figure class="figure photo-figure">
-    <img src="assets/photo_data_model_workstation.png"
-         alt="Data-model engineer at a multi-screen workstation. A wall display titled DATA MODEL OVERVIEW shows an entity-relationship diagram connecting Customer, Order, Product, OrderItem, Payment and Inventory entities."
-         loading="lazy"/>
-    <div class="caption">Figure 03-7a. Data-model engineering workstation. The SPARTA canonical data objects listed in §11.1 — NodeStatus, AnomalyEvent, TrustAssessment, PeerSummary, ResponseRecommendation, PolicyBundle, EvidencePackage, HealthReport — are governed by an equivalent entity-relationship model under configuration control.</div>
-  </figure>
-
-  <h3>11.1 Data Object Catalogue</h3>
-  <table class="wide-table">
-    <thead><tr><th>Object</th><th>Purpose</th><th>Core Fields</th><th>Producer</th><th>Consumer</th></tr></thead>
-    <tbody>
-      <tr><td>NodeStatus</td><td>Current node cyber / trust state</td><td>nodeId · role · trustState · confidence · freshness · healthSummary · schemaVersion</td><td>Trust Engine</td><td>MARS · TSOC · Peers</td></tr>
-      <tr><td>AnomalyEvent</td><td>Single anomaly finding</td><td>eventId · type · severity · confidence · timestamp · provenance · relatedNodes · exerciseTag</td><td>Detection Engine</td><td>Trust Engine · Evidence Store · TSOC</td></tr>
-      <tr><td>TrustAssessment</td><td>Decision-ready trust output</td><td>nodeId · trustState · confidence · basis[] · missionImpact · validUntil · rationale · exerciseTag · schemaVersion</td><td>Trust Engine</td><td>MARS · TSOC</td></tr>
-      <tr><td>PeerSummary</td><td>Compact tactical exchange</td><td>senderId · observedTrustMap · anomalyRefs · freshnessSec · signature · schemaVersion</td><td>Comms Manager</td><td>Peers · Tactical Correlator</td></tr>
-      <tr><td>ResponseRecommendation</td><td>Bounded action advice</td><td>action · target · scope · confidence · impact · expiry · policyRef · reversibility · rationale</td><td>Response Engine</td><td>MARS · TSOC</td></tr>
-      <tr><td>PolicyBundle</td><td>Operational control content</td><td>policyVersion · thresholds · enabledActions · authorityEnvelope · validUntil · signature</td><td>TSOC / authorized source</td><td>Policy Manager</td></tr>
-      <tr><td>EvidencePackage</td><td>Bundled forensic artefact</td><td>events[] · assessments[] · rationales[] · snapshots · signature · mission/exerciseTag</td><td>Evidence Store</td><td>TSOC</td></tr>
-      <tr><td>HealthReport</td><td>SPARTA self-status</td><td>componentStates · resourceUsage · degradationFlags · timestamp</td><td>Health Monitor</td><td>MARS · TSOC · local logs</td></tr>
-    </tbody>
-  </table>
-
-  <h3>11.2 Producer / Consumer Matrix</h3>
-  <table class="matrix">
-    <thead><tr><th>Object</th><th>Producer(s)</th><th>Consumers</th><th>Persistence</th></tr></thead>
-    <tbody>
-      <tr><td>NodeStatus</td><td>Trust Engine</td><td>MARS · TSOC · Peers · Evidence</td><td>Rolling latest + history</td></tr>
-      <tr><td>AnomalyEvent</td><td>Detection Engine</td><td>Trust · Evidence · TSOC</td><td>Retained ≥ SYS-PERF-003</td></tr>
-      <tr><td>TrustAssessment</td><td>Trust Engine</td><td>MARS · TSOC · Evidence</td><td>Retained with reason-chain</td></tr>
-      <tr><td>PeerSummary</td><td>Comms / Trust</td><td>Peers · Correlator</td><td>Transient + limited cache</td></tr>
-      <tr><td>ResponseRecommendation</td><td>Response Engine</td><td>MARS · TSOC · Evidence</td><td>Retained with expiry &amp; reversibility</td></tr>
-      <tr><td>PolicyBundle</td><td>TSOC</td><td>Policy Manager</td><td>Active + previous-version archive</td></tr>
-      <tr><td>EvidencePackage</td><td>Evidence Store</td><td>TSOC</td><td>On-demand aggregation</td></tr>
-      <tr><td>HealthReport</td><td>Health Monitor</td><td>MARS · TSOC · local</td><td>Rolling</td></tr>
-    </tbody>
-  </table>
-
-  <h3>11.3 Command / Telemetry-Oriented View</h3>
-  <p>SPARTA does not command mission actions directly. Its operational outputs are best treated as <em>mission constraints</em>, <em>trust telemetry</em>, and <em>response advisories</em>. Inputs from MARS are mission context, role/task state, and potentially feedback on applied mission adaptations. This partitioning is normative and is what distinguishes SPARTA from an autonomous cyber actuation system.</p>
-
-  <h3>11.4 Interface Data Definition Examples</h3>
-  <pre>{
+<h3>10.2 Signed hot-swap rule-update chain (F7.4, SYS-DC-005)</h3>
+<p>The rule-update chain (F7.4.1..F7.4.7) is the single most operationally sensitive flow: a malicious or broken rule bundle can either blind detection, produce alert floods, or destabilize the host. The chain below is mandatory and idempotent; full acceptance criteria are in Deliv. 06 §11 AC-SYS-DC-005.</p>
+<div class="figure"><div class="mermaid">
+flowchart LR
+  A["F7.4.1 Receive signed<br/>rule/IOC package"] --> B["F7.4.2 Validate signature<br/>+ version integrity"]
+  B -->|ok| C["F7.4.3 Stage<br/>(do not apply)"]
+  B -->|fail| X["Reject; alarm TSOC;<br/>retain previous ruleset"]
+  C --> D["F7.4.4 Hot-swap apply<br/>(no service interruption)"]
+  D -->|ok| E["F7.4.6 Acknowledge<br/>success to TSOC"]
+  D -->|fail| F["F7.4.5 Roll back<br/>to previous ruleset"]
+  F --> G["Alarm TSOC; keep<br/>serving on previous rules"]
+  H["F7.4.7 DDIL queue<br/>(multiple updates waiting)"] -.-> A
+  classDef ok fill:#ecfdf5,stroke:#0a5b47,color:#101a2d
+  classDef bad fill:#fff0f4,stroke:#8b1e3f,color:#101a2d
+  class X,F,G bad
+  class E ok
+</div><div class="caption">Figure 03-9. Signed hot-swap rule-update chain — signed, staged, hot-swapped, rolled back on failure, acknowledged on success, DDIL-queued when multiple updates accumulate offline.</div></div>
+<ul><li><strong>Signature:</strong> ECDSA-P384-SHA384 baseline; Dilithium3 post-quantum forward profile (Deliv. 06 §10.8).</li>
+<li><strong>Version integrity:</strong> monotonic counter enforced; rollback only via two-person-rule-signed break-glass (Deliv. 06 §10.6).</li>
+<li><strong>Hot-swap:</strong> new ruleset loaded in parallel; detection engine switches atomically at a boundary event; old ruleset remains in-memory until success is confirmed.</li>
+<li><strong>Rollback:</strong> automatic on hot-swap failure OR on MOE regression detected in shadow-mode window (AC-SYS-DC-004).</li>
+<li><strong>DDIL queue:</strong> multiple updates received while offline are applied in monotonic order at link restoration; each is acknowledged individually.</li></ul></section><section id="data-model"><h2>11. Key Data Entities and Information Model</h2><figure class="figure photo-figure"><img src="assets/photo_data_model_workstation.webp"
+alt="Data-model engineer at a multi-screen workstation. A wall display titled DATA MODEL OVERVIEW shows an entity-relationship diagram connecting Customer, Order, Product, OrderItem, Payment and Inventory entities."
+loading="lazy"/><div class="caption">Figure 03-7a. Data-model engineering workstation. The SPARTA canonical data objects listed in §11.1 — NodeStatus, AnomalyEvent, TrustAssessment, PeerSummary, ResponseRecommendation, PolicyBundle, EvidencePackage, HealthReport — are governed by an equivalent entity-relationship model under configuration control.</div></figure><h3>11.1 Data Object Catalogue</h3><table class="wide-table"><thead><tr><th>Object</th><th>Purpose</th><th>Core Fields</th><th>Producer</th><th>Consumer</th></tr></thead><tbody><tr><td>NodeStatus</td><td>Current node cyber / trust state</td><td>nodeId · role · trustState · confidence · freshness · healthSummary · schemaVersion</td><td>Trust Engine</td><td>MARS · TSOC · Peers</td></tr><tr><td>AnomalyEvent</td><td>Single anomaly finding</td><td>eventId · type · severity · confidence · timestamp · provenance · relatedNodes · exerciseTag</td><td>Detection Engine</td><td>Trust Engine · Evidence Store · TSOC</td></tr><tr><td>TrustAssessment</td><td>Decision-ready trust output</td><td>nodeId · trustState · confidence · basis[] · missionImpact · validUntil · rationale · exerciseTag · schemaVersion</td><td>Trust Engine</td><td>MARS · TSOC</td></tr><tr><td>PeerSummary</td><td>Compact tactical exchange</td><td>senderId · observedTrustMap · anomalyRefs · freshnessSec · signature · schemaVersion</td><td>Comms Manager</td><td>Peers · Tactical Correlator</td></tr><tr><td>ResponseRecommendation</td><td>Bounded action advice</td><td>action · target · scope · confidence · impact · expiry · policyRef · reversibility · rationale</td><td>Response Engine</td><td>MARS · TSOC</td></tr><tr><td>PolicyBundle</td><td>Operational control content</td><td>policyVersion · thresholds · enabledActions · authorityEnvelope · validUntil · signature</td><td>TSOC / authorized source</td><td>Policy Manager</td></tr><tr><td>EvidencePackage</td><td>Bundled forensic artefact</td><td>events[] · assessments[] · rationales[] · snapshots · signature · mission/exerciseTag</td><td>Evidence Store</td><td>TSOC</td></tr><tr><td>HealthReport</td><td>SPARTA self-status</td><td>componentStates · resourceUsage · degradationFlags · timestamp</td><td>Health Monitor</td><td>MARS · TSOC · local logs</td></tr></tbody></table><h3>11.2 Producer / Consumer Matrix</h3><table class="matrix"><thead><tr><th>Object</th><th>Producer(s)</th><th>Consumers</th><th>Persistence</th></tr></thead><tbody><tr><td>NodeStatus</td><td>Trust Engine</td><td>MARS · TSOC · Peers · Evidence</td><td>Rolling latest + history</td></tr><tr><td>AnomalyEvent</td><td>Detection Engine</td><td>Trust · Evidence · TSOC</td><td>Retained ≥ SYS-PERF-003</td></tr><tr><td>TrustAssessment</td><td>Trust Engine</td><td>MARS · TSOC · Evidence</td><td>Retained with reason-chain</td></tr><tr><td>PeerSummary</td><td>Comms / Trust</td><td>Peers · Correlator</td><td>Transient + limited cache</td></tr><tr><td>ResponseRecommendation</td><td>Response Engine</td><td>MARS · TSOC · Evidence</td><td>Retained with expiry &amp; reversibility</td></tr><tr><td>PolicyBundle</td><td>TSOC</td><td>Policy Manager</td><td>Active + previous-version archive</td></tr><tr><td>EvidencePackage</td><td>Evidence Store</td><td>TSOC</td><td>On-demand aggregation</td></tr><tr><td>HealthReport</td><td>Health Monitor</td><td>MARS · TSOC · local</td><td>Rolling</td></tr></tbody></table><h3>11.3 Command / Telemetry-Oriented View</h3><p>SPARTA does not command mission actions directly. Its operational outputs are best treated as <em>mission constraints</em>, <em>trust telemetry</em>, and <em>response advisories</em>. Inputs from MARS are mission context, role/task state, and potentially feedback on applied mission adaptations. This partitioning is normative and is what distinguishes SPARTA from an autonomous cyber actuation system.</p><h3>11.4 Interface Data Definition Examples</h3>
+<pre>{
   "TrustAssessment": {
     "schemaVersion": "1.2",
     "nodeId": "NODE-A1",
@@ -1220,8 +412,7 @@ sequenceDiagram
     "exerciseTag": null
   }
 }</pre>
-
-  <pre>{
+<pre>{
   "PeerSummary": {
     "schemaVersion": "1.1",
     "senderId": "NODE-B7",
@@ -1231,8 +422,7 @@ sequenceDiagram
     "signature": "&lt;ECDSA-P256-BASE64&gt;"
   }
 }</pre>
-
-  <pre>{
+<pre>{
   "ResponseRecommendation": {
     "schemaVersion": "1.0",
     "target": "NODE-A1",
@@ -1246,8 +436,7 @@ sequenceDiagram
     "rationale": "See TrustAssessment NODE-A1#2026-04-22T10:01:42Z"
   }
 }</pre>
-
-  <pre>{
+<pre>{
   "PolicyBundle": {
     "schemaVersion": "2.0",
     "policyVersion": 13,
@@ -1258,132 +447,6 @@ sequenceDiagram
     "signature": "&lt;RSA-PSS-4096-BASE64&gt;"
   }
 }</pre>
-</section>
-
-<section id="timing-modes-tradeoffs">
-  <h2>12. Timing, Mode Allocation, Trade-offs, Risks &amp; Open Points</h2>
-  <figure class="hero-illustration">
-<svg viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timing, Trade-offs &amp; Open Points" preserveAspectRatio="xMidYMid meet">
-  <defs>
-    <linearGradient id="timing_bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#081a30"/>
-      <stop offset="50%" stop-color="#142d4f"/>
-      <stop offset="100%" stop-color="#2a5f97"/>
-    </linearGradient>
-    <linearGradient id="timing_glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-    <radialGradient id="timing_halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
-    <pattern id="timing_grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="280" fill="url(#timing_bg)"/>
-  <rect width="1200" height="280" fill="url(#timing_grid)"/>
-  <rect width="1200" height="140" fill="url(#timing_glow)"/>
-  <g stroke="#9bc2ea" stroke-opacity="0.35" stroke-width="1">
-    <line x1="40" y1="20" x2="48" y2="20"/>
-    <line x1="40" y1="30" x2="60" y2="30"/>
-    <line x1="40" y1="40" x2="48" y2="40"/>
-    <line x1="1160" y1="260" x2="1152" y2="260"/>
-    <line x1="1160" y1="250" x2="1140" y2="250"/>
-    <line x1="1160" y1="240" x2="1152" y2="240"/>
-  </g>
-  <rect x="60" y="60" width="220" height="28" rx="14" fill="#ffffff" fill-opacity="0.07" stroke="#9bc2ea" stroke-opacity="0.55"/>
-  <text x="170" y="79" fill="#cbdcf0" font-family="Inter, Segoe UI, sans-serif" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="2.5">SPARTA · TACTICAL EDGE</text>
-  <text x="60" y="138" fill="#ffffff" font-family="Inter, Segoe UI, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.3">Timing, Trade-offs &amp; Open Points</text>
-  <text x="60" y="170" fill="#c8e1f4" font-family="Inter, Segoe UI, sans-serif" font-size="15" font-weight="400" opacity="0.92">Sequencing assumptions and architecture decisions.</text>
-  <text x="60" y="210" fill="#7bb7e6" font-family="Inter, Segoe UI, sans-serif" font-size="11" font-weight="600" opacity="0.75" letter-spacing="1.5">MISSION-AWARE CYBER TRUST · PDR BASELINE · DRAFT C</text>
-  <g transform="translate(780 30)">
-    <rect x="0" y="0" width="390" height="220" rx="14" fill="#ffffff" fill-opacity="0.04" stroke="#9bc2ea" stroke-opacity="0.25" stroke-width="1"/>
-    <g transform="translate(100 110)">
-          <circle r="58" fill="#ffffff" fill-opacity="0.1" stroke="#cbdcf0" stroke-width="2"/>
-          <circle r="58" fill="none" stroke="#e7b955" stroke-width="1.5" stroke-dasharray="4 4"/>
-          <line x1="0" y1="0" x2="0" y2="-42" stroke="#e7b955" stroke-width="3" stroke-linecap="round"/>
-          <line x1="0" y1="0" x2="32" y2="8" stroke="#e7b955" stroke-width="3" stroke-linecap="round"/>
-          <circle r="4" fill="#e7b955"/>
-          <text y="-70" fill="#cbdcf0" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle">DECISION WINDOW</text>
-        </g>
-        <g stroke="#cbdcf0" stroke-width="1.5" fill="none">
-          <path d="M 170 110 L 210 110 L 205 105 M 210 110 L 205 115"/>
-        </g>
-        <g>
-          <rect x="215" y="55" width="155" height="30" rx="4" fill="#9bd8bf" fill-opacity="0.4" stroke="#9bd8bf" stroke-width="1.2"/><text x="292" y="74" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Local-first trust (Mode A)</text>
-          <rect x="215" y="95" width="155" height="30" rx="4" fill="#7bb7e6" fill-opacity="0.4" stroke="#7bb7e6" stroke-width="1.2"/><text x="292" y="114" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Correlate tactically (B)</text>
-          <rect x="215" y="135" width="155" height="30" rx="4" fill="#e7b955" fill-opacity="0.4" stroke="#e7b955" stroke-width="1.2"/><text x="292" y="154" fill="#ffffff" font-family="Inter,Segoe UI,sans-serif" font-size="10" font-weight="700" text-anchor="middle">Adjudicate at TSOC (C)</text>
-        </g>
-  </g>
-  <rect x="0" y="273" width="1200" height="7" fill="#7bb7e6"/>
-  <rect x="0" y="273" width="300" height="7" fill="#e7b955"/>
-</svg>
-</figure>
-
-  <h3>12.1 Timing / Sequencing Assumptions</h3>
-  <ul>
-    <li>Local assessment loops execute faster than tactical peer exchange loops (nominally &lt; 1 s vs 1–5 s).</li>
-    <li>TSOC synchronization is opportunistic and non-blocking with respect to MARS outputs.</li>
-    <li>Policy updates are versioned and validity-bounded to support disconnection.</li>
-    <li>Event ordering assumes ±50 ms timing reference; tolerant ordering applies otherwise.</li>
-  </ul>
-
-  <h3>12.2 Mode Allocation to Elements</h3>
-  <table class="metadata">
-    <thead><tr><th>Element</th><th>Mode A (Edge-local)</th><th>Mode B (+Correlation)</th><th>Mode C (+TSOC-linked)</th></tr></thead>
-    <tbody>
-      <tr><td>Edge Agent (core)</td><td>Active</td><td>Active</td><td>Active</td></tr>
-      <tr><td>Comms Manager (peer)</td><td>Latent</td><td>Active</td><td>Active</td></tr>
-      <tr><td>Tactical Correlator</td><td>Inactive</td><td>Active</td><td>Active</td></tr>
-      <tr><td>Comms Manager (TSOC)</td><td>Latent</td><td>Latent / opportunistic</td><td>Active</td></tr>
-      <tr><td>Policy Manager</td><td>Last-good only</td><td>Last-good + peer notice</td><td>Live refresh</td></tr>
-    </tbody>
-  </table>
-
-  <h3>12.3 Architecture Trade-offs</h3>
-  <table class="metadata">
-    <thead><tr><th>Trade-off</th><th>Decision</th><th>Reason</th></tr></thead>
-    <tbody>
-      <tr><td>Centralized vs local trust estimation</td><td>Local</td><td>Needed for disconnected mission continuity.</td></tr>
-      <tr><td>Raw telemetry exchange vs compact summaries</td><td>Compact signed summaries</td><td>Bandwidth and attack-surface control.</td></tr>
-      <tr><td>Direct strong action vs advisory constraints</td><td>Advisory-first, policy-gated level-1</td><td>Authority separation and certification.</td></tr>
-      <tr><td>Co-hosted vs dedicated correlator</td><td>Logical capability; deployment deferred</td><td>Avoid premature hardware lock-in.</td></tr>
-      <tr><td>Single trust state vs trust-with-metadata</td><td>State + confidence + validity + reason-chain</td><td>Consumability and auditability.</td></tr>
-      <tr><td>Software-baked content vs signed bundle</td><td>Signed bundle with independent lifecycle</td><td>Sustainment and accreditation efficiency.</td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout risk">
-    <strong>Open Architecture Risks</strong>
-    <ul>
-      <li>Correlation quality depends on trustworthy provenance and sufficient peer observability.</li>
-      <li>Data model stability may be pressured by evolving MARS/TSOC external schemas — managed by IF-EXT-* versioning and SYS-IF-005.</li>
-      <li>Edge-hosted analytics may require tailoring by node class to maintain bounded resource usage.</li>
-      <li>Tactical correlator placement becomes a deployment-time optimization that must be validated per program.</li>
-    </ul>
-  </div>
-
-  <h3>12.4 Open Points for CDR</h3>
-  <ul>
-    <li>Formal MARS and TSOC ICDs (schema freeze, QoS guarantees).</li>
-    <li>Program-specific node-class footprints and compute envelopes.</li>
-    <li>Final selection of tactical correlator deployment placements per reference mission.</li>
-    <li>Cross-domain message structure for coalition exchange.</li>
-  </ul>
-</section>
-
-        <div class="footer-nav">
-          <a href="02_system_requirements.html">← 02 System Requirements</a>
-          <a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle →</a>
-        </div>
-      </main>
-    </div>
-  </div>
-    <div class="page-footer-mark">
-      <img src="assets/sparta_logo_64.png" alt="" />
-      <span>SPARTA · Cyber Defense Programme · Airbus Restricted</span>
-    </div>
-</body>
-</html>
+</section><section id="timing-modes-tradeoffs"><h2>12. Timing, Mode Allocation, Trade-offs, Risks &amp; Open Points</h2><h3>12.1 Timing / Sequencing Assumptions</h3><ul><li>Local assessment loops execute faster than tactical peer exchange loops (nominally &lt; 1 s vs 1–5 s).</li><li>TSOC synchronization is opportunistic and non-blocking with respect to MARS outputs.</li><li>Policy updates are versioned and validity-bounded to support disconnection.</li><li>Event ordering assumes ±50 ms timing reference; tolerant ordering applies otherwise.</li></ul><h3>12.2 Mode Allocation to Elements</h3><table class="metadata"><thead><tr><th>Element</th><th>Mode A (Edge-local)</th><th>Mode B (+Correlation)</th><th>Mode C (+TSOC-linked)</th></tr></thead><tbody><tr><td>Edge Agent (core)</td><td>Active</td><td>Active</td><td>Active</td></tr><tr><td>Comms Manager (peer)</td><td>Latent</td><td>Active</td><td>Active</td></tr><tr><td>Tactical Correlator</td><td>Inactive</td><td>Active</td><td>Active</td></tr><tr><td>Comms Manager (TSOC)</td><td>Latent</td><td>Latent / opportunistic</td><td>Active</td></tr><tr><td>Policy Manager</td><td>Last-good only</td><td>Last-good + peer notice</td><td>Live refresh</td></tr></tbody></table><h3>12.3 Architecture Trade-offs</h3><table class="metadata"><thead><tr><th>Trade-off</th><th>Decision</th><th>Reason</th></tr></thead><tbody><tr><td>Centralized vs local trust estimation</td><td>Local</td><td>Needed for disconnected mission continuity.</td></tr><tr><td>Raw telemetry exchange vs compact summaries</td><td>Compact signed summaries</td><td>Bandwidth and attack-surface control.</td></tr><tr><td>Direct strong action vs advisory constraints</td><td>Advisory-first, policy-gated level-1</td><td>Authority separation and certification.</td></tr><tr><td>Co-hosted vs dedicated correlator</td><td>Logical capability; deployment deferred</td><td>Avoid premature hardware lock-in.</td></tr><tr><td>Single trust state vs trust-with-metadata</td><td>State + confidence + validity + reason-chain</td><td>Consumability and auditability.</td></tr><tr><td>Software-baked content vs signed bundle</td><td>Signed bundle with independent lifecycle</td><td>Sustainment and accreditation efficiency.</td></tr></tbody></table><div class="callout risk"><strong>Open Architecture Risks</strong><ul><li>Correlation quality depends on trustworthy provenance and sufficient peer observability.</li><li>Data model stability may be pressured by evolving MARS/TSOC external schemas — managed by IF-EXT-* versioning and SYS-IF-005.</li><li>Edge-hosted analytics may require tailoring by node class to maintain bounded resource usage.</li><li>Tactical correlator placement becomes a deployment-time optimization that must be validated per program.</li></ul></div><h3>12.4 Open Points for CDR</h3><ul><li>Formal MARS and TSOC ICDs (schema freeze, QoS guarantees).</li><li>Program-specific node-class footprints and compute envelopes.</li><li>Final selection of tactical correlator deployment placements per reference mission.</li><li>Cross-domain message structure for coalition exchange.</li></ul>
+<h3>12.5 Cross-domain correlation — architectural allocation</h3>
+<p>Some compromise signatures only become visible when events from different domains are joined — for example a sudden spike in internal-bus traffic coinciding with a momentary GNSS signal loss. On a single airborne node, SPARTA detects each component individually (F3.1..F3.4) and emits a <strong>correlation hint</strong> (F3.5); cross-domain correlation itself is architecturally allocated to the Airbus TSOC, which has the fleet-level inputs that SPARTA does not. This is a deliberate authority-boundary choice, not a capability gap. The threat-model view of cross-domain release (coalition / multi-classification) is in <a href="06_security_safety_assurance.html#tm-coalition">Deliv. 06 §3.7 T7</a>.</p></section><div class="footer-nav"><a href="02_system_requirements.html">← 02 System Requirements</a><a href="04_performance_vnv_lifecycle.html">04 Performance, V&amp;V &amp; Lifecycle →</a></div></main></div></div><div class="page-footer-mark"><img src="assets/sparta_logo_64.png" alt="" /><span>SPARTA · Cyber Defense Programme · Airbus Restricted</span></div></body></html>
