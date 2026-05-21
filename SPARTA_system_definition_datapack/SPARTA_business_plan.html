@@ -126,6 +126,7 @@
       <li><a href="#x-internal">6.1 Internal Fit</a></li>
       <li><a href="#x-external">6.2 External Fit</a></li>
       <li><a href="#x-risk">6.3 Risk Assessment</a></li>
+      <li><a href="#x-swot">6.4 SWOT Synthesis</a></li>
     </ol>
   </li>
   <li><a href="#breq">Business Requirements</a>
@@ -188,6 +189,8 @@
 <blockquote>SPARTA is the cyber-trust spine of the FCAS Combat Cloud. By owning the trust object that every node, sensor and Remote Carrier emits and consumes, Airbus locks in the data contract on which Combat Cloud value depends — and converts a one-shot platform sale into a recurring trust-content service across FCAS, Eurofighter LTE, Eurodrone and partner fleets.</blockquote>
 
 <p>Competitors cannot easily replicate this because replication requires the simultaneous combination of: (a) Combat Cloud prime status (Airbus DS owns Pillar 4 on FCAS) [R-1] <span class="badge f">F</span>; (b) MARS data-model authority (Airbus DS owns the published open-architecture reference) [R-2] <span class="badge f">F</span>; (c) operational mission-context access via published MARS interfaces (structural advantage of being inside the platform); and (d) accredited TSOC analyst-workflow ownership via Airbus Protect's Orion Malware® and CymID®-class services [R-2] <span class="badge a">A</span>. No European or US competitor holds all four positions in FCAS.</p>
+
+<p><strong>Three Airbus-specific advantages further strengthen the value proposition</strong> beyond the four-property moat above. First, Airbus DS can leverage <strong>Airbus Protect's cyber-security expertise</strong> — Airbus Protect already defends Airbus Defence &amp; Space itself against real-world advanced adversaries, an operational threat profile that sits immediately below that of actual military operators. This gives Airbus Protect a depth of practical cyber-defence experience that no commercial managed-security-service provider and few European defence-cyber competitors can match. Second, Airbus DS <strong>owns or has direct privileged access to the host platforms</strong> on which SPARTA must run (Eurofighter, A400M, MRTT, Eurodrone, Tiger / NH90); this gives Airbus DS the deep platform-systems expertise needed to engineer SPARTA to fit avionics, comms-bus, and SWaP constraints — knowledge that an outside vendor would have to acquire through years of integration work. Third, Airbus DS is already <strong>inside FCAS</strong> as the Pillar 4 prime; this conveys credibility and institutional standing to define standards rather than merely to comply with them. Together, these three advantages mean SPARTA is not a speculative entry into a market — it is the natural extension of capabilities Airbus DS already possesses and already exercises operationally.</p>
 
 <h3 id="fin-summary">2.4 Financial Summary</h3>
 
@@ -331,8 +334,16 @@
 <figcaption><strong>Figure 1.</strong> Five-Forces summary for SPARTA in the European mission-edge cyber market, 2026. Industry rivalry is medium and centred on Indra, Thales (Europe) and US mission-cyber vendors. New-entrant threat is medium-high (US vendors with software-first cultures). Substitute threat is low because enterprise SOC products do not address the tactical-edge decision rhythm. Buyer power is medium (sovereign customers, parliamentary oversight). Supplier power is low-medium (commodity crypto + Airbus Protect internal supply).</figcaption>
 </figure>
 
-<h4>3.4.1 Threat of new entrants — medium-high</h4>
-<p>US-origin mission-edge cyber vendors (Anduril, Palantir, Shift5) operate with software-first cultures, rapid release cadences, and aggressive marketing into NATO contexts [R-18] <span class="badge a">A</span>. They are not natively MARS-compatible and they face sovereign-acceptability friction in FR / DE / ES, but they could establish a de-facto NATO standard if European primes leave the standard unset for too long. The structural mitigation is anchoring SPARTA into the FCAS Combat Cloud schema before the schema freeze window of 2028–2029 closes, supplemented by EDF-co-funded reference architectures that establish SPARTA as the European sovereign answer [R-8][R-9] <span class="badge f">F</span>. European defence-cyber start-ups (notably France-based, occasionally Germany-based) are a secondary entrant class; their threat profile is lower than the US class because they typically lack Combat Cloud programme access.</p>
+<h4>3.4.1 Threat of new entrants — high</h4>
+<p>US-origin mission-edge cyber vendors (Anduril, Palantir, Shift5) operate with software-first cultures, rapid release cadences, and aggressive marketing into NATO contexts [R-18] <span class="badge a">A</span>. They are not natively MARS-compatible and they face sovereign-acceptability friction in FR / DE / ES, but they could establish a de-facto NATO standard if European primes leave the standard unset for too long. The structural mitigation is anchoring SPARTA into the FCAS Combat Cloud schema before the schema freeze window of 2028–2029 closes, supplemented by EDF-co-funded reference architectures that establish SPARTA as the European sovereign answer [R-8][R-9] <span class="badge f">F</span>.</p>
+
+<p>Two German entrants warrant specific attention because they combine the sovereign-acceptability the US vendors lack with the software-first cadence European primes are missing:</p>
+<ul>
+<li><strong>Helsing.AI</strong> — Munich-based defence-AI start-up founded in 2021, heavily venture-funded, with rapid contract wins in the Bundeswehr ecosystem and explicit FCAS-relevant ambition. Helsing's software-first culture and German sovereignty make it the most credible non-US new entrant that could plausibly contest SPARTA's positioning, particularly on the Bundeswehr side. Helsing's current product focus is AI-driven mission software rather than mission-aware cyber-trust specifically — but the boundary is porous, and Helsing has both the funding and the talent to enter SPARTA's space if the market signal is sufficiently strong.</li>
+<li><strong>BWI GmbH</strong> — the Bundeswehr's wholly-owned IT services company, with several thousand employees and the institutional inside track on German military IT modernisation. BWI is structurally less likely than Helsing to compete on a product basis (BWI is a services integrator, not a product vendor) but it is in a position to influence Bundeswehr customer requirements and to be designated as the German integrator-of-choice for any SPARTA-equivalent capability the Bundeswehr decides to procure. BWI's role is therefore best understood as a gatekeeper / influencer rather than a direct rival.</li>
+</ul>
+
+<p>European defence-cyber start-ups (notably France-based, occasionally Germany-based) are a tertiary entrant class; their threat profile is lower than the US and Helsing classes because they typically lack Combat Cloud programme access and venture-scale funding.</p>
 
 <h4>3.4.2 Bargaining power of buyers — medium</h4>
 <p>Buyers are sovereign customers operating under parliamentary oversight (Bundestag Haushaltsausschuss, Assemblée Nationale Commission de la Défense, Congreso de los Diputados Comisión de Defensa) [R-7] <span class="badge f">F</span>. They are not price-takers but they are also not maximally price-pressuring; defence-cyber budgets are politically protected because cyber is sovereign-essential infrastructure. The medium rating reflects that sovereign buyers can credibly threaten to develop an in-house alternative, but the structural cost of that threat (multi-year sovereign cyber programmes are expensive and politically exposed) limits how often they can credibly invoke it.</p>
@@ -343,8 +354,17 @@
 <h4>3.4.4 Threat of substitutes — low</h4>
 <p>Enterprise Security Operations Centre (SOC) and Security Information &amp; Event Management (SIEM) products (Thales CYBELS, Splunk-class enterprise platforms) operate on log-time and are not substitutes for tactical-decision-rhythm mission-aware trust. Per-platform integrity monitors (host-based, signature-driven) are partial substitutes for the F3 detection layer but cannot deliver mission-aware reasoning, peer correlation, or coalition-grade authority partitioning. The structural reason substitute threat is low is that SPARTA's value is in the combination of mission-awareness + DDIL tolerance + signed-content lifecycle + advisory authority partition — not in any single function that could be substituted in isolation.</p>
 
-<h4>3.4.5 Industry rivalry — medium</h4>
-<p>Direct rivals in the European context are Indra (FCAS Pillar 5 sensors prime with sovereign-cyber heritage), Thales (CYBELS cyber-defence product family and Critical National Infrastructure (CNI) cyber heritage), and to a lesser extent Leonardo within GCAP [R-1][R-11] <span class="badge f">F</span>. Indirect rivals are the US mission-cyber vendors already noted under entrants. The structural reason rivalry is medium rather than high is that none of these rivals simultaneously holds the four positions (Combat Cloud primacy, MARS authority, mission-context access, TSOC analyst-workflow ownership) that SPARTA's defensibility depends on.</p>
+<h4>3.4.5 Industry rivalry — medium-high</h4>
+<p>Direct rivals in the European context are Indra (FCAS Pillar 5 sensors prime with sovereign-cyber heritage), Thales (CYBELS cyber-defence product family and Critical National Infrastructure (CNI) cyber heritage), <strong>Helsing.AI</strong> (German defence-AI start-up with FCAS-adjacent positioning and aggressive Bundeswehr engagement), and to a lesser extent Leonardo within GCAP [R-1][R-11] <span class="badge f">F</span>. <strong>BWI GmbH</strong> is a German-specific influencer/gatekeeper that shapes Bundeswehr procurement preferences without being a direct product competitor. Indirect rivals are the US mission-cyber vendors already noted under entrants. The structural reason rivalry is medium-high rather than high is that none of these rivals simultaneously holds the four positions (Combat Cloud primacy, MARS authority, mission-context access, TSOC analyst-workflow ownership) that SPARTA's defensibility depends on — though Helsing.AI is the rival closest to closing the gap, because it combines sovereign acceptability with software-first cadence.</p>
+
+<table class="metadata"><thead><tr><th>Player</th><th>Origin</th><th>Closest threat vector</th><th>Why they do not currently hold the four-position moat</th></tr></thead><tbody>
+<tr><td>Indra</td><td>Spain</td><td>Sovereign-cyber heritage; Pillar 5 access</td><td>No Combat Cloud primacy; no MARS authority</td></tr>
+<tr><td>Thales</td><td>France</td><td>CYBELS enterprise SOC; CNI cyber heritage</td><td>Enterprise-grade, not mission-edge; not Combat Cloud prime</td></tr>
+<tr><td><strong>Helsing.AI</strong></td><td>Germany</td><td>Software-first AI cadence; aggressive Bundeswehr wins; FCAS-adjacent positioning</td><td>No MARS authority; no TSOC workflow ownership; product focus is mission-AI not cyber-trust (today)</td></tr>
+<tr><td><strong>BWI GmbH</strong></td><td>Germany (Bundeswehr-owned)</td><td>Inside track on Bundeswehr IT modernisation; influences procurement</td><td>Services integrator, not a product vendor; structural role is influencer, not direct rival</td></tr>
+<tr><td>Leonardo (within GCAP)</td><td>Italy</td><td>GCAP partner; mission-system depth</td><td>In a competing programme (GCAP), not in FCAS</td></tr>
+<tr><td>Anduril / Palantir / Shift5</td><td>US</td><td>Software-first cadence; rapid release</td><td>Sovereign-acceptability friction in FR/DE/ES; not MARS-compatible</td></tr>
+</tbody></table>
 
 <h3 id="m-stake">3.5 Stakeholder Relationships</h3>
 
@@ -424,8 +444,9 @@
 <tr><td>MARS open reference architecture</td><td>Airbus DS published open, model-based, modular reference architecture for combat-cloud-enabled mission systems [R-2]</td><td>Schema authority — every Combat Cloud participant must conform</td></tr>
 <tr><td>FCAS Pillar 4 contracted workshare</td><td>Airbus DS holds Combat Cloud prime status; contracted under Phase 1A (Feb 2020) and Phase 1B (Dec 2022) [R-1][R-7]</td><td>Programme-anchored; difficult to dislodge without re-opening Phase 1B workshare</td></tr>
 <tr><td>SPARTA CDR-ready technical baseline (Draft C.4)</td><td>56 SYS-* requirements; 7 IF-EXT and 7 IF-INT; 10-function FBS; assurance case skeleton; negative-test plan NT-01..NT-22; CDR closure criteria C-01..C-15 [Datapack D01–D06]</td><td>Engineering depth that no greenfield competitor can match in &lt; 18–24 months</td></tr>
-<tr><td>Airbus Protect accredited services backbone</td><td>Orion Malware® file analysis and CymID®-class identity / PKI services [R-2]</td><td>Sovereign-accredited; switching cost prohibitive for accredited customers</td></tr>
-<tr><td>Eurodrone and Eurofighter platform access</td><td>Airbus DS prime / co-prime on multi-nation tactical platforms</td><td>Captive deployment surface to derisk SPARTA outside the FCAS critical path</td></tr>
+<tr><td>Airbus Protect accredited services backbone <em>(strengthened)</em></td><td>Orion Malware® file analysis, CymID®-class identity / PKI services, and — critically — operational cyber-defence experience earned by defending Airbus DS itself against real-world advanced adversaries. This is a threat profile that sits immediately below that of actual military operators, and gives Airbus Protect a depth of practical cyber-defence experience that no commercial managed-security-service provider, and few European defence-cyber competitors, can match [R-2]</td><td>Sovereign-accredited; switching cost prohibitive for accredited customers; *and* a moat dimension that cannot be acquired by hiring — only by operating</td></tr>
+<tr><td>Privileged platform ownership and access <em>(strengthened)</em></td><td>Airbus DS owns or has direct privileged engineering access to the host platforms on which SPARTA must run: Eurodrone (prime), Eurofighter (co-prime), A400M (prime), MRTT (prime), Tiger / NH90 (prime / co-prime). This conveys deep platform-systems expertise — avionics-bus, comms-stack, SWaP, certification path — that an outside vendor must spend years acquiring through integration projects [R-2]</td><td>Captive deployment surface to derisk SPARTA outside the FCAS critical path; engineering expertise that no greenfield competitor can replicate inside the 2028–2029 window</td></tr>
+<tr><td>FCAS membership and standard-setting credibility <em>(new)</em></td><td>Airbus DS is already inside FCAS as the Pillar 4 (Combat Cloud) prime. This confers institutional credibility to <em>define</em> standards, not merely to comply with them — the MARS schema-board, the FCAS Industrial Steering Committee, and the Combat Cloud architecture board are all forums in which Airbus DS has standing seats [R-1][R-2]</td><td>Standard-setter position is structurally non-replicable: a competitor would have to be admitted to FCAS as a prime before they could even contest it</td></tr>
 <tr><td>Identity / key custody infrastructure</td><td>P6 identity and key material per node, anchored on the accredited identity provider (IF-EXT-05)</td><td>Trust chain; cannot be retro-fitted</td></tr>
 </tbody></table>
 
@@ -905,6 +926,54 @@
 
 <h4>6.3.2 Residual risk acceptance</h4>
 <p>Residual risk after mitigation is explicit and board-reviewable. The technical CDR closure criterion C-14 (Deliv. 06 §13) requires a signed residual-risk register at CDR gate. For the strategic risk register above, the residual-risk acceptance question for the board is: does the board accept the probability-weighted expected NPV of €233 M (a value-creating outcome) as justifying the residual exposure described in the register, on the conditions stated in §8? The recommendation is that it should — but the decision is the board's.</p>
+
+<h3 id="x-swot">6.4 SWOT Synthesis</h3>
+<p>The SWOT (Strengths, Weaknesses, Opportunities, Threats) below consolidates the findings of §3 Market Analysis, §4 Capabilities Analysis, §6.1 Internal Fit, §6.2 External Fit and §6.3 Risk Assessment into a single page-level synthesis. Each cell is cross-referenced back to the source section so the reviewer can audit any individual claim. The framing makes the structure of the investment case explicit: SPARTA's strengths are predominantly internal and structural; its weaknesses are predominantly organisational and addressable; its opportunities are predominantly regulatory and time-bounded; its threats are predominantly competitive and political.</p>
+
+<table class="metadata"><thead><tr><th>STRENGTHS — internal, helpful</th><th>WEAKNESSES — internal, harmful</th></tr></thead><tbody>
+<tr><td>
+<strong>S1.</strong> Four-property structural moat — Combat Cloud primacy + MARS authority + mission-context access + TSOC analyst-workflow ownership (§2.3, §3.4, §4.1).<br/><br/>
+<strong>S2.</strong> Airbus Protect cyber-defence expertise — earned by defending Airbus DS itself against real-world advanced adversaries, immediately below the operational profile of actual military operators (§2.3, §4.1.1).<br/><br/>
+<strong>S3.</strong> Privileged platform ownership and access (Eurodrone, Eurofighter, A400M, MRTT, Tiger/NH90) — engineering depth no greenfield competitor can replicate inside the 2028–2029 window (§2.3, §4.1.1).<br/><br/>
+<strong>S4.</strong> FCAS membership and standard-setting credibility — Airbus DS is already inside FCAS as Pillar 4 prime, with standing seats on the schema-board and the architecture board (§2.3, §4.1.1).<br/><br/>
+<strong>S5.</strong> Multi-decade national-accreditation track record across DGA-MI, BSI, CCN-CERT (§4.1.2, §6.1.2).<br/><br/>
+<strong>S6.</strong> Existing cleared-talent pool from A400M, MRTT, Eurofighter and Eurodrone — bypasses the 6–12-month national-clearance lead time (§4.1.3, §6.1.2, §7.2).<br/><br/>
+<strong>S7.</strong> Asymmetric financial outcomes — 95% of probability space is value-creating; even the downside scenario returns €54 M NPV (§5.3).
+</td><td>
+<strong>W1.</strong> Programme-prime culture vs software-cadence requirement — impedance mismatch addressed only partly by the dual-cadence architecture (§6.1.3).<br/><br/>
+<strong>W2.</strong> Signed-content production at SPARTA-anchored operational cadence is a current capability gap (§7.1).<br/><br/>
+<strong>W3.</strong> Subscription-revenue billing is a current capability gap — Airbus DS revenue recognition is programme-milestone-oriented (§7.1).<br/><br/>
+<strong>W4.</strong> Heavy FCAS-revenue concentration — 52% of base-case revenue from FCAS direct alone (§5.2.3, §6.3 SR-07).<br/><br/>
+<strong>W5.</strong> Strategic anchors dated 2017–2024 still pending 2026 revalidation (§6.3 SR-10, OP-STRAT-01).<br/><br/>
+<strong>W6.</strong> €154 M of base-case adjacent revenue lacks committed funding lines (§5.2.3).<br/><br/>
+<strong>W7.</strong> Airbus DS decision-rhythm is structurally slower than the 2026–2029 schema-freeze window allows (§6.3 SR-02).
+</td></tr></tbody></table>
+
+<table class="metadata"><thead><tr><th>OPPORTUNITIES — external, helpful</th><th>THREATS — external, harmful</th></tr></thead><tbody>
+<tr><td>
+<strong>O1.</strong> 2028–2029 FCAS Combat Cloud schema-freeze window — the strategic standard-setting opportunity (§2.2, §3.2, §6.3 SR-01).<br/><br/>
+<strong>O2.</strong> Regulatory tailwinds — NIS2, EU Cyber Resilience Act and NATO FMN raise the floor on auditable cyber telemetry, growing the entire SAM (§3.2.1, §6.2.1).<br/><br/>
+<strong>O3.</strong> EDF cyber-resilience co-funding lines available 2026–2034 (§3.6, §6.2.4).<br/><br/>
+<strong>O4.</strong> Adjacent platform programmes — Eurofighter LTE, Eurodrone, MRTT, A400M — offer per-platform integration revenue plus recurring services attach (§3.3.2, §5.2.1).<br/><br/>
+<strong>O5.</strong> Recurring-services revenue stream with software-services gross margin (55–65%), structurally higher than programme-prime margins (§5.2.2, §6.1.4).<br/><br/>
+<strong>O6.</strong> Export envelope to NATO partners (Sweden, Finland, Poland) under sovereign-cyber overlays compatible with NATO FMN (§3.3.3, §3.6).<br/><br/>
+<strong>O7.</strong> Long-term GCAP technical convergence — low-probability but high-upside (§3.3.3).<br/><br/>
+<strong>O8.</strong> The two German entrants (Helsing.AI, BWI) focus on different parts of the stack — Helsing on mission-AI, BWI on Bundeswehr IT services. This leaves structural room for cooperation rather than direct head-to-head competition on the cyber-trust object (§3.4.1).
+</td><td>
+<strong>T1.</strong> US mission-cyber vendors (Anduril, Palantir, Shift5) setting a NATO-level standard before FCAS does (§3.4.1, §6.3 SR-06).<br/><br/>
+<strong>T2.</strong> <strong>Helsing.AI</strong> — Munich-based defence-AI start-up, software-first, sovereign-acceptable, aggressively winning Bundeswehr contracts. The most credible non-US new entrant that could contest SPARTA's positioning on the German side (§3.4.1, §3.4.5).<br/><br/>
+<strong>T3.</strong> <strong>BWI GmbH</strong> — Bundeswehr-owned IT services company with inside-track influence over German military IT modernisation procurement; functions as gatekeeper rather than direct rival (§3.4.1, §3.4.5).<br/><br/>
+<strong>T4.</strong> Indra sovereign-cyber pushback if SPARTA appears to displace Indra's cyber-product line in Spain (§6.3 SR-04).<br/><br/>
+<strong>T5.</strong> Dassault objection to perceived constraint on NGF autonomy (§6.3 SR-05).<br/><br/>
+<strong>T6.</strong> National-budget cuts in FR / DE / ES delaying Phase 1B or Phase 2 demonstrator (§6.3 SR-07).<br/><br/>
+<strong>T7.</strong> Re-opening of FCAS Phase 1B workshare if SPARTA is mis-framed as a new pillar (§6.3 SR-03).<br/><br/>
+<strong>T8.</strong> MARS schema freezes without SPARTA trust object inside — the highest-impact single risk in the register (§6.3 SR-01).
+</td></tr></tbody></table>
+
+<h4>6.4.1 Strategic posture implied by the SWOT</h4>
+<p>The strengths are concentrated in <em>structural assets</em> (moat positions, Airbus Protect expertise, platform access, FCAS membership) that competitors cannot acquire by spending money. The weaknesses are concentrated in <em>organisational gaps</em> (cadence mismatch, subscription billing, content-cadence) that Airbus DS can close internally inside the 2026–2029 window. The opportunities are concentrated in <em>time-bounded external events</em> (schema freeze, regulatory tailwinds, EDF calls) that will not stay open indefinitely. The threats are concentrated in <em>competitive standard-setting</em> (US vendors and Helsing.AI specifically) and in <em>political-programmatic risks</em> within FCAS.</p>
+
+<p>The strategic conclusion is a classic <strong>SO posture</strong> (use Strengths to seize Opportunities): leverage the four-property moat, Airbus Protect's operational cyber expertise, platform ownership, and FCAS membership to lock SPARTA into the Combat Cloud schema during the 2028–2029 freeze window — before Helsing.AI, the US vendors, or any other new entrant can credibly contest the position. The conditional GO recommendation in §8 is the operational expression of this SO posture.</p>
 </section>
 
 <!-- =================== 7. BUSINESS REQUIREMENTS =================== -->
@@ -1084,6 +1153,8 @@
 <tr><td>BAE</td><td>BAE Systems plc — UK defence prime.</td></tr>
 <tr><td>Leonardo</td><td>Leonardo S.p.A. — Italian aerospace and defence prime; GCAP partner.</td></tr>
 <tr><td>MBDA</td><td>European missile-systems prime (Airbus / BAE / Leonardo joint venture).</td></tr>
+<tr><td>Helsing.AI</td><td>Helsing GmbH — Munich-based defence-AI start-up founded in 2021, heavily venture-funded. Software-first culture; rapid contract wins in the Bundeswehr ecosystem and FCAS-adjacent ambition. Considered the most credible non-US new entrant that could contest SPARTA's positioning on the German side.</td></tr>
+<tr><td>BWI</td><td>BWI GmbH — Bundeswehr-owned IT services company; ~7,000 employees; responsible for IT modernisation of the German armed forces. Functions as a gatekeeper / influencer on Bundeswehr procurement rather than as a direct product competitor.</td></tr>
 <tr><td>Skynet</td><td>Airbus DS UK military-communications satellite programme.</td></tr>
 <tr><td>Network for the Sky</td><td>Airbus DS aerial-connectivity programme.</td></tr>
 </tbody></table>
